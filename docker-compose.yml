@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: odoo19_db_local
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    volumes:
+      - odoo19-db-data:/var/lib/postgresql/data
+
+  web:
+    image: odoo:19.0
+    container_name: odoo19_app_local
+    depends_on:
+      - db
+    ports:
+      - "8080:8069"   # ✅ changed port (no conflict)
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+    volumes:
+      - ./addons19:/mnt/extra-addons
+      - odoo19-web-data:/var/lib/odoo
+
+volumes:
+  odoo19-db-data:
+  odoo19-web-data:
+  
