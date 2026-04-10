@@ -1,0 +1,17 @@
+<odoo>
+    <record id="view_education_list" model="ir.ui.view">
+        <field name="name">education.history.list</field>
+        <field name="model">education.history</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="institute"/>
+                 <field name="organization"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="percentage"/>
+            </list>
+        </field>
+    </record>
+</odoo>

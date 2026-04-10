@@ -1,0 +1,20 @@
+<odoo>
+    <record id="view_employee_form_inherit_project" model="ir.ui.view">
+        <field name="name">hr.employee.form.project</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Project Assign">
+                    <field name="project_ids">
+                        <list editable="bottom">
+                            <field name="project_id"/>
+                            <field name="customer"/>
+                            <field name="function"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

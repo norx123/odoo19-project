@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_project_detail,project.detail,model_project_detail,,1,1,1,1
+access_employee_project_line,employee.project.line,model_employee_project_line,,1,1,1,1

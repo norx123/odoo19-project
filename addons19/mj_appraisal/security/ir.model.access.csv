@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_performance_appraisal,access_performance_appraisal,model_performance_appraisal,,1,1,1,1
+access_performance_appraiser,access_performance_appraiser,model_performance_appraiser,,1,1,1,1
+access_performance_appraiser_line,access_performance_appraiser_line,model_performance_appraiser_line,,1,1,1,1
+access_performance_evaluation_topic,access_performance_evaluation_topic,model_performance_evaluation_topic,,1,1,1,1
+
+
+
+
