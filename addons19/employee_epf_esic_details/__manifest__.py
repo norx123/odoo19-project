@@ -1,8 +1,7 @@
 {
-    'name': 'Employee EPF & ESIC Details',
-    'version': '1.0',
-    'summary': 'Add EPF & ESIC fields in Employee Personal Tab',
-    'description': 'Adds PF, UAN, ESIC, PAN fields in Personal tab of Employee form',
+    'name': 'Employee EPF ESIC & Documents',
+    'version': '1.0.0',
+    'summary': 'EPF ESIC and Documents in Personal Tab',
     'category': 'Human Resources',
     'author': 'Custom',
     'depends': ['hr'],

@@ -1,0 +1,37 @@
+<odoo>
+    <record id="view_employee_form_documents_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.form.documents.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Personal Tab ke andar add -->
+            <xpath expr="//page[@name='personal']" position="inside">
+
+                <group string="Documents">
+
+                    <!-- Identity Documents -->
+                    <group string="Identity Documents" col="4">
+                        <field name="aadhar_number"/>
+                        <field name="aadhar_file"/>
+
+                        <field name="pan_number"/>
+                        <field name="pan_file"/>
+
+                        <field name="driving_license"/>
+                        <field name="driving_file"/>
+                    </group>
+
+                    <!-- Address Proof -->
+                    <group string="Address Proof">
+                        <field name="address_proof_type"/>
+                        <field name="address_proof_file"/>
+                    </group>
+
+                </group>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

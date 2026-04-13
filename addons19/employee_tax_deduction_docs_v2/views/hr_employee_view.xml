@@ -8,9 +8,9 @@
 
             <xpath expr="//notebook" position="inside">
 
-                <page string="Tax Deduction Docs">
+                <page string="Tax Documents">
 
-                    <group string="80C">
+                    <group string="Section 80C - Basic Deduction" col="2">
                         <field name="epf_file"/>
                         <field name="epf_amount"/>
                         <field name="life_insurance_file"/>
@@ -32,7 +32,7 @@
                         <field name="total_80c"/>
                     </group>
 
-                    <group string="80D">
+                    <group string="Section 80D Documents (Medical Insurance)" col="2">
                         <field name="health_insurance"/>
                         <field name="policy_copy"/>
                         <field name="payment_proof"/>
@@ -42,41 +42,41 @@
                         <field name="total_80d"/>
                     </group>
 
-                    <group string="80E">
+                    <group string="Section 80E Documents (Education Loan Interest)" col="2">
                         <field name="edu_interest_cert"/>
                         <field name="loan_sanction"/>
                         <field name="repayment_schedule"/>
                         <field name="total_80e"/>
                     </group>
 
-                    <group string="NPS">
+                    <group string="Section 80CCD Documents (NPS)" col="2">
                         <field name="nps_statement"/>
                         <field name="pran_card"/>
                         <field name="total_nps"/>
                     </group>
 
-                    <group string="80G">
+                    <group string="Section 80G Documents (Donations)" col="2">
                         <field name="donation_receipt"/>
                         <field name="donation_proof"/>
                         <field name="donee_pan"/>
                         <field name="total_donation"/>
                     </group>
 
-                    <group string="80TTA">
+                    <group string="Section 80TTA Documents (Bank Interest)" col="2">
                         <field name="bank_statement"/>
                         <field name="interest_cert"/>
                         <field name="form16a"/>
                         <field name="total_interest"/>
                     </group>
 
-                    <group string="80EE">
+                    <group string="Section 80EE Documents (Home Loan Interest)" col="2">
                         <field name="home_interest_cert"/>
                         <field name="loan_agreement"/>
                         <field name="property_docs"/>
                         <field name="housing_interest"/>
                     </group>
 
-                    <group string="HRA">
+                    <group string="HRA Exemption Documents" col="2">
                         <field name="rent_receipts"/>
                         <field name="rent_agreement"/>
                         <field name="landlord_pan"/>
@@ -84,7 +84,7 @@
                         <field name="hra_exemption"/>
                     </group>
 
-                    <group string="New Tax">
+                    <group string="NEW TAX REGIME (Documents)" col="2">
                         <field name="bank_interest_new"/>
                         <field name="capital_gain"/>
                         <field name="other_income"/>

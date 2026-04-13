@@ -8,7 +8,7 @@
 
             <xpath expr="//notebook" position="inside">
 
-                <page string="Tax Sheet">
+                <page string="Form 12B">
 
                     <group>
                         <group string="Company Details">

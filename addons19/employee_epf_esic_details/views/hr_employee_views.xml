@@ -1,23 +1,45 @@
 <odoo>
-    <record id="view_employee_form_epf_esic" model="ir.ui.view">
-        <field name="name">hr.employee.form.epf.esic</field>
+
+    <record id="view_employee_form_epf_documents" model="ir.ui.view">
+        <field name="name">hr.employee.form.epf.documents</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
 
-            <!-- Personal Tab ke andar insert -->
+            <!-- PERSONAL TAB -->
             <xpath expr="//page[@name='personal_information']" position="inside">
 
-                <group string="EPF &amp; ESIC Details">
-
+                <!-- EPF & ESIC -->
+                <group string="EPF &amp; ESIC Details" col="4">
                     <group>
                         <field name="pf_number"/>
                         <field name="uan_number"/>
                     </group>
-
                     <group>
                         <field name="esic_number"/>
                         <field name="pan_number"/>
+                    </group>
+                </group>
+
+                <!-- DOCUMENTS -->
+                <group string="Documents" col="4">
+
+                    <!-- Identity -->
+                    <group string="Identity Documents" col="4">
+                        <field name="aadhar_number"/>
+                        <field name="aadhar_file"/>
+
+                        <field name="pan_number"/>
+                        <field name="pan_file"/>
+
+                        <field name="driving_license"/>
+                        <field name="driving_file"/>
+                    </group>
+
+                    <!-- Address -->
+                    <group string="Address Proof" col="2">
+                        <field name="address_proof_type"/>
+                        <field name="address_proof_file"/>
                     </group>
 
                 </group>
@@ -26,4 +48,5 @@
 
         </field>
     </record>
+
 </odoo>
