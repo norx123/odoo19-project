@@ -1,0 +1,58 @@
+
+<odoo>
+    <record id="view_tax_sheet" model="ir.ui.view">
+        <field name="name">hr.employee.tax.sheet</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+
+                <page string="Tax Sheet">
+
+                    <group>
+                        <group string="Company Details">
+                            <field name="employer_name"/>
+                            <field name="office_address"/>
+                        </group>
+
+                        <group string="Employment Details">
+                            <field name="date_joining"/>
+                            <field name="exit_date"/>
+                        </group>
+
+                        <group string="Salary Details">
+                            <field name="gross_salary"/>
+                            <field name="hra_exemption"/>
+                            <field name="gratuity"/>
+                            <field name="leave_encashment"/>
+                            <field name="perquisites"/>
+                        </group>
+
+                        <group string="Deductions">
+                            <field name="pf_80c"/>
+                            <field name="medical_self_80d"/>
+                            <field name="medical_parents_80d"/>
+                            <field name="medical_senior_80d"/>
+                        </group>
+
+                        <group string="Tax Details">
+                            <field name="income_tax"/>
+                            <field name="professional_tax"/>
+                        </group>
+
+                        <group string="Access Details">
+                            <field name="added_by"/>
+                            <field name="added_date"/>
+                            <field name="updated_by"/>
+                            <field name="updated_date"/>
+                        </group>
+                    </group>
+
+                </page>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

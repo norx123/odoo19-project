@@ -1,0 +1,29 @@
+<odoo>
+    <record id="view_employee_form_epf_esic" model="ir.ui.view">
+        <field name="name">hr.employee.form.epf.esic</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Personal Tab ke andar insert -->
+            <xpath expr="//page[@name='personal_information']" position="inside">
+
+                <group string="EPF &amp; ESIC Details">
+
+                    <group>
+                        <field name="pf_number"/>
+                        <field name="uan_number"/>
+                    </group>
+
+                    <group>
+                        <field name="esic_number"/>
+                        <field name="pan_number"/>
+                    </group>
+
+                </group>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

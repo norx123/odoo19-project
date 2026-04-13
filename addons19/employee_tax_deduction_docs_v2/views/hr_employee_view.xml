@@ -1,0 +1,100 @@
+
+<odoo>
+    <record id="view_emp_tax_full" model="ir.ui.view">
+        <field name="name">emp.tax.full</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+
+                <page string="Tax Deduction Docs">
+
+                    <group string="80C">
+                        <field name="epf_file"/>
+                        <field name="epf_amount"/>
+                        <field name="life_insurance_file"/>
+                        <field name="life_insance_amount"/>
+                        <field name="elss_file"/>
+                        <field name="elss_amount"/>
+                        <field name="ppf_file"/>
+                        <field name="ppf_amount"/>
+                        <field name="nsc_file"/>
+                        <field name="nsc_amount"/>
+                        <field name="fd_file"/>
+                        <field name="fd_amount"/>
+                        <field name="home_loan_principal_file"/>
+                        <field name="home_loan_principal_amount"/>
+                        <field name="tuition_file"/>
+                        <field name="tuition_amount"/>
+                        <field name="ssy_file"/>
+                        <field name="ssy_amount"/>
+                        <field name="total_80c"/>
+                    </group>
+
+                    <group string="80D">
+                        <field name="health_insurance"/>
+                        <field name="policy_copy"/>
+                        <field name="payment_proof"/>
+                        <field name="medical_self_family"/>
+                        <field name="medical_parents_below60"/>
+                        <field name="medical_parents_above60"/>
+                        <field name="total_80d"/>
+                    </group>
+
+                    <group string="80E">
+                        <field name="edu_interest_cert"/>
+                        <field name="loan_sanction"/>
+                        <field name="repayment_schedule"/>
+                        <field name="total_80e"/>
+                    </group>
+
+                    <group string="NPS">
+                        <field name="nps_statement"/>
+                        <field name="pran_card"/>
+                        <field name="total_nps"/>
+                    </group>
+
+                    <group string="80G">
+                        <field name="donation_receipt"/>
+                        <field name="donation_proof"/>
+                        <field name="donee_pan"/>
+                        <field name="total_donation"/>
+                    </group>
+
+                    <group string="80TTA">
+                        <field name="bank_statement"/>
+                        <field name="interest_cert"/>
+                        <field name="form16a"/>
+                        <field name="total_interest"/>
+                    </group>
+
+                    <group string="80EE">
+                        <field name="home_interest_cert"/>
+                        <field name="loan_agreement"/>
+                        <field name="property_docs"/>
+                        <field name="housing_interest"/>
+                    </group>
+
+                    <group string="HRA">
+                        <field name="rent_receipts"/>
+                        <field name="rent_agreement"/>
+                        <field name="landlord_pan"/>
+                        <field name="total_rent_paid"/>
+                        <field name="hra_exemption"/>
+                    </group>
+
+                    <group string="New Tax">
+                        <field name="bank_interest_new"/>
+                        <field name="capital_gain"/>
+                        <field name="other_income"/>
+                        <field name="total_new_tax"/>
+                    </group>
+
+                </page>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

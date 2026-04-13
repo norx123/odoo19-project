@@ -1,0 +1,29 @@
+<odoo>
+    <record id="employee_payroll_view" model="ir.ui.view">
+        <field name="name">employee.payroll.view</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Payroll">
+
+                    <group string="Earnings">
+                        <field name="basic"/>
+                        <field name="hra"/>
+                        <field name="uniform_allowance"/>
+                        <field name="gross_salary"/>
+                    </group>
+
+                    <group string="Deductions">
+                        <field name="pf_employee"/>
+                        <field name="esi_employee"/>
+                        <field name="tds"/>
+                    </group>
+
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
