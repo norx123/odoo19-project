@@ -1,0 +1,41 @@
+<odoo>
+    <record id="view_employee_salary_tab" model="ir.ui.view">
+        <field name="name">hr.employee.salary.tab</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Salary Components">
+                    <group string="Annual CTC">
+                        <field name="annual_ctc"/>
+                        <field name="monthly_ctc"/>
+                        <field name="annual_gross"/>
+                        <field name="monthly_gross"/>
+                    </group>
+                    <group string="Earnings">
+                        <field name="basic"/>
+                        <field name="hra"/>
+                        <field name="uniform_allowance"/>
+                        <field name="children_edu_allowance"/>
+                        <field name="helper_allowance"/>
+                        <field name="medical_reimbursement"/>
+                        <field name="transport_allowance"/>
+                        <field name="special_allowance"/>
+                        <field name="gross_salary"/>
+                    </group>
+                    <group string="Employer Contribution">
+                        <field name="pf_employer"/>
+                        <field name="esi_employer"/>
+                        <field name="ltc"/>
+                        <field name="bonus"/>
+                    </group>
+                    <group string="Deductions">
+                        <field name="pf_employee"/>
+                        <field name="esi_employee"/>
+                        <field name="tds"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
