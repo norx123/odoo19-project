@@ -1,0 +1,78 @@
+<odoo>
+    <record id="view_employee_form_tds_sheet_adv" model="ir.ui.view">
+        <field name="name">employee.tds.sheet.advanced</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+
+                <page string="TDS Sheet">
+
+                    <!-- ================= NEW TAX REGIME ================= -->
+                    <group string="NEW TAX REGIME" col="2">
+
+                        <field name="new_gross_salary"/>
+                        <field name="new_total_reimbursement"/>
+                        <field name="new_prev_employer_salary"/>
+                        <field name="new_extra_payment"/>
+                        <field name="new_total_salary" readonly="1"/>
+
+                        <field name="new_standard_deduction"/>
+                        <field name="new_taxfree"/>
+
+                        <field name="new_hra_bill"/>
+                        <field name="new_pf_employee"/>
+                        <field name="new_house_loan_payment"/>
+                        <field name="new_tuition_fees"/>
+                        <field name="new_sukanya"/>
+                        <field name="new_home_loan_interest"/>
+                        <field name="new_additional_home_loan"/>
+                        <field name="new_health_insurance_self"/>
+                        <field name="new_medical_insurance_parents"/>
+                        <field name="new_nps"/>
+                        <field name="new_health_checkup"/>
+                        <field name="new_health_checkup_parents"/>
+
+                        <field name="new_net_taxable_salary" readonly="1"/>
+                        <field name="new_tax_on_salary" readonly="1"/>
+
+                        <field name="new_rebate_87a"/>
+                        <field name="new_surcharge"/>
+                        <field name="new_marginal_relief"/>
+                        <field name="new_cess"/>
+
+                        <field name="new_total_tax" readonly="1"/>
+                        <field name="new_tax_paid"/>
+                        <field name="new_remaining_tax" readonly="1"/>
+                        <field name="new_remaining_months"/>
+                        <field name="new_monthly_tds" readonly="1"/>
+
+                    </group>
+
+                    <!-- ================= OLD TAX REGIME ================= -->
+                    <group string="OLD TAX REGIME" col="2">
+
+                        <field name="old_gross_salary"/>
+                        <field name="old_prev_employer_salary"/>
+                        <field name="old_extra_payment"/>
+                        <field name="old_total_salary" readonly="1"/>
+
+                        <field name="old_standard_deduction"/>
+                        <field name="old_net_taxable_salary" readonly="1"/>
+                        <field name="old_tax_on_salary" readonly="1"/>
+
+                        <field name="old_rebate_87a"/>
+                        <field name="old_remaining_tax" readonly="1"/>
+                        <field name="old_remaining_months"/>
+                        <field name="old_monthly_tds" readonly="1"/>
+
+                    </group>
+
+                </page>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

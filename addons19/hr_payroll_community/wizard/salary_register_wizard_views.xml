@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="salary_register_wizard_view_form" model="ir.ui.view">
+        <field name="name">salary.register.wizard.form</field>
+        <field name="model">salary.register.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Salary Register">
+                <div class="alert alert-info" role="alert">
+                    Generate an Excel report based on payslips for the selected period of time.
+                </div>
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="salary_structure_id"/>
+                    </group>
+                    <group>
+                        <label string="Payslip Status" for="state_paid"/>
+                        <div>
+                            <field name="state_paid" class="mr-2"/> <label for="state_paid" string="Paid"/>
+                        </div>
+                        <div>
+                            <field name="state_done" class="mr-2"/> <label for="state_done" string="Done"/>
+                        </div>
+                    </group>
+                </group>
+                <separator string="EMPLOYEES"/>
+                <field name="employee_ids">
+                    <list string="Employees">
+                        <field name="name"/>
+                        <field name="department_id"/>
+                        <field name="job_id"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_export_xlsx" string="Export XLSX"
+                            type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="salary_register_wizard_action" model="ir.actions.act_window">
+        <field name="name">Salary Register</field>
+        <field name="res_model">salary.register.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Reporting Parent Menu -->
+    <menuitem id="menu_hr_payroll_reporting"
+              name="Reporting"
+              parent="menu_hr_payroll_community_root"
+              sequence="20"
+              groups="hr_payroll_community.group_hr_payroll_community_user"/>
+
+    <!-- Salary Register Submenu -->
+    <menuitem id="menu_salary_register"
+              name="Salary Register"
+              action="salary_register_wizard_action"
+              parent="menu_hr_payroll_reporting"
+              sequence="1"
+              groups="hr_payroll_community.group_hr_payroll_community_user"/>
+</odoo>

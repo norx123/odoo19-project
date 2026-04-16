@@ -22,3 +22,5 @@
 #############################################################################
 from . import hr_payslips_employees
 from . import payslip_lines_contribution_register
+from . import salary_register_wizard
+from . import yearly_salary_wizard

@@ -315,7 +315,8 @@ class HrPayslip(models.Model):
 
     @api.model
     def get_inputs(self, contracts, date_from, date_to):
-        """Function for getting contracts upon date_from and date_to fields"""
+        """Function for getting contracts upon date_from and date_to fields,
+        also auto-populates active salary attachments as other inputs"""
         res = []
         structure_ids = contracts.get_all_structures()
         rule_ids = self.env['hr.payroll.structure'].browse(
@@ -334,6 +335,25 @@ class HrPayslip(models.Model):
                     'date_to': date_to,
                 }
                 res.append(input_data)
+
+            # Auto-add active salary attachments for this employee
+            attachments = self.env['hr.salary.attachment']._get_active_attachments(
+                contract.employee_id.id, date_from, date_to)
+            for attachment in attachments:
+                # Avoid duplicates by code
+                existing_codes = [r['code'] for r in res if r.get('contract_id') == contract.id]
+                if attachment.other_input_type_id.code not in existing_codes:
+                    amount = attachment.monthly_amount
+                    if attachment.negative_value:
+                        amount = -abs(amount)
+                    res.append({
+                        'name': attachment.description or attachment.other_input_type_id.name,
+                        'code': attachment.other_input_type_id.code,
+                        'contract_id': contract.id,
+                        'amount': amount,
+                        'date_from': date_from,
+                        'date_to': date_to,
+                    })
         return res
 
     @api.model

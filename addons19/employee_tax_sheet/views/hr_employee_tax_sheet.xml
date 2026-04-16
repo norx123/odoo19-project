@@ -1,0 +1,41 @@
+
+<odoo>
+    <record id="view_employee_form_tax_sheet" model="ir.ui.view">
+        <field name="name">hr.employee.form.tax.sheet</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Tax Sheet">
+
+                    <group>
+                        <field name="tax_sheet_line_ids">
+                            <list editable="bottom">
+                                <field name="component_name"/>
+                                <field name="april"/>
+                                <field name="may"/>
+                                <field name="june"/>
+                                <field name="july"/>
+                                <field name="august"/>
+                                <field name="september"/>
+                                <field name="october"/>
+                                <field name="november"/>
+                                <field name="december"/>
+                                <field name="january"/>
+                                <field name="february"/>
+                                <field name="march"/>
+                            </list>
+                        </field>
+                    </group>
+
+                    <group string="Summary">
+                        <field name="total_salary" readonly="1"/>
+                    </group>
+
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

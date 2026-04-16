@@ -25,13 +25,14 @@
                     <group string="Employer Contribution">
                         <field name="pf_employer"/>
                         <field name="esi_employer"/>
-                        <field name="ltc"/>
+<!--                        <field name="ltc"/>-->
                         <field name="bonus"/>
                     </group>
                     <group string="Deductions">
                         <field name="pf_employee"/>
                         <field name="esi_employee"/>
                         <field name="tds"/>
+                        <field name="ltc"/>
                     </group>
                 </sheet>
             </form>

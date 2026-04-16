@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Employees Parent Menu under EXISTING Payroll -->
+    <menuitem
+        id="menu_hr_employee_root_custom"
+        name="Employees"
+        parent="hr_payroll_community.menu_hr_payroll_root"
+        sequence="5"/>
+
+    <!-- Submenu 1: Employees List -->
+    <menuitem
+        id="menu_hr_employee_list_custom"
+        name="Employees"
+        parent="menu_hr_employee_root_custom"
+        action="hr.open_view_employee_list_my"
+        sequence="10"/>
+
+    <!-- Submenu 2: Salary Attachment -->
+    <menuitem
+        id="menu_hr_salary_attachment"
+        name="Salary Attachment"
+        parent="menu_hr_employee_root_custom"
+        action="hr_payroll_community.action_hr_salary_attachment"
+        sequence="20"/>
+
+</odoo>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="hr_payslip_other_input_type_view_list" model="ir.ui.view">
+        <field name="name">hr.payslip.other.input.type.list</field>
+        <field name="model">hr.payslip.other.input.type</field>
+        <field name="arch" type="xml">
+            <list string="Other Input Types">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="country_id"/>
+                <field name="available_in_attachments"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="hr_payslip_other_input_type_view_form" model="ir.ui.view">
+        <field name="name">hr.payslip.other.input.type.form</field>
+        <field name="model">hr.payslip.other.input.type</field>
+        <field name="arch" type="xml">
+            <form string="Other Input Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="country_id"/>
+                            <field name="available_in_attachments"/>
+                        </group>
+                        <group>
+                            <field name="code"/>
+                        </group>
+                    </group>
+                    <group string="Availability in Structure">
+                        <field name="struct_ids" widget="many2many_tags" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="hr_payslip_other_input_type_action" model="ir.actions.act_window">
+        <field name="name">Other Input Types</field>
+        <field name="res_model">hr.payslip.other.input.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu under Configuration -->
+    <menuitem id="menu_hr_payslip_other_input_type"
+              name="Other Input Types"
+              action="hr_payslip_other_input_type_action"
+              parent="menu_hr_payroll_community_configuration"
+              sequence="20"/>
+</odoo>

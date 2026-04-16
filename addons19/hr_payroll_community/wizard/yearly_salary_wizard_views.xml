@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="yearly_salary_wizard_view_form" model="ir.ui.view">
+        <field name="name">yearly.salary.wizard.form</field>
+        <field name="model">yearly.salary.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Yearly Salary by Employee">
+                <div class="alert alert-info" role="alert">
+                    This wizard will print for employees with paid payslips on the selected year.
+                </div>
+                <group>
+                    <group>
+                        <field name="year"/>
+                        <field name="department_id"/>
+                    </group>
+                    <group>
+                        <field name="job_id"/>
+                    </group>
+                </group>
+                <separator string="EMPLOYEES"/>
+                <field name="employee_ids">
+                    <list string="Employees">
+                        <field name="name"/>
+                        <field name="department_id"/>
+                        <field name="job_id"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_print" string="Print"
+                            type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="yearly_salary_wizard_action" model="ir.actions.act_window">
+        <field name="name">Yearly Salary by Employee</field>
+        <field name="res_model">yearly.salary.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Yearly Salary Submenu under Reporting -->
+    <menuitem id="menu_yearly_salary"
+              name="Yearly Salary by Employee"
+              action="yearly_salary_wizard_action"
+              parent="menu_hr_payroll_reporting"
+              sequence="2"
+              groups="hr_payroll_community.group_hr_payroll_community_user"/>
+</odoo>
