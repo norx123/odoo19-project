@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="hr_master_report_view_form" model="ir.ui.view">
+        <field name="name">hr.master.report.form</field>
+        <field name="model">hr.master.report</field>
+        <field name="arch" type="xml">
+            <form string="Master Report">
+                <header>
+                    <button name="action_generate_xlsx"
+                            string="Generate Report XLSX"
+                            type="object"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" options="{'no_create': True}"/>
+                            <label for="date_from" string="Period"/>
+                            <div class="o_row">
+                                <field name="date_from" class="oe_inline"/>
+                                <span class="oe_inline"> - </span>
+                                <field name="date_to" class="oe_inline"/>
+                            </div>
+                        </group>
+                        <group/>
+                    </group>
+                    <group string="Restrict to Rules">
+                        <field name="salary_rule_ids"
+                               widget="many2many_tags"
+                               nolabel="1"
+                               options="{'no_create': True}"
+                               placeholder="Leave empty to include all salary rules..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="hr_master_report_view_list" model="ir.ui.view">
+        <field name="name">hr.master.report.list</field>
+        <field name="model">hr.master.report</field>
+        <field name="arch" type="xml">
+            <list string="Master Reports">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action - opens new form directly -->
+    <record id="hr_master_report_action" model="ir.actions.act_window">
+        <field name="name">Master Report</field>
+        <field name="res_model">hr.master.report</field>
+        <field name="view_mode">form,list</field>
+        <field name="target">current</field>
+        <field name="context">{'default_date_from': False}</field>
+    </record>
+
+    <!-- Menu under Reporting -->
+    <menuitem id="menu_hr_master_report"
+              name="Master Report"
+              action="hr_master_report_action"
+              parent="menu_hr_payroll_reporting"
+              sequence="3"
+              groups="hr_payroll_community.group_hr_payroll_community_user"/>
+</odoo>

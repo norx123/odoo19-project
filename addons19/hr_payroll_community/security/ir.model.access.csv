@@ -19,3 +19,4 @@ access_hr_payslip_other_input_type_user,access.hr.payslip.other.input.type.user,
 access_hr_salary_attachment_user,access.hr.salary.attachment.user,model_hr_payroll_salary_attachment,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
 access_salary_register_wizard_user,access.salary.register.wizard.user,model_salary_register_wizard,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
 access_yearly_salary_wizard_user,access.yearly.salary.wizard.user,model_yearly_salary_wizard,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
+access_hr_master_report_user,access.hr.master.report.user,model_hr_master_report,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
