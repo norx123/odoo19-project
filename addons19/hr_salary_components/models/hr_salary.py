@@ -12,15 +12,35 @@ class HrVersion(models.Model):
 
     # ── Annual CTC (Base values — no percentage) ─────────────────────────────
     annual_ctc = fields.Monetary(string="Annual CTC", currency_field='currency_id')
-    monthly_ctc = fields.Monetary(string="Monthly CTC", currency_field='currency_id')
+    # monthly_ctc = fields.Monetary(string="Monthly CTC", currency_field='currency_id')
+    monthly_ctc = fields.Monetary(
+        string="Monthly CTC",
+        currency_field='currency_id',
+        compute="_compute_monthly_ctc",
+        store=True
+    )
     annual_gross = fields.Monetary(string="Annual Gross", currency_field='currency_id')
     monthly_gross = fields.Monetary(string="Monthly Gross", currency_field='currency_id')
 
     # ── Earnings ─────────────────────────────────────────────────────────────
-    basic = fields.Monetary(string="Basic", currency_field='currency_id')
+    # basic = fields.Monetary(string="Basic", currency_field='currency_id')
+    basic = fields.Monetary(
+        string="Basic",
+        currency_field='currency_id',
+        compute="_compute_basic",
+        store=True
+    )
     basic_percent = fields.Float(string="Basic %", digits=(5, 2))
 
-    hra = fields.Monetary(string="HRA", currency_field='currency_id')
+    # hra = fields.Monetary(string="HRA", currency_field='currency_id')
+
+    hra = fields.Monetary(
+        string="HRA",
+        currency_field='currency_id',
+        compute="_compute_hra",
+        store=True
+    )
+
     hra_percent = fields.Float(string="HRA %", digits=(5, 2))
 
     uniform_allowance = fields.Monetary(string="Uniform Allowance", currency_field='currency_id')
@@ -93,16 +113,32 @@ class HrVersion(models.Model):
                 self.basic = self._pct_of_gross(self.basic_percent)
 
     # ── Basic: % of Monthly Gross ─────────────────────────────────────────────
-    @api.onchange('basic_percent', 'monthly_gross')
-    def _onchange_basic_percent(self):
-        if self.basic_percent:
-            self.basic = self._pct_of_gross(self.basic_percent)
+    # @api.onchange('basic_percent', 'monthly_gross')
+    # def _onchange_basic_percent(self):
+    #     if self.basic_percent:
+    #         self.basic = self._pct_of_gross(self.basic_percent)
+
+    @api.depends('basic_percent', 'monthly_gross')
+    def _compute_basic(self):
+        for rec in self:
+            rec.basic = (rec.monthly_gross or 0.0) * (rec.basic_percent or 0.0) / 100.0
 
     # ── All other % fields: base = monthly_ctc ───────────────────────────────
-    @api.onchange('hra_percent', 'monthly_ctc')
-    def _onchange_hra_percent(self):
-        if self.hra_percent:
-            self.hra = self._pct_of_ctc(self.hra_percent)
+    @api.depends('annual_ctc')
+    def _compute_monthly_ctc(self):
+        for rec in self:
+            rec.monthly_ctc = (rec.annual_ctc or 0.0) / 12.0
+
+
+    # @api.onchange('hra_percent', 'monthly_ctc')
+    # def _onchange_hra_percent(self):
+    #     if self.hra_percent:
+    #         self.hra = self._pct_of_ctc(self.hra_percent)
+
+    @api.depends('hra_percent', 'basic')
+    def _compute_hra(self):
+        for rec in self:
+            rec.hra = (rec.basic or 0.0) * (rec.hra_percent or 0.0) / 100.0
 
     @api.onchange('uniform_allowance_percent', 'monthly_ctc')
     def _onchange_uniform_allowance_percent(self):

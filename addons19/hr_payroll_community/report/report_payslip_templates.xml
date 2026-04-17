@@ -1,107 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--    Template for Payslip Report-->
+    <!--  Template for Payslip Report  -->
     <template id="report_payslip">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Pay Slip</h2>
-                        <p t-field="o.name"/>
+                        <h2 class="text-center">Pay Slip</h2>
+                        <p t-field="o.name" class="text-center text-muted"/>
                         <table class="table table-sm table-bordered">
                             <tr>
-                                <td>
-                                    <strong>Name</strong>
-                                </td>
-                                <td>
-                                    <span t-field="o.employee_id"/>
-                                </td>
-                                <td>
-                                    <strong>Designation</strong>
-                                </td>
-                                <td>
-                                    <span t-field="o.employee_id.job_id"/>
-                                </td>
+                                <td><strong>Employee Name</strong></td>
+                                <td><span t-field="o.employee_id"/></td>
+                                <td><strong>Designation</strong></td>
+                                <td><span t-field="o.employee_id.job_id"/></td>
                             </tr>
                             <tr>
-                                <td>
-                                    <strong>Email</strong>
-                                </td>
-                                <td>
-                                    <span t-field="o.employee_id.work_email"/>
-                                </td>
-                                <td>
-                                    <strong>Identification No</strong>
-                                </td>
-                                <td>
-                                    <span t-field="o.employee_id.identification_id"/>
-                                </td>
+                                <td><strong>Department</strong></td>
+                                <td><span t-field="o.employee_id.department_id"/></td>
+                                <td><strong>Identification No</strong></td>
+                                <td><span t-field="o.employee_id.identification_id"/></td>
                             </tr>
                             <tr>
-                                <td>
-                                    <strong>Reference</strong>
-                                </td>
-                                <td>
-                                    <span t-field="o.number"/>
-                                </td>
-                                <td>
-                                    <strong>Bank Account</strong>
-                                </td>
-                                <td>
-                                    <span t-field="o.employee_id.bank_account_id"/>
-                                </td>
+                                <td><strong>Reference</strong></td>
+                                <td><span t-field="o.number"/></td>
+                                <td><strong>Work Email</strong></td>
+                                <td><span t-field="o.employee_id.work_email"/></td>
                             </tr>
                             <tr>
-                                <td>
-                                    <strong>Date From</strong>
-                                </td>
-                                <td>
-                                    <span t-field="o.date_from"/>
-                                </td>
-                                <td>
-                                    <strong>Date To</strong>
-                                </td>
-                                <td>
-                                    <span t-field="o.date_to"/>
-                                </td>
+                                <td><strong>Date From</strong></td>
+                                <td><span t-field="o.date_from"/></td>
+                                <td><strong>Date To</strong></td>
+                                <td><span t-field="o.date_to"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Structure</strong></td>
+                                <td><span t-field="o.struct_id"/></td>
+                                <td><strong>Status</strong></td>
+                                <td><span t-field="o.state"/></td>
                             </tr>
                         </table>
-                        <table class="table table-sm">
-                            <thead>
+                        <table class="table table-sm mt16">
+                            <thead style="background-color:#4B3FA0; color:white;">
                                 <tr>
                                     <th>Code</th>
-                                    <th>Name</th>
-                                    <th>Quantity/rate</th>
-                                    <th>Amount</th>
-                                    <th>Total</th>
+                                    <th>Component</th>
+                                    <th class="text-right">Quantity / Rate</th>
+                                    <th class="text-right">Amount</th>
+                                    <th class="text-right">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip)"
                                     t-as="line">
-                                    <td>
-                                        <span t-field="line.code"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="line.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="line.quantity"/>
-                                    </td>
-                                    <td>
+                                    <td><span t-field="line.code"/></td>
+                                    <td><span t-field="line.name"/></td>
+                                    <td class="text-right"><span t-field="line.quantity"/></td>
+                                    <td class="text-right">
                                         <span t-esc="line.amount"
                                               t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
                                     </td>
-                                    <td>
+                                    <td class="text-right">
                                         <span t-esc="line.total"
                                               t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <p class="text-right">
-                            <strong>Authorized signature</strong>
-                        </p>
+                        <div class="row mt32">
+                            <div class="col-6">
+                                <p><strong>Employee Signature</strong><br/><br/>________________</p>
+                            </div>
+                            <div class="col-6 text-right">
+                                <p><strong>Authorized Signature</strong><br/><br/>________________</p>
+                            </div>
+                        </div>
                     </div>
                 </t>
             </t>

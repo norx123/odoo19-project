@@ -83,22 +83,39 @@
         <field name="arch" type="xml">
             <form string="Payslip">
                 <header>
-                    <button string="Confirm" name="action_payslip_done"
-                            type="object" invisible="state != 'draft'"
-                            class="oe_highlight"/>
-                    <button string="Refund" name="action_refund_sheet"
-                            invisible="state not in ('confirm', 'done')"
-                            type='object'/>
-                    <button string="Set to Draft" name="action_payslip_draft"
-                            type="object" invisible="state != 'cancel'"/>
+                    <!-- Draft → Waiting -->
+                    <button string="Confirm" name="action_payslip_verify"
+                            type="object"
+                            invisible="state != 'draft'"
+                            class="btn-primary"/>
+                    <!-- Waiting → compute + Done -->
                     <button string="Compute Sheet" name="action_compute_sheet"
-                            type="object" invisible="state != 'draft'"
-                            class="oe_highlight"/>
+                            type="object"
+                            invisible="state != 'draft'"
+                            class="btn-secondary"/>
+                    <button string="Validate" name="action_payslip_done"
+                            type="object"
+                            invisible="state != 'verify'"
+                            class="btn-primary"/>
+                    <!-- Done → Paid -->
+                    <button string="Pay" name="action_payslip_paid"
+                            type="object"
+                            invisible="state != 'done'"
+                            class="btn-primary"/>
+                    <!-- Refund (from Done or Paid) -->
+                    <button string="Refund" name="action_refund_sheet"
+                            type="object"
+                            invisible="state not in ('done', 'paid')"/>
+                    <!-- Cancel (from Waiting or Done) -->
                     <button string="Cancel Payslip" name="action_payslip_cancel"
                             type="object"
-                            invisible="state in ('draft','hr_check','confirm','verify','cancel')"/>
+                            invisible="state not in ('verify', 'done')"/>
+                    <!-- Reset to Draft (from Rejected) -->
+                    <button string="Set to Draft" name="action_payslip_draft"
+                            type="object"
+                            invisible="state != 'cancel'"/>
                     <field name="state" widget="statusbar"
-                           statusbar_visible="draft,confirm"/>
+                           statusbar_visible="draft,verify,done,paid"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">

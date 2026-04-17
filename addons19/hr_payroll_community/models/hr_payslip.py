@@ -62,19 +62,19 @@ class HrPayslip(models.Model):
                           default=lambda self: fields.Date.to_string(
                               (datetime.now() + relativedelta(months=+1, day=1,
                                                               days=-1)).date()))
-    # this is chaos: 4 states are defined, 3 are used ('verify' isn't)
-    # and 5 exist ('confirm' seems to have existed)
+    # Draft -> Waiting -> Done -> Paid workflow
     state = fields.Selection(selection=[
         ('draft', 'Draft'),
         ('verify', 'Waiting'),
         ('done', 'Done'),
+        ('paid', 'Paid'),
         ('cancel', 'Rejected'),
     ], string='Status', index=True, readonly=True, copy=False, default='draft',
-        help="""* When the payslip is created the status is \'Draft\'
-                \n* If the payslip is under verification, 
-                the status is \'Waiting\'.
-                \n* If the payslip is confirmed then status is set to \'Done\'.
-                \n* When user cancel payslip the status is \'Rejected\'.""")
+        help="""* When the payslip is created the status is 'Draft'
+                \n* After confirmation, the status is 'Waiting'.
+                \n* If the payslip is confirmed/computed the status is 'Done'.
+                \n* After payment is registered the status is 'Paid'.
+                \n* When user cancels payslip the status is 'Rejected'.""")
     line_ids = fields.One2many('hr.payslip.line',
                                'slip_id',
                                string='Payslip Lines',
@@ -137,16 +137,24 @@ class HrPayslip(models.Model):
                 _("Payslip 'Date From' must be earlier 'Date To'."))
 
     def action_payslip_draft(self):
-        """Function for change stage of Payslip"""
+        """Reset payslip to Draft"""
         return self.write({'state': 'draft'})
 
+    def action_payslip_verify(self):
+        """Move payslip to Waiting state"""
+        return self.write({'state': 'verify'})
+
     def action_payslip_done(self):
-        """Function for change stage of Payslip"""
+        """Compute and confirm payslip → Done state"""
         self.action_compute_sheet()
         return self.write({'state': 'done'})
 
+    def action_payslip_paid(self):
+        """Mark payslip as Paid"""
+        return self.write({'state': 'paid', 'paid': True})
+
     def action_payslip_cancel(self):
-        """Function for change stage of Payslip"""
+        """Cancel/Reject payslip"""
         return self.write({'state': 'cancel'})
 
     def action_refund_sheet(self):

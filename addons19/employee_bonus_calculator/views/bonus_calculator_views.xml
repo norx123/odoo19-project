@@ -1,0 +1,61 @@
+<odoo>
+
+    <!-- MENU -->
+    <menuitem id="menu_bonus_root"
+              name="Bonus Calculator"
+              parent="hr.menu_hr_root"
+              sequence="50"/>
+
+    <!-- ACTION -->
+    <record id="action_bonus_calculator" model="ir.actions.act_window">
+        <field name="name">Bonus Calculator</field>
+        <field name="res_model">bonus.calculator</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_bonus_calculator"
+              name="Bonus Calculator"
+              parent="menu_bonus_root"
+              action="action_bonus_calculator"/>
+
+    <!-- LIST VIEW -->
+    <record id="view_bonus_list" model="ir.ui.view">
+        <field name="name">bonus.calculator.list</field>
+        <field name="model">bonus.calculator</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="employee_id"/>
+                <field name="basic_da"/>
+                <field name="bonus_percentage"/>
+                <field name="bonus_amount"/>
+                <field name="eligible"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_bonus_form" model="ir.ui.view">
+        <field name="name">bonus.calculator.form</field>
+        <field name="model">bonus.calculator</field>
+        <field name="arch" type="xml">
+            <form string="Bonus Calculator">
+                <sheet>
+
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="basic_da"/>
+                        <field name="bonus_percentage"/>
+                        <field name="minimum_wage"/>
+                    </group>
+
+                    <group string="Result">
+                        <field name="eligible" readonly="1"/>
+                        <field name="bonus_amount" readonly="1"/>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>
