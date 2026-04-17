@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report Action -->
+    <record id="action_yearly_salary_report" model="ir.actions.report">
+        <field name="name">Yearly Salary by Employee</field>
+        <field name="model">yearly.salary.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_payroll_community.yearly_salary_report_template</field>
+        <field name="report_file">hr_payroll_community.yearly_salary_report_template</field>
+        <field name="print_report_name">'Yearly_Salary_' + str(object.year)</field>
+    </record>
+
+    <!-- QWeb Template -->
+    <template id="yearly_salary_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <!-- Title -->
+                    <div class="text-center mb-4">
+                        <h2>Yearly Salary Report - <t t-esc="year"/></h2>
+                        <p class="text-muted">Component-wise salary breakdown for all employees</p>
+                    </div>
+
+                    <t t-foreach="docs" t-as="emp_data">
+                        <div style="page-break-inside: avoid; margin-bottom: 30px;">
+                            <!-- Employee Header -->
+                            <table class="table table-sm table-bordered" style="background:#6c5fc7; color:white;">
+                                <tr>
+                                    <td style="background:#6c5fc7; color:white;">
+                                        <strong>Employee: </strong>
+                                        <t t-esc="emp_data['employee'].name"/>
+                                    </td>
+                                    <td style="background:#6c5fc7; color:white;">
+                                        <strong>Department: </strong>
+                                        <t t-esc="emp_data['employee'].department_id.name or '-'"/>
+                                    </td>
+                                    <td style="background:#6c5fc7; color:white;">
+                                        <strong>Job Position: </strong>
+                                        <t t-esc="emp_data['employee'].job_id.name or '-'"/>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Monthly Salary Table -->
+                            <table class="table table-sm table-bordered" style="font-size:10px;">
+                                <thead>
+                                    <tr style="background:#e8e4ff;">
+                                        <th style="min-width:120px;">Component</th>
+                                        <t t-foreach="months" t-as="month">
+                                            <th class="text-center"><t t-esc="month[1]"/></th>
+                                        </t>
+                                        <th class="text-right" style="background:#d0c8ff;">
+                                            <strong>Total</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="rule_codes" t-as="code">
+                                        <tr>
+                                            <td>
+                                                <t t-esc="rule_map[code]"/>
+                                                <br/>
+                                                <small class="text-muted">(<t t-esc="code"/>)</small>
+                                            </td>
+                                            <t t-foreach="months" t-as="month">
+                                                <td class="text-right">
+                                                    <t t-esc="'%.2f' % emp_data['monthly'].get(month[0], {}).get(code, 0)"/>
+                                                </td>
+                                            </t>
+                                            <td class="text-right" style="background:#f0eeff;">
+                                                <strong>
+                                                    <t t-esc="'%.2f' % emp_data['totals'].get(code, 0)"/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <!-- NET Row -->
+                                    <tr style="background:#e8e4ff; font-weight:bold;">
+                                        <td>NET SALARY</td>
+                                        <t t-foreach="months" t-as="month">
+                                            <td class="text-right">
+                                                <t t-esc="'%.2f' % sum(emp_data['monthly'].get(month[0], {}).values())"/>
+                                            </td>
+                                        </t>
+                                        <td class="text-right" style="background:#d0c8ff;">
+                                            <t t-esc="'%.2f' % sum(emp_data['totals'].values())"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Page break between employees (except last) -->
+                        <t t-if="not emp_data_last">
+                            <div style="page-break-after: always;"/>
+                        </t>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

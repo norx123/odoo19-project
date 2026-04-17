@@ -165,14 +165,21 @@
                             <field name="input_line_ids" colspan="4" nolabel="1"
                                    readonly="state != 'draft'">
                                 <list string="Input Data" editable="bottom">
+                                    <field name="input_type_id"
+                                           string="Type"
+                                           options="{'no_create': True}"
+                                           required="0"/>
                                     <field name="name"/>
                                     <field name="code"/>
                                     <field name="amount"/>
                                     <field name="contract_id"/>
-                                    <field name="sequence" invisible="True"/>
+                                    <field name="sequence" column_invisible="True"/>
                                 </list>
-                                <form string="Payslip Line">
+                                <form string="Payslip Input">
                                     <group col="4">
+                                        <field name="input_type_id"
+                                               string="Input Type"
+                                               options="{'no_create': True}"/>
                                         <field name="name"/>
                                         <field name="code"/>
                                         <field name="sequence"/>
