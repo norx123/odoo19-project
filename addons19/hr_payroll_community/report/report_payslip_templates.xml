@@ -1,80 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--  Template for Payslip Report  -->
     <template id="report_payslip">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2 class="text-center">Pay Slip</h2>
-                        <p t-field="o.name" class="text-center text-muted"/>
-                        <table class="table table-sm table-bordered">
-                            <tr>
-                                <td><strong>Employee Name</strong></td>
-                                <td><span t-field="o.employee_id"/></td>
-                                <td><strong>Designation</strong></td>
-                                <td><span t-field="o.employee_id.job_id"/></td>
+
+                        <!-- ── Title ── -->
+                        <div style="text-align:center; margin-bottom:12px;">
+                            <h2 style="margin:0; color:#4B3FA0; font-size:18px;">PAY SLIP</h2>
+                            <p style="margin:2px 0; color:#666; font-size:11px;">
+                                <t t-esc="o.company_id.name"/>
+                            </p>
+                        </div>
+
+                        <!-- ── Employee Info Table ── -->
+                        <table style="width:100%; border-collapse:collapse; margin-bottom:14px; font-size:11px;">
+                            <tr style="background:#4B3FA0; color:white;">
+                                <td colspan="4" style="padding:5px 8px; font-weight:bold; font-size:12px;">
+                                    Employee Information
+                                </td>
                             </tr>
                             <tr>
-                                <td><strong>Department</strong></td>
-                                <td><span t-field="o.employee_id.department_id"/></td>
-                                <td><strong>Identification No</strong></td>
-                                <td><span t-field="o.employee_id.identification_id"/></td>
+                                <td style="padding:5px 8px; background:#f5f3ff; font-weight:bold; width:22%; border:1px solid #ddd;">Employee Name</td>
+                                <td style="padding:5px 8px; border:1px solid #ddd; width:28%;"><t t-field="o.employee_id"/></td>
+                                <td style="padding:5px 8px; background:#f5f3ff; font-weight:bold; width:22%; border:1px solid #ddd;">Designation</td>
+                                <td style="padding:5px 8px; border:1px solid #ddd;"><t t-field="o.employee_id.job_id"/></td>
                             </tr>
                             <tr>
-                                <td><strong>Reference</strong></td>
-                                <td><span t-field="o.number"/></td>
-                                <td><strong>Work Email</strong></td>
-                                <td><span t-field="o.employee_id.work_email"/></td>
+                                <td style="padding:5px 8px; background:#f5f3ff; font-weight:bold; border:1px solid #ddd;">Department</td>
+                                <td style="padding:5px 8px; border:1px solid #ddd;"><t t-field="o.employee_id.department_id"/></td>
+                                <td style="padding:5px 8px; background:#f5f3ff; font-weight:bold; border:1px solid #ddd;">Identification No</td>
+                                <td style="padding:5px 8px; border:1px solid #ddd;"><t t-field="o.employee_id.identification_id"/></td>
                             </tr>
                             <tr>
-                                <td><strong>Date From</strong></td>
-                                <td><span t-field="o.date_from"/></td>
-                                <td><strong>Date To</strong></td>
-                                <td><span t-field="o.date_to"/></td>
+                                <td style="padding:5px 8px; background:#f5f3ff; font-weight:bold; border:1px solid #ddd;">Reference</td>
+                                <td style="padding:5px 8px; border:1px solid #ddd;"><t t-field="o.number"/></td>
+                                <td style="padding:5px 8px; background:#f5f3ff; font-weight:bold; border:1px solid #ddd;">Work Email</td>
+                                <td style="padding:5px 8px; border:1px solid #ddd;"><t t-field="o.employee_id.work_email"/></td>
                             </tr>
                             <tr>
-                                <td><strong>Structure</strong></td>
-                                <td><span t-field="o.struct_id"/></td>
-                                <td><strong>Status</strong></td>
-                                <td><span t-field="o.state"/></td>
+                                <td style="padding:5px 8px; background:#f5f3ff; font-weight:bold; border:1px solid #ddd;">Pay Period</td>
+                                <td style="padding:5px 8px; border:1px solid #ddd;">
+                                    <t t-field="o.date_from"/> &#160;to&#160; <t t-field="o.date_to"/>
+                                </td>
+                                <td style="padding:5px 8px; background:#f5f3ff; font-weight:bold; border:1px solid #ddd;">Structure</td>
+                                <td style="padding:5px 8px; border:1px solid #ddd;"><t t-field="o.struct_id"/></td>
                             </tr>
                         </table>
-                        <table class="table table-sm mt16">
-                            <thead style="background-color:#4B3FA0; color:white;">
-                                <tr>
-                                    <th>Code</th>
-                                    <th>Component</th>
-                                    <th class="text-right">Quantity / Rate</th>
-                                    <th class="text-right">Amount</th>
-                                    <th class="text-right">Total</th>
+
+                        <!-- ── Salary Components Table ── -->
+                        <table style="width:100%; border-collapse:collapse; font-size:11px; margin-bottom:14px;">
+                            <thead>
+                                <tr style="background:#4B3FA0; color:white;">
+                                    <th style="padding:6px 8px; border:1px solid #4B3FA0; text-align:left; width:10%;">Code</th>
+                                    <th style="padding:6px 8px; border:1px solid #4B3FA0; text-align:left; width:45%;">Component</th>
+                                    <th style="padding:6px 8px; border:1px solid #4B3FA0; text-align:right; width:15%;">Quantity/Rate</th>
+                                    <th style="padding:6px 8px; border:1px solid #4B3FA0; text-align:right; width:15%;">Amount</th>
+                                    <th style="padding:6px 8px; border:1px solid #4B3FA0; text-align:right; width:15%;">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip)"
-                                    t-as="line">
-                                    <td><span t-field="line.code"/></td>
-                                    <td><span t-field="line.name"/></td>
-                                    <td class="text-right"><span t-field="line.quantity"/></td>
-                                    <td class="text-right">
-                                        <span t-esc="line.amount"
-                                              t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
-                                    </td>
-                                    <td class="text-right">
-                                        <span t-esc="line.total"
-                                              t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
-                                    </td>
-                                </tr>
+                                <t t-foreach="o.line_ids.filtered(lambda l: l.appears_on_payslip)" t-as="line">
+                                    <tr style="background: #fafafa if line_index % 2 == 0 else white;">
+                                        <td style="padding:5px 8px; border:1px solid #eee;"><t t-field="line.code"/></td>
+                                        <td style="padding:5px 8px; border:1px solid #eee;"><t t-field="line.name"/></td>
+                                        <td style="padding:5px 8px; border:1px solid #eee; text-align:right;"><t t-field="line.quantity"/></td>
+                                        <td style="padding:5px 8px; border:1px solid #eee; text-align:right;">
+                                            <t t-esc="line.amount"
+                                               t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        </td>
+                                        <td style="padding:5px 8px; border:1px solid #eee; text-align:right;">
+                                            <t t-esc="line.total"
+                                               t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
                             </tbody>
                         </table>
-                        <div class="row mt32">
-                            <div class="col-6">
-                                <p><strong>Employee Signature</strong><br/><br/>________________</p>
-                            </div>
-                            <div class="col-6 text-right">
-                                <p><strong>Authorized Signature</strong><br/><br/>________________</p>
-                            </div>
-                        </div>
+
+                        <!-- ── Signature Row ── -->
+                        <table style="width:100%; margin-top:30px; font-size:11px;">
+                            <tr>
+                                <td style="width:50%; text-align:center;">
+                                    <div style="border-top:1px solid #333; padding-top:4px; margin:0 30px;">
+                                        Employee Signature
+                                    </div>
+                                </td>
+                                <td style="width:50%; text-align:center;">
+                                    <div style="border-top:1px solid #333; padding-top:4px; margin:0 30px;">
+                                        Authorized Signature
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
                     </div>
                 </t>
             </t>

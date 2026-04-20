@@ -15,15 +15,16 @@ class YearlySalaryReport(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         data = data or {}
-        year = data.get('year', 2024)
+        year = data.get('year', 2025)
         employee_ids = data.get('employee_ids', [])
         department_id = data.get('department_id', False)
         job_id = data.get('job_id', False)
 
+        # Include both done AND paid payslips
         domain = [
-            ('date_from', '>=', f'{year}-01-01'),
-            ('date_to', '<=', f'{year}-12-31'),
-            ('state', '=', 'done'),
+            ('date_from', '>=', '%s-01-01' % year),
+            ('date_to', '<=', '%s-12-31' % year),
+            ('state', 'in', ['done', 'paid']),
         ]
         if employee_ids:
             domain.append(('employee_id', 'in', employee_ids))
@@ -32,24 +33,25 @@ class YearlySalaryReport(models.AbstractModel):
         if job_id:
             domain.append(('employee_id.job_id', '=', job_id))
 
-        payslips = self.env['hr.payslip'].search(domain, order='employee_id, date_from')
+        payslips = self.env['hr.payslip'].search(
+            domain, order='employee_id, date_from')
 
-        # Collect all rule codes and names (only appears_on_payslip)
+        # Collect all rule codes/names (appears_on_payslip only)
         rule_map = {}  # code -> name
         for slip in payslips:
             for line in slip.line_ids.filtered(lambda l: l.appears_on_payslip):
                 rule_map[line.code] = line.name
         rule_codes = sorted(rule_map.keys())
 
-        # Build per-employee data
+        # Build per-employee monthly data
         employee_data = {}
         for slip in payslips:
             emp = slip.employee_id
             if emp.id not in employee_data:
                 employee_data[emp.id] = {
                     'employee': emp,
-                    'monthly': {},  # month_num -> {code: amount}
-                    'totals': {},   # code -> total_amount
+                    'monthly': {},   # month_num -> {code: amount}
+                    'totals': {},    # code -> yearly_total
                 }
             month_num = slip.date_from.month
             if month_num not in employee_data[emp.id]['monthly']:

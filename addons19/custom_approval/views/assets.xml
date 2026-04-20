@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="custom_approval_assets" model="ir.asset">
+        <field name="name">Custom Approval Dashboard JS</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">custom_approval/static/src/js/approval_dashboard.js</field>
+    </record>
+
+    <record id="custom_approval_css_assets" model="ir.asset">
+        <field name="name">Custom Approval Dashboard CSS</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">custom_approval/static/src/css/approval_dashboard.css</field>
+    </record>
+
+    <record id="custom_approval_xml_assets" model="ir.asset">
+        <field name="name">Custom Approval Dashboard XML</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">custom_approval/static/src/xml/approval_dashboard.xml</field>
+    </record>
+</odoo>

@@ -9,18 +9,19 @@ class YearlySalaryWizard(models.TransientModel):
     _description = 'Yearly Salary by Employee Wizard'
 
     year = fields.Integer(string='Year', required=True,
-                           default=lambda self: fields.Date.today().year - 1)
+                           default=lambda self: fields.Date.today().year)
     department_id = fields.Many2one('hr.department', string='Department')
     job_id = fields.Many2one('hr.job', string='Job Position')
     employee_ids = fields.Many2many(
         'hr.employee', string='Employees',
-        help="Select employees. Leave empty to include all employees with paid payslips in the year.")
+        help="Select employees. Leave empty to include all.")
 
     def action_print(self):
+        # Include both 'done' and 'paid' payslips
         domain = [
-            ('date_from', '>=', f'{self.year}-01-01'),
-            ('date_to', '<=', f'{self.year}-12-31'),
-            ('state', '=', 'done'),
+            ('date_from', '>=', '%s-01-01' % self.year),
+            ('date_to', '<=', '%s-12-31' % self.year),
+            ('state', 'in', ['done', 'paid']),
         ]
         if self.employee_ids:
             domain.append(('employee_id', 'in', self.employee_ids.ids))
@@ -31,7 +32,9 @@ class YearlySalaryWizard(models.TransientModel):
 
         payslips = self.env['hr.payslip'].search(domain)
         if not payslips:
-            raise UserError(_('No paid payslips found for the selected criteria.'))
+            raise UserError(_(
+                'No payslips found for the selected criteria.\n'
+                'Make sure payslips are in "Done" or "Paid" state for year %s.') % self.year)
 
         return self.env.ref(
             'hr_payroll_community.action_yearly_salary_report'

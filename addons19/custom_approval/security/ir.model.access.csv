@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_approval_approver_line_user,approval.approver.line user,model_approval_approver_line,base.group_user,1,1,1,1
+access_approval_approver_line_manager,approval.approver.line manager,model_approval_approver_line,hr.group_hr_manager,1,1,1,1
+access_custom_advance_salary_user,custom.advance.salary user,model_custom_advance_salary,base.group_user,1,1,1,0
+access_custom_advance_salary_manager,custom.advance.salary manager,model_custom_advance_salary,hr.group_hr_manager,1,1,1,1
+access_custom_loan_request_user,custom.loan.request user,model_custom_loan_request,base.group_user,1,1,1,0
+access_custom_loan_request_manager,custom.loan.request manager,model_custom_loan_request,hr.group_hr_manager,1,1,1,1
+access_custom_resignation_user,custom.resignation user,model_custom_resignation,base.group_user,1,1,1,0
+access_custom_resignation_manager,custom.resignation manager,model_custom_resignation,hr.group_hr_manager,1,1,1,1
+access_custom_travel_request_user,custom.travel.request user,model_custom_travel_request,base.group_user,1,1,1,0
+access_custom_travel_request_manager,custom.travel.request manager,model_custom_travel_request,hr.group_hr_manager,1,1,1,1

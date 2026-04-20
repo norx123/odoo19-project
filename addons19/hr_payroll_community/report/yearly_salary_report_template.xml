@@ -1,88 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Report Action -->
+    <!-- Report Action - Landscape for 12-month table -->
     <record id="action_yearly_salary_report" model="ir.actions.report">
         <field name="name">Yearly Salary by Employee</field>
         <field name="model">yearly.salary.wizard</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">hr_payroll_community.yearly_salary_report_template</field>
         <field name="report_file">hr_payroll_community.yearly_salary_report_template</field>
-        <field name="print_report_name">'Yearly_Salary_' + str(object.year)</field>
+        <field name="print_report_name">'Yearly Salary by Employee'</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
     </record>
 
     <!-- QWeb Template -->
     <template id="yearly_salary_report_template">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
-                <div class="page">
-                    <!-- Title -->
-                    <div class="text-center mb-4">
-                        <h2>Yearly Salary Report - <t t-esc="year"/></h2>
-                        <p class="text-muted">Component-wise salary breakdown for all employees</p>
+                <div class="page" style="font-size:9px;">
+
+                    <!-- ── Company + Title ── -->
+                    <div style="text-align:center; margin-bottom:8px;">
+                        <h3 style="margin:0; color:#4B3FA0;">
+                            Yearly Salary Report - <t t-esc="year"/>
+                        </h3>
+                        <p style="margin:2px 0; color:#666; font-size:9px;">
+                            <t t-esc="company.name"/> &#160;|&#160;
+                            Component-wise salary breakdown
+                        </p>
                     </div>
 
                     <t t-foreach="docs" t-as="emp_data">
-                        <div style="page-break-inside: avoid; margin-bottom: 30px;">
-                            <!-- Employee Header -->
-                            <table class="table table-sm table-bordered" style="background:#6c5fc7; color:white;">
-                                <tr>
-                                    <td style="background:#6c5fc7; color:white;">
-                                        <strong>Employee: </strong>
-                                        <t t-esc="emp_data['employee'].name"/>
+                        <div style="margin-bottom:18px; page-break-inside:avoid;">
+
+                            <!-- Employee header bar -->
+                            <table style="width:100%; border-collapse:collapse; margin-bottom:2px;">
+                                <tr style="background:#4B3FA0; color:white;">
+                                    <td style="padding:4px 6px; font-weight:bold; font-size:9px; width:34%;">
+                                        Employee: <t t-esc="emp_data['employee'].name"/>
                                     </td>
-                                    <td style="background:#6c5fc7; color:white;">
-                                        <strong>Department: </strong>
-                                        <t t-esc="emp_data['employee'].department_id.name or '-'"/>
+                                    <td style="padding:4px 6px; font-size:9px; width:33%;">
+                                        Department: <t t-esc="emp_data['employee'].department_id.name or '-'"/>
                                     </td>
-                                    <td style="background:#6c5fc7; color:white;">
-                                        <strong>Job Position: </strong>
-                                        <t t-esc="emp_data['employee'].job_id.name or '-'"/>
+                                    <td style="padding:4px 6px; font-size:9px; width:33%;">
+                                        Job Position: <t t-esc="emp_data['employee'].job_id.name or '-'"/>
                                     </td>
                                 </tr>
                             </table>
 
-                            <!-- Monthly Salary Table -->
-                            <table class="table table-sm table-bordered" style="font-size:10px;">
+                            <!-- Monthly breakdown table -->
+                            <table style="width:100%; border-collapse:collapse; font-size:8px;">
                                 <thead>
-                                    <tr style="background:#e8e4ff;">
-                                        <th style="min-width:120px;">Component</th>
+                                    <tr style="background:#7B6FCF; color:white; text-align:center;">
+                                        <th style="padding:3px 4px; border:1px solid #ccc; text-align:left; min-width:80px;">Component</th>
                                         <t t-foreach="months" t-as="month">
-                                            <th class="text-center"><t t-esc="month[1]"/></th>
+                                            <th style="padding:3px 2px; border:1px solid #ccc; width:48px;">
+                                                <t t-esc="month[1]"/>
+                                            </th>
                                         </t>
-                                        <th class="text-right" style="background:#d0c8ff;">
-                                            <strong>Total</strong>
+                                        <th style="padding:3px 4px; border:1px solid #ccc; background:#4B3FA0; width:60px;">
+                                            Total
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <t t-foreach="rule_codes" t-as="code">
-                                        <tr>
-                                            <td>
-                                                <t t-esc="rule_map[code]"/>
-                                                <br/>
-                                                <small class="text-muted">(<t t-esc="code"/>)</small>
+                                        <tr style="background: #f9f9ff if code_index % 2 == 0 else white;">
+                                            <td style="padding:2px 4px; border:1px solid #ddd; white-space:nowrap;">
+                                                <span style="font-weight:600;"><t t-esc="rule_map[code]"/></span>
+                                                <span style="color:#888;"> (<t t-esc="code"/>)</span>
                                             </td>
                                             <t t-foreach="months" t-as="month">
-                                                <td class="text-right">
+                                                <td style="padding:2px 3px; border:1px solid #ddd; text-align:right;">
                                                     <t t-esc="'%.2f' % emp_data['monthly'].get(month[0], {}).get(code, 0)"/>
                                                 </td>
                                             </t>
-                                            <td class="text-right" style="background:#f0eeff;">
-                                                <strong>
-                                                    <t t-esc="'%.2f' % emp_data['totals'].get(code, 0)"/>
-                                                </strong>
+                                            <td style="padding:2px 4px; border:1px solid #ddd; text-align:right; font-weight:bold; background:#eeebff;">
+                                                <t t-esc="'%.2f' % emp_data['totals'].get(code, 0)"/>
                                             </td>
                                         </tr>
                                     </t>
-                                    <!-- NET Row -->
-                                    <tr style="background:#e8e4ff; font-weight:bold;">
-                                        <td>NET SALARY</td>
+                                    <!-- NET SALARY row -->
+                                    <tr style="background:#4B3FA0; color:white; font-weight:bold;">
+                                        <td style="padding:3px 4px; border:1px solid #4B3FA0;">NET SALARY</td>
                                         <t t-foreach="months" t-as="month">
-                                            <td class="text-right">
+                                            <td style="padding:3px 2px; border:1px solid #4B3FA0; text-align:right;">
                                                 <t t-esc="'%.2f' % sum(emp_data['monthly'].get(month[0], {}).values())"/>
                                             </td>
                                         </t>
-                                        <td class="text-right" style="background:#d0c8ff;">
+                                        <td style="padding:3px 4px; border:1px solid #4B3FA0; text-align:right;">
                                             <t t-esc="'%.2f' % sum(emp_data['totals'].values())"/>
                                         </td>
                                     </tr>
@@ -90,11 +94,12 @@
                             </table>
                         </div>
 
-                        <!-- Page break between employees (except last) -->
+                        <!-- Page break between employees -->
                         <t t-if="not emp_data_last">
-                            <div style="page-break-after: always;"/>
+                            <div style="page-break-after:always;"/>
                         </t>
                     </t>
+
                 </div>
             </t>
         </t>

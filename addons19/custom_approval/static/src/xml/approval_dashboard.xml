@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="custom_approval.Dashboard">
+        <div class="o_approval_dashboard">
+            <div class="o_approval_dashboard_header">
+                <h2 class="o_approval_dashboard_title">
+                    <i class="fa fa-check-circle me-2"/> Approvals Dashboard
+                </h2>
+            </div>
+
+            <div class="o_approval_cards_container">
+
+                <!-- Advance Salary Card -->
+                <div class="o_approval_card">
+                    <div class="o_approval_card_icon" style="background-color: #7c3aed;">
+                        <i class="fa fa-money fa-2x text-white"/>
+                    </div>
+                    <div class="o_approval_card_body">
+                        <div class="o_approval_card_title">Advance Salary</div>
+                        <div class="o_approval_card_subtitle">Request advance on your monthly salary</div>
+                        <div class="o_approval_card_footer">
+                            <button class="btn btn-primary btn-sm o_approval_new_btn"
+                                    t-on-click="openNewAdvanceSalary">
+                                <i class="fa fa-plus me-1"/> New Request
+                            </button>
+                            <span class="o_approval_review_badge" t-on-click="openAdvanceSalaryList">
+                                To Review: <t t-esc="state.advanceSalaryCount"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Request for Loan Card -->
+                <div class="o_approval_card">
+                    <div class="o_approval_card_icon" style="background-color: #0369a1;">
+                        <i class="fa fa-bank fa-2x text-white"/>
+                    </div>
+                    <div class="o_approval_card_body">
+                        <div class="o_approval_card_title">Request for Loan</div>
+                        <div class="o_approval_card_subtitle">Apply for employee loan with installments</div>
+                        <div class="o_approval_card_footer">
+                            <button class="btn btn-primary btn-sm o_approval_new_btn"
+                                    t-on-click="openNewLoanRequest">
+                                <i class="fa fa-plus me-1"/> New Request
+                            </button>
+                            <span class="o_approval_review_badge" t-on-click="openLoanRequestList">
+                                To Review: <t t-esc="state.loanRequestCount"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employee Resignation Card -->
+                <div class="o_approval_card">
+                    <div class="o_approval_card_icon" style="background-color: #b45309;">
+                        <i class="fa fa-sign-out fa-2x text-white"/>
+                    </div>
+                    <div class="o_approval_card_body">
+                        <div class="o_approval_card_title">Employee Resignation</div>
+                        <div class="o_approval_card_subtitle">Submit and manage resignation requests</div>
+                        <div class="o_approval_card_footer">
+                            <button class="btn btn-primary btn-sm o_approval_new_btn"
+                                    t-on-click="openNewResignation">
+                                <i class="fa fa-plus me-1"/> New Request
+                            </button>
+                            <span class="o_approval_review_badge" t-on-click="openResignationList">
+                                To Review: <t t-esc="state.resignationCount"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Travel Request Card -->
+                <div class="o_approval_card">
+                    <div class="o_approval_card_icon" style="background-color: #047857;">
+                        <i class="fa fa-plane fa-2x text-white"/>
+                    </div>
+                    <div class="o_approval_card_body">
+                        <div class="o_approval_card_title">Travel Request</div>
+                        <div class="o_approval_card_subtitle">Plan and approve business travel</div>
+                        <div class="o_approval_card_footer">
+                            <button class="btn btn-primary btn-sm o_approval_new_btn"
+                                    t-on-click="openNewTravelRequest">
+                                <i class="fa fa-plus me-1"/> New Request
+                            </button>
+                            <span class="o_approval_review_badge" t-on-click="openTravelRequestList">
+                                To Review: <t t-esc="state.travelRequestCount"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+</templates>

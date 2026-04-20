@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ============================================================
+         EMPLOYEE RESIGNATION VIEWS
+         ============================================================ -->
+
+    <!-- Form View -->
+    <record id="view_resignation_form" model="ir.ui.view">
+        <field name="name">custom.resignation.form</field>
+        <field name="model">custom.resignation</field>
+        <field name="arch" type="xml">
+            <form string="Employee Resignation">
+                <header>
+                    <button name="action_confirm" string="Confirm"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approve"
+                            type="object" class="btn-primary"
+                            invisible="state != 'confirmed'"
+                            groups="hr.group_hr_manager,hr.group_hr_user"/>
+                    <button name="action_refuse" string="Refuse"
+                            type="object"
+                            invisible="state != 'confirmed'"
+                            groups="hr.group_hr_manager,hr.group_hr_user"/>
+                    <button name="action_cancel" string="Cancel"
+                            type="object"
+                            invisible="state not in ('draft', 'confirmed')"/>
+                    <button name="action_reset_draft" string="Reset to Draft"
+                            type="object"
+                            invisible="state not in ('refused', 'cancel')"
+                            groups="hr.group_hr_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Employee Details">
+                            <field name="employee_id"
+                                   readonly="state in ('approved', 'refused', 'cancel')"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="job_id" readonly="1"/>
+                            <field name="joining_date" readonly="1"
+                                   invisible="joining_date == False"/>
+                            <field name="company_id"
+                                   readonly="state in ('approved', 'refused', 'cancel')"
+                                   groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Resignation Details">
+                            <field name="resignation_date"
+                                   readonly="state in ('approved', 'refused', 'cancel')"/>
+                            <field name="last_working_date"
+                                   readonly="state in ('approved', 'refused', 'cancel')"/>
+                            <field name="notice_period" readonly="1"/>
+                            <field name="confirm_date" readonly="1"
+                                   invisible="confirm_date == False"/>
+                            <field name="resignation_type"
+                                   readonly="state in ('approved', 'refused', 'cancel')"
+                                   groups="hr.group_hr_manager,hr.group_hr_user"/>
+                        </group>
+                    </group>
+                    <group string="Reason for Leaving">
+                        <field name="reason" nolabel="1"
+                               placeholder="Please provide reason for leaving..."
+                               readonly="state in ('approved', 'refused', 'cancel')"/>
+                    </group>
+                    <notebook>
+                        <page string="Approver(s)" name="approvers">
+                            <field name="approver_ids"
+                                   readonly="state in ('approved', 'refused', 'cancel')">
+                                <list editable="bottom">
+                                    <field name="approver_id" string="Approver"/>
+                                    <field name="required" string="Required"/>
+                                    <field name="status" string="Status" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_resignation_list" model="ir.ui.view">
+        <field name="name">custom.resignation.list</field>
+        <field name="model">custom.resignation</field>
+        <field name="arch" type="xml">
+            <list string="Employee Resignations"
+                  decoration-success="state == 'approved'"
+                  decoration-warning="state == 'confirmed'"
+                  decoration-danger="state == 'refused'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="resignation_date"/>
+                <field name="last_working_date"/>
+                <field name="notice_period"/>
+                <field name="resignation_type"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'approved'"
+                       decoration-warning="state == 'confirmed'"
+                       decoration-danger="state == 'refused'"
+                       decoration-info="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_resignation_search" model="ir.ui.view">
+        <field name="name">custom.resignation.search</field>
+        <field name="model">custom.resignation</field>
+        <field name="arch" type="xml">
+            <search string="Search Resignations">
+                <field name="name" string="Reference"/>
+                <field name="employee_id"/>
+                <filter string="My Requests" name="my_requests"
+                        domain="[('employee_id.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Draft" name="draft"
+                        domain="[('state','=','draft')]"/>
+                <filter string="Confirmed" name="confirmed"
+                        domain="[('state','=','confirmed')]"/>
+                <filter string="Approved" name="approved"
+                        domain="[('state','=','approved')]"/>
+                <filter string="Refused" name="refused"
+                        domain="[('state','=','refused')]"/>
+                <separator/>
+                <filter string="Employee" name="group_employee" domain="[]"
+                        context="{'group_by': 'employee_id'}"/>
+                <filter string="Department" name="group_dept" domain="[]"
+                        context="{'group_by': 'department_id'}"/>
+                <filter string="Resignation Date" name="group_date" domain="[]"
+                        context="{'group_by': 'resignation_date'}"/>
+            </search>
+        </field>
+    </record>
+</odoo>

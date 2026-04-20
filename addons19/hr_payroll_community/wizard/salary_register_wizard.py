@@ -22,19 +22,20 @@ class SalaryRegisterWizard(models.TransientModel):
     salary_structure_id = fields.Many2one('hr.payroll.structure',
                                            string='Salary Structure')
     state_paid = fields.Boolean(string='Paid', default=True)
-    state_done = fields.Boolean(string='Done', default=False)
+    state_done = fields.Boolean(string='Done', default=True)
     employee_ids = fields.Many2many(
         'hr.employee', string='Employees',
         help="Leave empty to include all employees")
 
     def _get_payslip_domain(self):
+        # Collect selected states — 'paid' and/or 'done'
         states = []
         if self.state_paid:
-            states.append('done')
+            states.append('paid')
         if self.state_done:
             states.append('done')
         if not states:
-            states = ['done']
+            states = ['done', 'paid']
         domain = [
             ('date_from', '>=', self.date_from),
             ('date_to', '<=', self.date_to),
@@ -52,7 +53,9 @@ class SalaryRegisterWizard(models.TransientModel):
 
         payslips = self.env['hr.payslip'].search(self._get_payslip_domain())
         if not payslips:
-            raise UserError(_('No payslips found for the selected criteria.'))
+            raise UserError(_(
+                'No payslips found for the selected criteria.\n'
+                'Make sure payslips are in "Done" or "Paid" state for the selected period.'))
 
         # Collect all salary rule codes/names (columns)
         rule_map = {}  # code -> name
@@ -68,33 +71,43 @@ class SalaryRegisterWizard(models.TransientModel):
 
         # Formats
         header_fmt = workbook.add_format({
-            'bold': True, 'bg_color': '#6c5fc7', 'font_color': 'white',
-            'border': 1, 'align': 'center', 'valign': 'vcenter'
+            'bold': True, 'bg_color': '#4B3FA0', 'font_color': 'white',
+            'border': 1, 'align': 'center', 'valign': 'vcenter', 'text_wrap': True
         })
-        data_fmt = workbook.add_format({'border': 1, 'align': 'left'})
-        money_fmt = workbook.add_format({'border': 1, 'num_format': '#,##0.00', 'align': 'right'})
+        data_fmt = workbook.add_format({'border': 1, 'align': 'left', 'valign': 'vcenter'})
+        money_fmt = workbook.add_format({'border': 1, 'num_format': '#,##0.00', 'align': 'right', 'valign': 'vcenter'})
         total_fmt = workbook.add_format({
             'bold': True, 'border': 1, 'num_format': '#,##0.00',
-            'bg_color': '#e8e4ff', 'align': 'right'
+            'bg_color': '#e8e4ff', 'align': 'right', 'valign': 'vcenter'
         })
-
-        # Title row
+        total_label_fmt = workbook.add_format({
+            'bold': True, 'border': 1, 'bg_color': '#4B3FA0',
+            'font_color': 'white', 'align': 'center', 'valign': 'vcenter'
+        })
         title_fmt = workbook.add_format({
-            'bold': True, 'font_size': 14, 'align': 'center', 'valign': 'vcenter'
+            'bold': True, 'font_size': 14, 'align': 'center', 'valign': 'vcenter',
+            'bg_color': '#4B3FA0', 'font_color': 'white'
         })
-        total_cols = 4 + len(rule_codes)
+        sub_fmt = workbook.add_format({'align': 'center', 'italic': True, 'font_color': '#555555'})
+
+        total_cols = 4 + len(rule_codes) + 1
+
+        # Title
+        worksheet.set_row(0, 28)
+        worksheet.set_row(1, 16)
         worksheet.merge_range(0, 0, 0, total_cols - 1, 'SALARY REGISTER', title_fmt)
-        period_fmt = workbook.add_format({'align': 'center', 'italic': True})
         worksheet.merge_range(1, 0, 1, total_cols - 1,
-                               f'Period: {self.date_from} to {self.date_to}', period_fmt)
+                               'Period: %s  to  %s' % (self.date_from, self.date_to), sub_fmt)
 
         # Header row
         row = 3
+        worksheet.set_row(row, 36)
         headers = ['#', 'Employee', 'Department', 'Job Position'] + \
-                  [f'{rule_map[c]}\n({c})' for c in rule_codes] + ['NET']
-        for col, header in enumerate(headers):
-            worksheet.write(row, col, header, header_fmt)
-            worksheet.set_column(col, col, 18 if col > 1 else (5 if col == 0 else 25))
+                  ['%s\n(%s)' % (rule_map[c], c) for c in rule_codes] + ['NET SALARY']
+        col_widths = [5, 28, 20, 22] + [16] * len(rule_codes) + [16]
+        for col_idx, (header, width) in enumerate(zip(headers, col_widths)):
+            worksheet.write(row, col_idx, header, header_fmt)
+            worksheet.set_column(col_idx, col_idx, width)
 
         # Group payslips by employee
         employee_data = {}
@@ -116,6 +129,7 @@ class SalaryRegisterWizard(models.TransientModel):
         col_totals['NET'] = 0
 
         for idx, (emp_id, data) in enumerate(employee_data.items(), start=1):
+            worksheet.set_row(row, 18)
             worksheet.write(row, 0, idx, data_fmt)
             worksheet.write(row, 1, data['name'], data_fmt)
             worksheet.write(row, 2, data['dept'], data_fmt)
@@ -131,24 +145,26 @@ class SalaryRegisterWizard(models.TransientModel):
             row += 1
 
         # Totals row
-        worksheet.write(row, 0, 'TOTAL', header_fmt)
-        worksheet.merge_range(row, 1, row, 3, '', header_fmt)
+        worksheet.set_row(row, 20)
+        worksheet.write(row, 0, '', total_label_fmt)
+        worksheet.merge_range(row, 1, row, 3, 'TOTAL', total_label_fmt)
         for col_idx, code in enumerate(rule_codes):
             worksheet.write(row, 4 + col_idx, col_totals[code], total_fmt)
         worksheet.write(row, 4 + len(rule_codes), col_totals['NET'], total_fmt)
 
+        worksheet.freeze_panes(4, 4)
         workbook.close()
         output.seek(0)
         xlsx_data = base64.b64encode(output.read())
 
         attachment = self.env['ir.attachment'].create({
-            'name': f'Salary_Register_{self.date_from}_{self.date_to}.xlsx',
+            'name': 'Salary_Register_%s_%s.xlsx' % (self.date_from, self.date_to),
             'type': 'binary',
             'datas': xlsx_data,
             'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         })
         return {
             'type': 'ir.actions.act_url',
-            'url': f'/web/content/{attachment.id}?download=true',
+            'url': '/web/content/%d?download=true' % attachment.id,
             'target': 'self',
         }

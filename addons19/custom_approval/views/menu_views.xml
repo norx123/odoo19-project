@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ============================================================
+         WINDOW ACTIONS
+         ============================================================ -->
+
+    <!-- Advance Salary - All Records -->
+    <record id="action_advance_salary_all" model="ir.actions.act_window">
+        <field name="name">Advance Salary</field>
+        <field name="res_model">custom.advance.salary</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_advance_salary_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new Advance Salary request.
+            </p>
+        </field>
+    </record>
+
+    <!-- Advance Salary - My Requests -->
+    <record id="action_advance_salary_my" model="ir.actions.act_window">
+        <field name="name">My Advance Salary</field>
+        <field name="res_model">custom.advance.salary</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_advance_salary_search"/>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{'search_default_my_requests': 1}</field>
+    </record>
+
+    <!-- Loan Request - All Records -->
+    <record id="action_loan_request_all" model="ir.actions.act_window">
+        <field name="name">Loan Requests</field>
+        <field name="res_model">custom.loan.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_loan_request_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new Loan Request.
+            </p>
+        </field>
+    </record>
+
+    <!-- Loan Request - My Requests -->
+    <record id="action_loan_request_my" model="ir.actions.act_window">
+        <field name="name">My Loan Requests</field>
+        <field name="res_model">custom.loan.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_loan_request_search"/>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{'search_default_my_requests': 1}</field>
+    </record>
+
+    <!-- Resignation - All Records -->
+    <record id="action_resignation_all" model="ir.actions.act_window">
+        <field name="name">Employee Resignations</field>
+        <field name="res_model">custom.resignation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_resignation_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new Resignation request.
+            </p>
+        </field>
+    </record>
+
+    <!-- Resignation - My Requests -->
+    <record id="action_resignation_my" model="ir.actions.act_window">
+        <field name="name">My Resignation</field>
+        <field name="res_model">custom.resignation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_resignation_search"/>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{'search_default_my_requests': 1}</field>
+    </record>
+
+    <!-- Travel Request - All Records -->
+    <record id="action_travel_request_all" model="ir.actions.act_window">
+        <field name="name">Travel Requests</field>
+        <field name="res_model">custom.travel.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_travel_request_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new Travel Request.
+            </p>
+        </field>
+    </record>
+
+    <!-- Travel Request - My Requests -->
+    <record id="action_travel_request_my" model="ir.actions.act_window">
+        <field name="name">My Travel Requests</field>
+        <field name="res_model">custom.travel.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_travel_request_search"/>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{'search_default_my_requests': 1}</field>
+    </record>
+
+    <!-- ============================================================
+         MENU STRUCTURE
+         ============================================================ -->
+
+    <!-- Root Menu -->
+    <menuitem id="menu_approval_root"
+              name="Approvals"
+              sequence="55"
+              web_icon="custom_approval,static/description/icon.png"
+              groups="base.group_user"/>
+
+    <!-- Dashboard Menu -->
+    <menuitem id="menu_approval_dashboard"
+              name="Dashboard"
+              parent="menu_approval_root"
+              action="action_approval_dashboard"
+              sequence="1"
+              groups="base.group_user"/>
+
+    <!-- My Approvals Menu -->
+    <menuitem id="menu_my_approvals"
+              name="My Approvals"
+              parent="menu_approval_root"
+              sequence="2"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_my_advance_salary"
+              name="Advance Salary"
+              parent="menu_my_approvals"
+              action="action_advance_salary_my"
+              sequence="1"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_my_loan_request"
+              name="Request for Loan"
+              parent="menu_my_approvals"
+              action="action_loan_request_my"
+              sequence="2"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_my_resignation"
+              name="Employee Resignation"
+              parent="menu_my_approvals"
+              action="action_resignation_my"
+              sequence="3"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_my_travel_request"
+              name="Travel Request"
+              parent="menu_my_approvals"
+              action="action_travel_request_my"
+              sequence="4"
+              groups="base.group_user"/>
+
+    <!-- Manager Menu -->
+    <menuitem id="menu_manager_approvals"
+              name="Manager"
+              parent="menu_approval_root"
+              sequence="3"
+              groups="hr.group_hr_manager,hr.group_hr_user"/>
+
+    <menuitem id="menu_all_advance_salary"
+              name="Advance Salary"
+              parent="menu_manager_approvals"
+              action="action_advance_salary_all"
+              sequence="1"
+              groups="hr.group_hr_manager,hr.group_hr_user"/>
+
+    <menuitem id="menu_all_loan_request"
+              name="Request for Loan"
+              parent="menu_manager_approvals"
+              action="action_loan_request_all"
+              sequence="2"
+              groups="hr.group_hr_manager,hr.group_hr_user"/>
+
+    <menuitem id="menu_all_resignation"
+              name="Employee Resignation"
+              parent="menu_manager_approvals"
+              action="action_resignation_all"
+              sequence="3"
+              groups="hr.group_hr_manager,hr.group_hr_user"/>
+
+    <menuitem id="menu_all_travel_request"
+              name="Travel Request"
+              parent="menu_manager_approvals"
+              action="action_travel_request_all"
+              sequence="4"
+              groups="hr.group_hr_manager,hr.group_hr_user"/>
+
+</odoo>

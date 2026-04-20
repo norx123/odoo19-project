@@ -60,19 +60,19 @@ class HrMasterReport(models.Model):
         """Collect all payslip lines for the period, grouped by employee."""
         self.ensure_one()
 
-        # Get all done payslips in the period
+        # Get all done/paid payslips in the period
         domain = [
             ('date_from', '>=', self.date_from),
             ('date_to', '<=', self.date_to),
-            ('state', '=', 'done'),
+            ('state', 'in', ['done', 'paid']),
             ('company_id', '=', self.company_id.id),
         ]
         payslips = self.env['hr.payslip'].search(domain)
 
         if not payslips:
             raise UserError(
-                _('No confirmed payslips found for the selected period.\n'
-                  'Please make sure payslips are in "Done" state.'))
+                _('No payslips found for the selected period.\n'
+                  'Please make sure payslips are in "Done" or "Paid" state.'))
 
         # Determine which rules to show
         if self.salary_rule_ids:
