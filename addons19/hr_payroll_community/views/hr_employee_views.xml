@@ -16,6 +16,10 @@
                            string="Payslips"/>
                 </button>
             </xpath>
+            <!-- Add UAN Number in Private Information tab -->
+            <xpath expr="//field[@name='ssnid']" position="after">
+                <field name="uan_number" string="UAN Number"/>
+            </xpath>
         </field>
     </record>
 </odoo>

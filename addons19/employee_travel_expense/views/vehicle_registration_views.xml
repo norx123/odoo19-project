@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_vehicle_form" model="ir.ui.view">
+        <field name="name">travel.vehicle.registration.form</field>
+        <field name="model">travel.vehicle.registration</field>
+        <field name="arch" type="xml">
+            <form string="Vehicle Registration">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="vehicle_number" placeholder="Vehicle Number e.g. UP53 AB 1234"/>
+                        </h1>
+                        <h3>
+                            <field name="vehicle_name" placeholder="Vehicle Name / Model e.g. Honda Activa"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group string="Employee">
+                            <field name="employee_id"/>
+                            <field name="department_id" readonly="1"/>
+                        </group>
+                        <group string="Vehicle Details">
+                            <field name="vehicle_type"/>
+                            <field name="fuel_type"/>
+                            <field name="mileage" string="Mileage (KM/L)"/>
+                            <field name="color"/>
+                            <field name="year"/>
+                        </group>
+                    </group>
+                    <group string="Driver Details">
+                        <field name="has_driver"/>
+                        <field name="driver_name" invisible="not has_driver" required="has_driver"/>
+                        <field name="driver_license" invisible="not has_driver"/>
+                        <field name="driver_phone" invisible="not has_driver"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_vehicle_list" model="ir.ui.view">
+        <field name="name">travel.vehicle.registration.list</field>
+        <field name="model">travel.vehicle.registration</field>
+        <field name="arch" type="xml">
+            <list string="Vehicles">
+                <field name="vehicle_number"/>
+                <field name="vehicle_name"/>
+                <field name="employee_id"/>
+                <field name="vehicle_type"/>
+                <field name="fuel_type"/>
+                <field name="mileage"/>
+                <field name="has_driver"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_vehicle_search" model="ir.ui.view">
+        <field name="name">travel.vehicle.registration.search</field>
+        <field name="model">travel.vehicle.registration</field>
+        <field name="arch" type="xml">
+            <search string="Search Vehicles">
+                <field name="vehicle_number"/>
+                <field name="vehicle_name"/>
+                <field name="employee_id"/>
+                <separator/>
+                <filter string="My Vehicles" name="my_vehicles"
+                    domain="[('employee_id.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Group by Employee" name="by_emp"
+                    context="{'group_by': 'employee_id'}"/>
+                <filter string="Group by Type" name="by_type"
+                    context="{'group_by': 'vehicle_type'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_vehicle_registration" model="ir.actions.act_window">
+        <field name="name">Vehicle Registration</field>
+        <field name="res_model">travel.vehicle.registration</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_vehicle_search"/>
+        <field name="context">{'search_default_my_vehicles': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Apna vehicle register karein!
+            </p>
+        </field>
+    </record>
+
+</odoo>

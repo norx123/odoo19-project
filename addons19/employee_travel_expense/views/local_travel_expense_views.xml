@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_local_travel_expense_form" model="ir.ui.view">
+        <field name="name">travel.local.expense.form</field>
+        <field name="model">travel.local.expense</field>
+        <field name="arch" type="xml">
+            <form string="Local Travel Expense">
+                <header>
+                    <button name="action_submit" string="Submit" type="object"
+                        class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_send_for_approval" string="Send for Approval" type="object"
+                        class="btn-primary" invisible="state != 'submitted'"/>
+                    <button name="action_approve" string="Approve" type="object"
+                        class="btn-success" invisible="state != 'waiting'"/>
+                    <button name="action_mark_paid" string="Mark as Paid" type="object"
+                        class="btn-success" invisible="state != 'approved'"/>
+                    <button name="action_refuse" string="Refuse" type="object"
+                        class="btn-danger" invisible="state not in ['submitted','waiting']"/>
+                    <button name="action_reset_draft" string="Reset to Draft" type="object"
+                        invisible="state not in ['refused','submitted']"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,submitted,waiting,approved,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Reference No."/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group string="Employee Information">
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="department_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="employee_phone" readonly="1"/>
+                            <field name="employee_email" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Expense Period">
+                        <group>
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <field name="date_to" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="purpose" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Approvers">
+                        <field name="approver_ids" widget="many2many_tags"
+                            options="{'no_create': True}" readonly="state != 'draft'"/>
+                        <field name="current_approver_id" readonly="1"
+                            invisible="state not in ['waiting']"/>
+                    </group>
+                    <notebook>
+                        <page string="Travel Details" name="travel_lines">
+                            <field name="line_ids" readonly="state != 'draft'" widget="one2many">
+                                <list editable="bottom" string="Travel Lines">
+                                    <field name="date"/>
+                                    <field name="start_location"/>
+                                    <field name="end_location"/>
+                                    <field name="description"/>
+                                    <field name="travel_mode"/>
+                                    <field name="vehicle_id"
+                                        invisible="travel_mode != 'self_vehicle'"
+                                        required="travel_mode == 'self_vehicle'"/>
+                                    <field name="odometer_start" invisible="travel_mode != 'self_vehicle'"/>
+                                    <field name="odometer_end" invisible="travel_mode != 'self_vehicle'"/>
+                                    <field name="mileage_km"/>
+                                    <field name="mileage_rate_id" invisible="travel_mode != 'self_vehicle'"/>
+                                    <field name="rate_per_km" optional="show"/>
+                                    <field name="reimbursement_total" string="Amount (Rs.)"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_km" string="Total KM"/>
+                                <field name="total_reimbursement" string="Total Reimbursement (Rs.)"
+                                    class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+                        <page string="Remarks" name="remarks">
+                            <field name="notes" placeholder="Additional remarks..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_local_travel_expense_list" model="ir.ui.view">
+        <field name="name">travel.local.expense.list</field>
+        <field name="model">travel.local.expense</field>
+        <field name="arch" type="xml">
+            <list string="Local Travel Expenses"
+                decoration-info="state == 'draft'"
+                decoration-warning="state == 'waiting'"
+                decoration-success="state in ('approved', 'paid')"
+                decoration-danger="state == 'refused'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="total_km"/>
+                <field name="total_reimbursement" string="Amount (Rs.)"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_local_travel_expense_search" model="ir.ui.view">
+        <field name="name">travel.local.expense.search</field>
+        <field name="model">travel.local.expense</field>
+        <field name="arch" type="xml">
+            <search string="Search Local Expenses">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <separator/>
+                <filter string="My Expenses" name="my_expenses" domain="[('employee_id.user_id', '=', uid)]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="Waiting Approval" name="waiting" domain="[('state', '=', 'waiting')]"/>
+                <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Paid" name="paid" domain="[('state', '=', 'paid')]"/>
+                <separator/>
+                <filter string="Group by Employee" name="by_employee" context="{'group_by': 'employee_id'}"/>
+                <filter string="Group by Department" name="by_dept" context="{'group_by': 'department_id'}"/>
+                <filter string="Group by Status" name="by_state" context="{'group_by': 'state'}"/>
+                <filter string="Group by Month" name="by_month" context="{'group_by': 'date_from:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_local_travel_expense" model="ir.actions.act_window">
+        <field name="name">Local Travel Expense</field>
+        <field name="res_model">travel.local.expense</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_local_travel_expense_search"/>
+        <field name="context">{'search_default_my_expenses': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Submit your first local travel expense claim!</p>
+        </field>
+    </record>
+
+    <record id="action_local_travel_expense_all" model="ir.actions.act_window">
+        <field name="name">All Local Travel Expenses</field>
+        <field name="res_model">travel.local.expense</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_local_travel_expense_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No travel expense records found.</p>
+        </field>
+    </record>
+
+</odoo>

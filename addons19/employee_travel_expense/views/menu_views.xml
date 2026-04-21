@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root menu - appears as separate app icon next to Expenses -->
+    <menuitem id="menu_travel_expense_root"
+        name="Travel Expense"
+        sequence="86"/>
+
+    <!-- MY EXPENSES -->
+    <menuitem id="menu_travel_my"
+        name="My Expenses"
+        parent="menu_travel_expense_root"
+        sequence="10"/>
+
+    <menuitem id="menu_my_travel_expenses"
+        name="My Travel Expenses"
+        parent="menu_travel_my"
+        action="action_travel_expense_my"
+        sequence="10"/>
+
+    <menuitem id="menu_my_vehicles"
+        name="My Vehicles"
+        parent="menu_travel_my"
+        action="action_vehicle_registration"
+        sequence="20"/>
+
+    <!-- MANAGER -->
+    <menuitem id="menu_travel_manager"
+        name="Manager"
+        parent="menu_travel_expense_root"
+        sequence="20"
+        groups="base.group_system"/>
+
+    <menuitem id="menu_all_travel_expenses"
+        name="All Travel Expenses"
+        parent="menu_travel_manager"
+        action="action_travel_expense_all"
+        sequence="10"
+        groups="base.group_system"/>
+
+    <!-- CONFIGURATION -->
+    <menuitem id="menu_travel_config"
+        name="Configuration"
+        parent="menu_travel_expense_root"
+        sequence="99"
+        groups="base.group_system"/>
+
+    <menuitem id="menu_mileage_rate"
+        name="Mileage Rate"
+        parent="menu_travel_config"
+        action="action_mileage_rate"
+        sequence="10"
+        groups="base.group_system"/>
+
+    <menuitem id="menu_all_vehicles"
+        name="Vehicle Registration"
+        parent="menu_travel_config"
+        action="action_vehicle_registration"
+        sequence="20"
+        groups="base.group_system"/>
+
+</odoo>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mileage_rate_bike" model="travel.mileage.rate">
+            <field name="name">Bike / Two Wheeler</field>
+            <field name="vehicle_type">bike</field>
+            <field name="fuel_type">petrol</field>
+            <field name="rate_per_km">3.50</field>
+            <field name="effective_from">2024-01-01</field>
+        </record>
+        <record id="mileage_rate_car_petrol" model="travel.mileage.rate">
+            <field name="name">Car (Petrol)</field>
+            <field name="vehicle_type">car</field>
+            <field name="fuel_type">petrol</field>
+            <field name="rate_per_km">8.00</field>
+            <field name="effective_from">2024-01-01</field>
+        </record>
+        <record id="mileage_rate_car_diesel" model="travel.mileage.rate">
+            <field name="name">Car (Diesel)</field>
+            <field name="vehicle_type">car</field>
+            <field name="fuel_type">diesel</field>
+            <field name="rate_per_km">7.00</field>
+            <field name="effective_from">2024-01-01</field>
+        </record>
+        <record id="mileage_rate_ev" model="travel.mileage.rate">
+            <field name="name">Electric Vehicle (EV)</field>
+            <field name="vehicle_type">car</field>
+            <field name="fuel_type">ev</field>
+            <field name="rate_per_km">5.00</field>
+            <field name="effective_from">2024-01-01</field>
+        </record>
+        <record id="mileage_rate_cng" model="travel.mileage.rate">
+            <field name="name">CNG Vehicle</field>
+            <field name="vehicle_type">car</field>
+            <field name="fuel_type">cng</field>
+            <field name="rate_per_km">6.00</field>
+            <field name="effective_from">2024-01-01</field>
+        </record>
+    </data>
+</odoo>

@@ -34,6 +34,9 @@ class HrEmployee(models.Model):
     payslip_count = fields.Integer(compute='_compute_payslip_count',
                                    string='Payslip Count',
                                    help="Set Payslip Count")
+    uan_number = fields.Char(
+        string='UAN Number',
+        help="Universal Account Number for PF/EPF filing")
 
     def _compute_payslip_count(self):
         """Function for count Payslips"""

@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_travel_vehicle_user,travel.vehicle user,model_travel_vehicle_registration,base.group_user,1,1,1,0
+access_travel_vehicle_manager,travel.vehicle manager,model_travel_vehicle_registration,base.group_system,1,1,1,1
+access_travel_mileage_rate_user,travel.mileage.rate user,model_travel_mileage_rate,base.group_user,1,0,0,0
+access_travel_mileage_rate_manager,travel.mileage.rate manager,model_travel_mileage_rate,base.group_system,1,1,1,1
+access_travel_expense_user,travel.expense user,model_travel_expense,base.group_user,1,1,1,0
+access_travel_expense_manager,travel.expense manager,model_travel_expense,base.group_system,1,1,1,1
+access_travel_local_line_user,travel.expense.local.line user,model_travel_expense_local_line,base.group_user,1,1,1,1
+access_travel_journey_user,travel.expense.journey user,model_travel_expense_journey,base.group_user,1,1,1,1
+access_travel_meal_user,travel.expense.meal user,model_travel_expense_meal,base.group_user,1,1,1,1
+access_travel_gift_user,travel.expense.gift user,model_travel_expense_gift,base.group_user,1,1,1,1

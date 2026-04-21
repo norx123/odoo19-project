@@ -39,3 +39,4 @@ from . import resource_mixin
 from . import hr_payslip_other_input_type
 from . import hr_salary_attachment
 from . import hr_master_report
+from . import hr_epf_report

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="hr_epf_report_view_form" model="ir.ui.view">
+        <field name="name">hr.epf.report.form</field>
+        <field name="model">hr.epf.report</field>
+        <field name="arch" type="xml">
+            <form string="EPF Report">
+                <header>
+                    <button name="action_export_xlsx"
+                            string="Export XLSX File"
+                            type="object"
+                            class="btn-primary"/>
+                    <button name="action_export_txt"
+                            string="Export TXT File (ECR)"
+                            type="object"
+                            class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Period">
+                            <field name="year"/>
+                            <field name="month"/>
+                        </group>
+                        <group string="Salary Rule Codes">
+                            <field name="gross_rule_code"/>
+                            <field name="epf_ee_rule_code"/>
+                            <field name="epf_er_rule_code"/>
+                            <field name="eps_rule_code"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        <strong>EPF Calculation Logic:</strong>
+                        EPF Wages = MIN(Monthly Gross, 15000) |
+                        EPF_EE = 12% of EPF Wages |
+                        EPS_ER = 8.33% of EPS Wages (max 15000) |
+                        EPF_ER = EPF_EE - EPS_ER |
+                        Only PAID payslips are included.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="hr_epf_report_view_list" model="ir.ui.view">
+        <field name="name">hr.epf.report.list</field>
+        <field name="model">hr.epf.report</field>
+        <field name="arch" type="xml">
+            <list string="EPF Reports">
+                <field name="name"/>
+                <field name="year"/>
+                <field name="month"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="hr_epf_report_action" model="ir.actions.act_window">
+        <field name="name">EPF Report</field>
+        <field name="res_model">hr.epf.report</field>
+        <field name="view_mode">form,list</field>
+        <field name="target">current</field>
+    </record>
+
+    <!-- Menu under Reporting -->
+    <menuitem id="menu_hr_epf_report"
+              name="EPF Report"
+              action="hr_epf_report_action"
+              parent="menu_hr_payroll_reporting"
+              sequence="4"
+              groups="hr_payroll_community.group_hr_payroll_community_user"/>
+</odoo>

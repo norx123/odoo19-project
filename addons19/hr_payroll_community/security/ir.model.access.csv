@@ -20,3 +20,4 @@ access_hr_salary_attachment_user,access.hr.salary.attachment.user,model_hr_payro
 access_salary_register_wizard_user,access.salary.register.wizard.user,model_salary_register_wizard,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
 access_yearly_salary_wizard_user,access.yearly.salary.wizard.user,model_yearly_salary_wizard,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
 access_hr_master_report_user,access.hr.master.report.user,model_hr_master_report,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
+access_hr_epf_report_user,access.hr.epf.report.user,model_hr_epf_report,hr_payroll_community.group_hr_payroll_community_user,1,1,1,1
