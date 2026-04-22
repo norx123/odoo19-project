@@ -1,115 +1,169 @@
 # -*- coding: utf-8 -*-
 """
-Post-install hook: Dynamically find hr_expense menus and add our items.
-This avoids hardcoded XML IDs that differ across Odoo versions.
+Post-install hook: Menu name se dhundho, XML ID pe depend mat karo.
+Yeh Odoo 16/17/18/19 sabme kaam karega.
 """
 import logging
 _logger = logging.getLogger(__name__)
 
 
-def post_init_hook(env):
-    """Find actual Expenses menu and add Travel Expense submenus."""
-    
-    IrUiMenu = env['ir.ui.menu']
-    IrModelData = env['ir.model.data']
-    
-    # ── Find actions ────────────────────────────────────────────────────
-    def get_action(xml_id):
-        try:
-            return env.ref(f'employee_travel_expense.{xml_id}')
-        except Exception:
-            return None
-
-    action_my      = get_action('action_travel_expense_my')
-    action_all     = get_action('action_travel_expense_all')
-    action_vehicle = get_action('action_vehicle_registration')
-    action_rate    = get_action('action_mileage_rate')
-
-    # ── Find hr_expense menus (try multiple possible IDs) ────────────────
-    def find_menu(*xml_ids):
-        for xml_id in xml_ids:
-            try:
-                return env.ref(xml_id)
-            except Exception:
-                continue
+def _get_action(env, xml_id):
+    try:
+        return env.ref(f'employee_travel_expense.{xml_id}')
+    except Exception:
         return None
 
-    # Odoo 17/18/19 use different IDs - try all variants
-    menu_root = find_menu(
-        'hr_expense.menu_hr_expense_root',
-        'hr_expense.menu_hr_expense',
-    )
-    menu_my = find_menu(
-        'hr_expense.menu_my_expenses',
-        'hr_expense.menu_hr_expense_new_expense',
-        'hr_expense.menu_hr_expense_my_expenses',
-    )
-    menu_all = find_menu(
-        'hr_expense.menu_hr_expense_all_expenses',
-        'hr_expense.menu_all_expenses',
-        'hr_expense.menu_hr_expense_all',
-    )
-    menu_config = find_menu(
-        'hr_expense.menu_hr_expense_configuration',
-        'hr_expense.menu_hr_expense_config',
-        'hr_expense.menu_expense_configuration',
-    )
 
-    # ── If we couldn't find hr_expense menus, use our own root ──────────
-    if not menu_root:
-        _logger.warning("hr_expense root menu not found, using standalone Travel Expense menu")
-        return  # standalone menus already created via XML
+def _find_expense_menus(env):
+    """
+    hr_expense ke menus ko name se dhundho.
+    XML ID pe depend nahi karte — version-safe approach.
+    """
+    IrMenu = env['ir.ui.menu']
 
-    _logger.info("hr_expense root menu found: %s (id=%s)", menu_root.name, menu_root.id)
+    # Pehle root "Expenses" menu dhundho (top level, no parent)
+    root = IrMenu.search([
+        ('parent_id', '=', False),
+        ('name', 'ilike', 'Expense'),
+    ], limit=1)
 
-    # ── Helper to create or update menu ─────────────────────────────────
-    def ensure_menu(xml_id, name, parent, action, sequence, groups=None):
-        # Check if already exists
+    if not root:
+        # Try with complete_name
+        root = IrMenu.search([
+            ('complete_name', '=', 'Expenses'),
+        ], limit=1)
+
+    _logger.info("Travel hook: root expense menu = %s (id=%s)", root.name if root else None, root.id if root else None)
+
+    if not root:
+        return None, None, None, None
+
+    # Children of root
+    children = IrMenu.search([('parent_id', '=', root.id)])
+    child_names = {c.name.lower(): c for c in children}
+    _logger.info("Travel hook: expense children = %s", list(child_names.keys()))
+
+    # My Expenses submenu
+    menu_my = (
+        child_names.get('my expenses') or
+        child_names.get('my expense') or
+        children[:1] or  # fallback: first child
+        None
+    )
+    if hasattr(menu_my, '__iter__') and not hasattr(menu_my, 'name'):
+        menu_my = menu_my[0] if menu_my else None
+
+    # All Expenses / Manager submenu
+    menu_all = (
+        child_names.get('all expenses') or
+        child_names.get('expenses') or
+        child_names.get('manager') or
+        None
+    )
+    if hasattr(menu_all, '__iter__') and not hasattr(menu_all, 'name'):
+        menu_all = None
+
+    # Configuration submenu
+    menu_config = (
+        child_names.get('configuration') or
+        child_names.get('config') or
+        None
+    )
+    if hasattr(menu_config, '__iter__') and not hasattr(menu_config, 'name'):
+        menu_config = None
+
+    return root, menu_my, menu_all, menu_config
+
+
+def _create_menu(env, xml_id, name, parent, action, sequence, groups=None):
+    """Create menu item and register its XML ID."""
+    IrMenu = env['ir.ui.menu']
+    IrModelData = env['ir.model.data']
+
+    # Delete old record if exists (upgrade case)
+    old = IrModelData.search([
+        ('module', '=', 'employee_travel_expense'),
+        ('name', '=', xml_id),
+        ('model', '=', 'ir.ui.menu'),
+    ])
+    if old:
         try:
-            menu = env.ref(f'employee_travel_expense.{xml_id}')
-            menu.write({'parent_id': parent.id, 'action': f'{action._name},{action.id}' if action else False})
-            return menu
+            old_menu = IrMenu.browse(old.mapped('res_id'))
+            old_menu.unlink()
+            old.unlink()
         except Exception:
             pass
-        vals = {
-            'name': name,
-            'parent_id': parent.id,
-            'sequence': sequence,
-            'active': True,
-        }
-        if action:
-            vals['action'] = f'{action._name},{action.id}'
-        if groups:
-            vals['groups_id'] = [(6, 0, groups.ids)]
-        menu = IrUiMenu.create(vals)
-        # Register XML ID
-        IrModelData.create({
-            'name': xml_id,
-            'module': 'employee_travel_expense',
-            'model': 'ir.ui.menu',
-            'res_id': menu.id,
-            'noupdate': False,
-        })
-        return menu
+
+    vals = {
+        'name': name,
+        'parent_id': parent.id,
+        'sequence': sequence,
+        'active': True,
+    }
+    if action:
+        vals['action'] = '%s,%s' % (action._name, action.id)
+    if groups:
+        vals['groups_id'] = [(6, 0, groups.ids)]
+
+    menu = IrMenu.create(vals)
+
+    IrModelData.create({
+        'name': xml_id,
+        'module': 'employee_travel_expense',
+        'model': 'ir.ui.menu',
+        'res_id': menu.id,
+        'noupdate': True,
+    })
+    _logger.info("Created menu '%s' under '%s'", name, parent.name)
+    return menu
+
+
+def post_init_hook(env):
+    """Attach Travel Expense menus inside the Expenses module."""
+
+    action_my      = _get_action(env, 'action_travel_expense_my')
+    action_all     = _get_action(env, 'action_travel_expense_all')
+    action_vehicle = _get_action(env, 'action_vehicle_registration')
+    action_rate    = _get_action(env, 'action_mileage_rate')
+
+    root, menu_my, menu_all, menu_config = _find_expense_menus(env)
+
+    if not root:
+        _logger.warning(
+            "Expenses root menu not found. "
+            "Travel Expense menus will appear in standalone 'Travel Expense' menu."
+        )
+        # Activate the fallback standalone root menu
+        try:
+            fallback = env.ref('employee_travel_expense.menu_travel_expense_root')
+            fallback.write({'active': True})
+            _logger.info("Standalone Travel Expense menu activated.")
+        except Exception as e:
+            _logger.error("Could not activate fallback menu: %s", e)
+        return
 
     manager_group = env.ref('hr_expense.group_hr_expense_manager', raise_if_not_found=False)
-    groups = manager_group if manager_group else env['res.groups']
 
-    # Add to "My Expenses" section
-    if menu_my and action_my:
-        ensure_menu('dyn_menu_my_travel', 'My Travel Expenses', menu_my, action_my, 20)
-    if menu_my and action_vehicle:
-        ensure_menu('dyn_menu_my_vehicles', 'My Vehicles', menu_my, action_vehicle, 30)
+    # ── My Expenses section ───────────────────────────────────────────
+    if menu_my:
+        _create_menu(env, 'dyn_menu_my_travel', 'My Travel Expenses',
+                     menu_my, action_my, 25)
+        _create_menu(env, 'dyn_menu_my_vehicles', 'My Vehicles',
+                     menu_my, action_vehicle, 30)
 
-    # Add to "All Expenses" / Manager section
-    if menu_all and action_all:
-        ensure_menu('dyn_menu_all_travel', 'All Travel Expenses', menu_all, action_all, 10)
+    # ── All Expenses / Manager section ───────────────────────────────
+    if menu_all:
+        _create_menu(env, 'dyn_menu_all_travel', 'All Travel Expenses',
+                     menu_all, action_all, 15,
+                     groups=manager_group)
 
-    # Add to Configuration section
+    # ── Configuration section ─────────────────────────────────────────
     if menu_config:
-        if action_rate:
-            ensure_menu('dyn_menu_rate_config', 'Mileage Rate', menu_config, action_rate, 10)
-        if action_vehicle:
-            ensure_menu('dyn_menu_vehicle_config', 'Vehicle Registration', menu_config, action_vehicle, 20)
+        _create_menu(env, 'dyn_menu_rate_config', 'Mileage Rate',
+                     menu_config, action_rate, 15,
+                     groups=manager_group)
+        _create_menu(env, 'dyn_menu_vehicle_config', 'Vehicle Registration',
+                     menu_config, action_vehicle, 16,
+                     groups=manager_group)
 
-    _logger.info("Travel Expense menus successfully added to Expenses module.")
+    _logger.info("Travel Expense menus successfully integrated into Expenses module.")
