@@ -51,7 +51,7 @@
     <!-- Reporting Parent Menu -->
     <menuitem id="menu_hr_payroll_reporting"
               name="Reporting"
-              parent="hr.menu_hr_root"
+              parent="menu_hr_payroll_community_root"
               sequence="20"
               groups="hr_payroll_community.group_hr_payroll_community_user"/>
 
