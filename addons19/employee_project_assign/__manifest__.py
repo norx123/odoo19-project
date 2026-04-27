@@ -2,8 +2,8 @@
     'name': 'Employee Project Assign',
     'version': '1.0',
     'depends': ['hr'],
-    'author': 'Custom',
-    'category': 'HR',
+    'category': 'Human Resources',
+    'author': 'Krishn Dev',
     'summary': 'Assign Projects to Employees',
     'data': [
         'security/ir.model.access.csv',

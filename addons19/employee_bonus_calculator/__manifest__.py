@@ -2,8 +2,8 @@
     'name': 'Employee Bonus Calculator',
     'version': '1.0',
     'summary': 'Bonus calculation based on Indian Bonus Act',
-    'category': 'HR',
-    'author': 'Custom',
+    'category': 'Human Resources',
+    'author': 'Krishn Dev',
     'depends': ['hr'],
     'data': [
         'security/ir.model.access.csv',

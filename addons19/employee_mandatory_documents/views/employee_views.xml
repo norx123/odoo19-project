@@ -1,0 +1,58 @@
+<odoo>
+    <record id="view_employee_form_inherit_documents" model="ir.ui.view">
+        <field name="name">hr.employee.form.documents</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Mandatory Documents">
+
+                    <!-- OnBoarding -->
+                    <group>
+                        <separator string="OnBoarding Documents"/>
+                        <field name="onboarding_document_ids">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="description"/>
+                                <field name="file" filename="file_name"/>
+                                <field name="file_name" invisible="1"/>
+                                <field name="document_type" invisible="1"/>
+                            </list>
+                        </field>
+                    </group>
+
+                    <!-- Exit -->
+                    <group>
+                        <separator string="Exit Documents"/>
+                        <field name="exit_document_ids">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="description"/>
+                                <field name="file" filename="file_name"/>
+                                <field name="file_name" invisible="1"/>
+                                <field name="document_type" invisible="1"/>
+                            </list>
+                        </field>
+                    </group>
+
+                    <!-- Others -->
+                    <group>
+                        <separator string="Other Documents"/>
+                        <field name="other_document_ids">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="description"/>
+                                <field name="file" filename="file_name"/>
+                                <field name="file_name" invisible="1"/>
+                                <field name="document_type" invisible="1"/>
+                            </list>
+                        </field>
+                    </group>
+
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

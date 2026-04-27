@@ -33,10 +33,9 @@
      payment breakdowns for each employee. This reduces manual effort, 
      minimizes errors, and ensures compliance with tax and labor laws, while
      providing employees with timely and accurate payment information""",
-    'author': 'Cybrosys Techno Solutions',
-    'company': 'Cybrosys Techno Solutions',
-    'maintainer': 'Cybrosys Techno Solutions',
-    'website': 'https://www.openhrms.com',
+    'category': 'Human Resources',
+    'author': 'Krishn Dev',
+    'maintainer': 'Norx',
     'depends': ['hr_holidays'],
     'data': [
         'data/ir_module_category_data.xml',

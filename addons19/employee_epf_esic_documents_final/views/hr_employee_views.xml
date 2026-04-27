@@ -1,0 +1,58 @@
+
+<odoo>
+    <record id="view_employee_form_epf_documents" model="ir.ui.view">
+        <field name="name">hr.employee.form.epf.documents</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+             <!-- Work Tab → Work Section -->
+            <xpath expr="//field[@name='job_id']" position="after">
+                <field name="employee_code"/>
+            </xpath>
+
+            <xpath expr="//page[@name='personal_information']" position="inside">
+
+                <group string="Emergency Contact Details">
+                    <field name="emergency_contact_ids">
+                        <list editable="bottom">
+                            <field name="contact_name"/>
+                            <field name="contact_relation"/>
+                            <field name="contact_number"/>
+                            <field name="contact_description"/>
+                        </list>
+                    </field>
+                </group>
+
+                <group string="EPF &amp; ESIC Details" col="2">
+                    <group>
+                        <field name="pf_number"/>
+                        <field name="uan_number"/>
+                    </group>
+                    <group>
+                        <field name="esic_number"/>
+                        <field name="pan_number"/>
+                    </group>
+                </group>
+
+                <group string="Documents" col="2">
+                    <group string="Identity Documents" col="2">
+                        <field name="aadhar_number"/>
+                        <field name="aadhar_file"/>
+                        <field name="pan_number"/>
+                        <field name="pan_file"/>
+                        <field name="driving_license"/>
+                        <field name="driving_file"/>
+                    </group>
+
+                    <group string="Address Proof" col="2">
+                        <field name="address_proof_type"/>
+                        <field name="address_proof_file"/>
+                    </group>
+                </group>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

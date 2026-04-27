@@ -15,7 +15,7 @@
         - Travel Request
         - Multiple Approvers support for all forms
     """,
-    'author': 'Custom',
+    'author': 'Krishn Dev',
     'depends': ['hr', 'mail'],
     'data': [
         'security/ir.model.access.csv',

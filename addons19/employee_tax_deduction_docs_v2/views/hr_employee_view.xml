@@ -1,4 +1,3 @@
-
 <odoo>
     <record id="view_emp_tax_full" model="ir.ui.view">
         <field name="name">emp.tax.full</field>
@@ -10,85 +9,113 @@
 
                 <page string="Tax Documents">
 
-                    <group string="Section 80C - Basic Deduction" col="2">
-                        <field name="epf_file"/>
-                        <field name="epf_amount"/>
-                        <field name="life_insurance_file"/>
-                        <field name="life_insance_amount"/>
-                        <field name="elss_file"/>
-                        <field name="elss_amount"/>
-                        <field name="ppf_file"/>
-                        <field name="ppf_amount"/>
-                        <field name="nsc_file"/>
-                        <field name="nsc_amount"/>
-                        <field name="fd_file"/>
-                        <field name="fd_amount"/>
-                        <field name="home_loan_principal_file"/>
-                        <field name="home_loan_principal_amount"/>
-                        <field name="tuition_file"/>
-                        <field name="tuition_amount"/>
-                        <field name="ssy_file"/>
-                        <field name="ssy_amount"/>
-                        <field name="total_80c"/>
+                    <!-- ROW 1 -->
+                    <group col="2">
+
+                        <group string="Section 80C - Basic Deduction">
+                            <field name="epf_file"/>
+                            <field name="epf_amount"/>
+                            <field name="life_insurance_file"/>
+                            <field name="life_insance_amount"/>
+                            <field name="elss_file"/>
+                            <field name="elss_amount"/>
+                            <field name="ppf_file"/>
+                            <field name="ppf_amount"/>
+                            <field name="nsc_file"/>
+                            <field name="nsc_amount"/>
+                            <field name="fd_file"/>
+                            <field name="fd_amount"/>
+                            <field name="home_loan_principal_file"/>
+                            <field name="home_loan_principal_amount"/>
+                            <field name="tuition_file"/>
+                            <field name="tuition_amount"/>
+                            <field name="ssy_file"/>
+                            <field name="ssy_amount"/>
+                            <field name="total_80c"/>
+                        </group>
+
+                        <group string="Section 80D Documents (Medical Insurance)">
+                            <field name="health_insurance"/>
+                            <field name="policy_copy"/>
+                            <field name="payment_proof"/>
+                            <field name="medical_self_family"/>
+                            <field name="medical_parents_below60"/>
+                            <field name="medical_parents_above60"/>
+                            <field name="total_80d"/>
+                        </group>
+
                     </group>
 
-                    <group string="Section 80D Documents (Medical Insurance)" col="2">
-                        <field name="health_insurance"/>
-                        <field name="policy_copy"/>
-                        <field name="payment_proof"/>
-                        <field name="medical_self_family"/>
-                        <field name="medical_parents_below60"/>
-                        <field name="medical_parents_above60"/>
-                        <field name="total_80d"/>
+                    <!-- ROW 2 -->
+                    <group col="2">
+
+                        <group string="Section 80E Documents (Education Loan Interest)">
+                            <field name="edu_interest_cert"/>
+                            <field name="loan_sanction"/>
+                            <field name="repayment_schedule"/>
+                            <field name="total_80e"/>
+                        </group>
+
+                        <group string="Section 80CCD Documents (NPS)">
+                            <field name="nps_statement"/>
+                            <field name="pran_card"/>
+                            <field name="total_nps"/>
+                        </group>
+
                     </group>
 
-                    <group string="Section 80E Documents (Education Loan Interest)" col="2">
-                        <field name="edu_interest_cert"/>
-                        <field name="loan_sanction"/>
-                        <field name="repayment_schedule"/>
-                        <field name="total_80e"/>
+                    <!-- ROW 3 -->
+                    <group col="2">
+
+                        <group string="Section 80G Documents (Donations)">
+                            <field name="donation_receipt"/>
+                            <field name="donation_proof"/>
+                            <field name="donee_pan"/>
+                            <field name="total_donation"/>
+                        </group>
+
+                        <group string="Section 80TTA Documents (Bank Interest)">
+                            <field name="bank_statement"/>
+                            <field name="interest_cert"/>
+                            <field name="form16a"/>
+                            <field name="total_interest"/>
+                        </group>
+
                     </group>
 
-                    <group string="Section 80CCD Documents (NPS)" col="2">
-                        <field name="nps_statement"/>
-                        <field name="pran_card"/>
-                        <field name="total_nps"/>
+                    <!-- ROW 4 -->
+                    <group col="2">
+
+                        <group string="Section 80EE Documents (Home Loan Interest)">
+                            <field name="home_interest_cert"/>
+                            <field name="loan_agreement"/>
+                            <field name="property_docs"/>
+                            <field name="housing_interest"/>
+                        </group>
+
+                        <group string="HRA Exemption Documents">
+                            <field name="rent_receipts"/>
+                            <field name="rent_agreement"/>
+                            <field name="landlord_pan"/>
+                            <field name="total_rent_paid"/>
+                            <field name="hra_exemption"/>
+                        </group>
+
                     </group>
 
-                    <group string="Section 80G Documents (Donations)" col="2">
-                        <field name="donation_receipt"/>
-                        <field name="donation_proof"/>
-                        <field name="donee_pan"/>
-                        <field name="total_donation"/>
-                    </group>
+                    <!-- ROW 5 -->
+                    <group col="2">
 
-                    <group string="Section 80TTA Documents (Bank Interest)" col="2">
-                        <field name="bank_statement"/>
-                        <field name="interest_cert"/>
-                        <field name="form16a"/>
-                        <field name="total_interest"/>
-                    </group>
+                        <group string="NEW TAX REGIME (Documents)">
+                            <field name="bank_interest_new"/>
+                            <field name="capital_gain"/>
+                            <field name="other_income"/>
+                            <field name="total_new_tax"/>
+                        </group>
 
-                    <group string="Section 80EE Documents (Home Loan Interest)" col="2">
-                        <field name="home_interest_cert"/>
-                        <field name="loan_agreement"/>
-                        <field name="property_docs"/>
-                        <field name="housing_interest"/>
-                    </group>
+                        <!-- Empty group to balance layout -->
+                        <group/>
 
-                    <group string="HRA Exemption Documents" col="2">
-                        <field name="rent_receipts"/>
-                        <field name="rent_agreement"/>
-                        <field name="landlord_pan"/>
-                        <field name="total_rent_paid"/>
-                        <field name="hra_exemption"/>
-                    </group>
-
-                    <group string="NEW TAX REGIME (Documents)" col="2">
-                        <field name="bank_interest_new"/>
-                        <field name="capital_gain"/>
-                        <field name="other_income"/>
-                        <field name="total_new_tax"/>
                     </group>
 
                 </page>
