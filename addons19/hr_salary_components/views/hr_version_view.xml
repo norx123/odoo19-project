@@ -4,10 +4,11 @@
         <field name="name">hr.version.salary.fields</field>
         <field name="model">hr.version</field>
         <field name="arch" type="xml">
+
             <form string="Salary Fields">
                 <sheet>
 
-                    <!-- ══ ANNUAL CTC ══════════════════════════════════════════ -->
+                    <!-- ANNUAL -->
                     <group string="Annual CTC">
                         <group>
                             <field name="annual_ctc"/>
@@ -19,101 +20,114 @@
                         </group>
                     </group>
 
-                    <!-- ══ EARNINGS ════════════════════════════════════════════ -->
+                    <!-- Manual Toggle -->
+                    <group>
+                        <field name="manual_basic"/>
+                    </group>
+
+                    <!-- EARNINGS -->
                     <group string="Earnings" col="6">
-                        <field name="basic" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="basic_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
 
-                        <field name="hra" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="hra_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <!-- BASIC:
+                             - Manual ON  → editable, % hidden
+                             - Manual OFF → readonly (computed), % shown
+                        -->
+                        <field name="basic" colspan="2"
+                               readonly="not manual_basic"/>
+                        <span>/ month</span>
+                        <field name="manual_basic" nolabel="1" invisible="1"/>
+                        <field name="basic_percent" nolabel="1"
+                               invisible="manual_basic"
+                               readonly="manual_basic"/>
+                        <span invisible="manual_basic">%</span>
 
-                        <field name="uniform_allowance" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="uniform_allowance_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <!-- HRA -->
+                        <field name="hra" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="hra_percent" nolabel="1"/>
+                        <span>%</span>
 
-                        <field name="children_edu_allowance" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="children_edu_allowance_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <!-- Uniform -->
+                        <field name="uniform_allowance" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="uniform_allowance_percent" nolabel="1"/>
+                        <span>%</span>
 
-                        <field name="helper_allowance" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="helper_allowance_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <!-- Children -->
+                        <field name="children_edu_allowance" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="children_edu_allowance_percent" nolabel="1"/>
+                        <span>%</span>
 
-                        <field name="medical_reimbursement" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="medical_reimbursement_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <!-- Helper -->
+                        <field name="helper_allowance" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="helper_allowance_percent" nolabel="1"/>
+                        <span>%</span>
 
-                        <field name="transport_allowance" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="transport_allowance_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <!-- Medical -->
+                        <field name="medical_reimbursement" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="medical_reimbursement_percent" nolabel="1"/>
+                        <span>%</span>
 
-                        <field name="special_allowance" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="special_allowance_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <!-- Transport -->
+                        <field name="transport_allowance" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="transport_allowance_percent" nolabel="1"/>
+                        <span>%</span>
 
-                        <field name="gross_salary" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <span colspan="3"/>
+                        <!-- Special -->
+                        <field name="special_allowance" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+
+                        <span colspan="6"/>
                     </group>
 
-                    <!-- ══ EMPLOYER CONTRIBUTION ═══════════════════════════════ -->
+                    <!-- EMPLOYER -->
                     <group string="Employer Contribution" col="6">
-                        <field name="pf_employer" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="pf_employer_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <field name="pf_employer" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="pf_employer_percent"/>
+                        <span>%</span>
 
-                        <field name="esi_employer" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="esi_employer_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <field name="esi_employer" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="esi_employer_percent"/>
+                        <span>%</span>
 
-<!--                        <field name="ltc" colspan="2"/>-->
-<!--                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>-->
-<!--                        <field name="ltc_percent" nolabel="1" colspan="2"/>-->
-<!--                        <span colspan="1" style="align-self:center;">%</span>-->
-
-                        <field name="bonus" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="bonus_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <field name="bonus" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="bonus_percent"/>
+                        <span>%</span>
                     </group>
 
-                    <!-- ══ DEDUCTIONS ══════════════════════════════════════════ -->
+                    <!-- DEDUCTIONS -->
                     <group string="Deductions" col="6">
-                        <field name="pf_employee" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="pf_employee_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <field name="pf_employee" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="pf_employee_percent"/>
+                        <span>%</span>
 
-                        <field name="esi_employee" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="esi_employee_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <field name="esi_employee" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="esi_employee_percent"/>
+                        <span>%</span>
 
-                        <field name="tds" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="tds_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <field name="tds"/>
+                        <span>/ month</span>
+                        <field name="tds_percent"/>
+                        <span>%</span>
 
-                        <field name="ltc" colspan="2"/>
-                        <span colspan="1" style="align-self:center;color:#6c757d;white-space:nowrap;">/ month</span>
-                        <field name="ltc_percent" nolabel="1" colspan="2"/>
-                        <span colspan="1" style="align-self:center;">%</span>
+                        <field name="ltc" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="ltc_percent"/>
+                        <span>%</span>
                     </group>
 
                 </sheet>
             </form>
+
         </field>
     </record>
 </odoo>

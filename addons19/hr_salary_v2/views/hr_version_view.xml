@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Inherit the existing hr.version form (Contract Templates form)
+        and inject a "Salary Components" tab with all salary fields.
+    -->
+    <record id="view_hr_version_salary_tab" model="ir.ui.view">
+        <field name="name">hr.version.salary.tab</field>
+        <field name="model">hr.version</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Salary Components" name="salary_components">
+
+                    <!-- ══ ANNUAL CTC ══════════════════════════════════════════ -->
+                    <group string="Annual CTC">
+                        <group>
+                            <field name="annual_ctc"/>
+                            <field name="monthly_ctc" readonly="1"
+                                   help="Auto-calculated: Annual CTC ÷ 12"/>
+                        </group>
+                        <group>
+                            <field name="annual_gross"/>
+                            <field name="monthly_gross"/>
+                        </group>
+                    </group>
+
+                    <!-- ══ MANUAL BASIC TOGGLE ════════════════════════════════ -->
+                    <group>
+                        <field name="manual_basic"
+                               help="ON = Enter Basic + DA manually. OFF = Auto-compute from Monthly Gross × Basic %."/>
+                    </group>
+
+                    <!-- ══ EARNINGS ═══════════════════════════════════════════ -->
+                    <group string="Earnings" col="6">
+
+                        <!-- BASIC + DA -->
+                        <field name="basic" colspan="2"
+                               readonly="not manual_basic"
+                               help="Manual Basic ON: enter directly. OFF: auto = Monthly Gross × Basic %"/>
+                        <span>/ month</span>
+                        <field name="basic_percent" nolabel="1"
+                               invisible="manual_basic"
+                               help="% of Monthly Gross for auto Basic calculation"/>
+                        <span invisible="manual_basic">%</span>
+                        <!-- placeholder cells when % is hidden so grid stays aligned -->
+                        <span invisible="not manual_basic"/>
+                        <span invisible="not manual_basic"/>
+
+                        <!-- HRA -->
+                        <field name="hra" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="hra_percent" nolabel="1"
+                               help="HRA = Basic × HRA %"/>
+                        <span>%</span>
+
+                        <!-- Uniform -->
+                        <field name="uniform_allowance" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="uniform_allowance_percent" nolabel="1"/>
+                        <span>%</span>
+
+                        <!-- Children -->
+                        <field name="children_edu_allowance" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="children_edu_allowance_percent" nolabel="1"/>
+                        <span>%</span>
+
+                        <!-- Helper -->
+                        <field name="helper_allowance" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="helper_allowance_percent" nolabel="1"/>
+                        <span>%</span>
+
+                        <!-- Medical -->
+                        <field name="medical_reimbursement" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="medical_reimbursement_percent" nolabel="1"/>
+                        <span>%</span>
+
+                        <!-- Transport -->
+                        <field name="transport_allowance" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="transport_allowance_percent" nolabel="1"/>
+                        <span>%</span>
+
+                        <!-- Special Allowance (residual = monthly_gross − all components) -->
+                        <field name="special_allowance" colspan="2" readonly="1"
+                               help="Special Allowance = Monthly Gross − all other components"/>
+                        <span>/ month</span>
+                        <span colspan="2"/>
+
+                    </group>
+
+                    <!-- ══ EMPLOYER CONTRIBUTION ══════════════════════════════
+                         PF  : 12% of basic, basic capped at ₹15,000
+                         ESI : 3.25% of gross, only when gross ≤ ₹21,000
+                         Bonus: bonus_percent% of basic
+                    ════════════════════════════════════════════════════════ -->
+                    <group string="Employer Contribution" col="6">
+
+                        <field name="pf_employer" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="pf_employer_percent" nolabel="1"
+                               help="Default 12%. Applied on Basic capped at ₹15,000."/>
+                        <span>%</span>
+
+                        <field name="esi_employer" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="esi_employer_percent" nolabel="1"
+                               help="Default 3.25%. Applicable only if Monthly Gross ≤ ₹21,000."/>
+                        <span>%</span>
+
+                        <field name="bonus" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="bonus_percent" nolabel="1"
+                               help="Bonus = Basic × Bonus %"/>
+                        <span>%</span>
+
+                    </group>
+
+                    <!-- ══ DEDUCTIONS ═════════════════════════════════════════
+                         PF Employee  : 12% of basic, capped at ₹15,000
+                         ESI Employee : 0.75% of gross, only when gross ≤ ₹21,000
+                         TDS          : Manual
+                         Gratuity     : 4.81% of basic
+                    ════════════════════════════════════════════════════════ -->
+                    <group string="Deductions" col="6">
+
+                        <field name="pf_employee" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="pf_employee_percent" nolabel="1"
+                               help="Default 12%. Applied on Basic capped at ₹15,000."/>
+                        <span>%</span>
+
+                        <field name="esi_employee" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="esi_employee_percent" nolabel="1"
+                               help="Default 0.75%. Applicable only if Monthly Gross ≤ ₹21,000."/>
+                        <span>%</span>
+
+                        <field name="tds" colspan="2"/>
+                        <span>/ month</span>
+                        <field name="tds_percent" nolabel="1"/>
+                        <span>%</span>
+
+                        <field name="ltc" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="ltc_percent" nolabel="1"
+                               help="Default 4.81% (15/26 days ÷ 12). Gratuity provision on Basic."/>
+                        <span>%</span>
+
+                    </group>
+
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

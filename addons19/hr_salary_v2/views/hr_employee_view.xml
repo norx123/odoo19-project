@@ -9,11 +9,12 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Salary Components" name="salary_components">
 
-                    <!-- ══ ANNUAL CTC ═════════════════════ -->
+                    <!-- ══ ANNUAL CTC ══════════════════════════════════════════ -->
                     <group string="Annual CTC">
                         <group>
                             <field name="annual_ctc"/>
-                            <field name="monthly_ctc"/>
+                            <field name="monthly_ctc" readonly="1"
+                                   help="Auto-calculated: Annual CTC ÷ 12"/>
                         </group>
                         <group>
                             <field name="annual_gross"/>
@@ -21,27 +22,29 @@
                         </group>
                     </group>
 
-                    <!-- ══ MANUAL BASIC TOGGLE ════════════ -->
+                    <!-- ══ MANUAL BASIC TOGGLE ════════════════════════════════ -->
                     <group>
-                        <field name="manual_basic"/>
+                        <field name="manual_basic"
+                               help="ON = Enter Basic + DA manually. OFF = Auto-compute from Monthly Gross × Basic %."/>
                     </group>
 
-                    <!-- ══ EARNINGS ═════════════════════ -->
-                    <group string="Earnings" col="5">
+                    <!-- ══ EARNINGS ═══════════════════════════════════════════ -->
+                    <group string="Earnings" col="6">
 
-                        <!-- BASIC + DA:
-                             - Manual Basic ON  → amount editable, % hidden
-                             - Manual Basic OFF → amount readonly (computed), % shown
+                        <!-- BASIC + DA
+                             Manual ON  → amount field editable, % hidden
+                             Manual OFF → amount readonly (computed), % visible
                         -->
                         <field name="basic" colspan="2"
                                readonly="not manual_basic"/>
                         <span>/ month</span>
                         <field name="basic_percent" nolabel="1"
+                               invisible="manual_basic"/>
+                        <span invisible="manual_basic">%</span>
+                        <span invisible="not manual_basic"/>
+                        <span invisible="not manual_basic"/>
 
-                               readonly="manual_basic"/>
-                        <span readonly="manual_basic">%</span>
-
-                        <!-- HRA (always computed, amount readonly) -->
+                        <!-- HRA -->
                         <field name="hra" colspan="2" readonly="1"/>
                         <span>/ month</span>
                         <field name="hra_percent" nolabel="1"/>
@@ -77,54 +80,61 @@
                         <field name="transport_allowance_percent" nolabel="1"/>
                         <span>%</span>
 
-                        <!-- Special (always auto) -->
-                        <field name="special_allowance" colspan="2" readonly="1"/>
+                        <!-- Special Allowance -->
+                        <field name="special_allowance" colspan="2" readonly="1"
+                               help="Special Allowance = Monthly Gross − all other components"/>
                         <span>/ month</span>
                         <span colspan="2"/>
 
                     </group>
 
-                    <!-- ══ EMPLOYER CONTRIBUTION ═══════════ -->
+                    <!-- ══ EMPLOYER CONTRIBUTION ══════════════════════════════ -->
                     <group string="Employer Contribution" col="6">
 
                         <field name="pf_employer" colspan="2" readonly="1"/>
                         <span>/ month</span>
-                        <field name="pf_employer_percent"/>
+                        <field name="pf_employer_percent" nolabel="1"
+                               help="Default 12%. Applied on Basic capped at ₹15,000."/>
                         <span>%</span>
 
                         <field name="esi_employer" colspan="2" readonly="1"/>
                         <span>/ month</span>
-                        <field name="esi_employer_percent"/>
+                        <field name="esi_employer_percent" nolabel="1"
+                               help="Default 3.25%. Applicable only if Monthly Gross ≤ ₹21,000."/>
                         <span>%</span>
 
                         <field name="bonus" colspan="2" readonly="1"/>
                         <span>/ month</span>
-                        <field name="bonus_percent"/>
+                        <field name="bonus_percent" nolabel="1"
+                               help="Bonus = Basic × Bonus %"/>
                         <span>%</span>
 
                     </group>
 
-                    <!-- ══ DEDUCTIONS ═════════════════════ -->
+                    <!-- ══ DEDUCTIONS ═════════════════════════════════════════ -->
                     <group string="Deductions" col="6">
 
                         <field name="pf_employee" colspan="2" readonly="1"/>
                         <span>/ month</span>
-                        <field name="pf_employee_percent"/>
+                        <field name="pf_employee_percent" nolabel="1"
+                               help="Default 12%. Applied on Basic capped at ₹15,000."/>
                         <span>%</span>
 
                         <field name="esi_employee" colspan="2" readonly="1"/>
                         <span>/ month</span>
-                        <field name="esi_employee_percent"/>
+                        <field name="esi_employee_percent" nolabel="1"
+                               help="Default 0.75%. Applicable only if Monthly Gross ≤ ₹21,000."/>
                         <span>%</span>
 
                         <field name="tds" colspan="2"/>
                         <span>/ month</span>
-                        <field name="tds_percent"/>
+                        <field name="tds_percent" nolabel="1"/>
                         <span>%</span>
 
                         <field name="ltc" colspan="2" readonly="1"/>
                         <span>/ month</span>
-                        <field name="ltc_percent"/>
+                        <field name="ltc_percent" nolabel="1"
+                               help="Default 4.81% (15/26 days ÷ 12). Gratuity provision on Basic."/>
                         <span>%</span>
 
                     </group>
