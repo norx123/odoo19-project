@@ -1,4 +1,4 @@
-/* ===== Employee Dashboard - Modern Glassmorphism UI ===== */
+/* ===== Employee Dashboard - Modern Glassmorphism UI (Mobile Friendly) ===== */
 
 /* ---- CSS Custom Properties ---- */
 :root {
@@ -163,7 +163,6 @@
     }
 }
 
-/* Individual card accent bars */
 .ed-kpi-status:hover::before { background: linear-gradient(180deg, #6366f1, #818cf8); }
 .ed-kpi-checkin:hover::before { background: linear-gradient(180deg, #10b981, #34d399); }
 .ed-kpi-checkout:hover::before { background: linear-gradient(180deg, #ef4444, #f87171); }
@@ -245,12 +244,6 @@
     grid-template-columns: 1fr 380px;
     gap: 24px;
     align-items: start;
-}
-
-@media (max-width: 1100px) {
-    .ed-main-content {
-        grid-template-columns: 1fr;
-    }
 }
 
 /* ===== Card Base (Glass) ===== */
@@ -536,14 +529,8 @@
     border-color: #86efac !important;
     border-left: 4px solid #22c55e;
 
-    .ed-day-number {
-        color: #15803d;
-    }
-
-    .ed-day-hours-plain {
-        color: #15803d;
-        font-weight: 800;
-    }
+    .ed-day-number { color: #15803d; }
+    .ed-day-hours-plain { color: #15803d; font-weight: 800; }
 
     &:hover {
         background: linear-gradient(135deg, rgba(187, 247, 208, 0.8), rgba(134, 239, 172, 0.5)) !important;
@@ -557,14 +544,8 @@
     border-color: #fde68a !important;
     border-left: 4px solid #eab308;
 
-    .ed-day-number {
-        color: #a16207;
-    }
-
-    .ed-day-hours-plain {
-        color: #a16207;
-        font-weight: 800;
-    }
+    .ed-day-number { color: #a16207; }
+    .ed-day-hours-plain { color: #a16207; font-weight: 800; }
 
     &:hover {
         background: linear-gradient(135deg, rgba(254, 249, 195, 0.8), rgba(253, 230, 138, 0.5)) !important;
@@ -640,7 +621,6 @@
     top: 16px;
 }
 
-/* ===== Upcoming Holidays Card ===== */
 .ed-holidays-card {
     height: calc(50% - 8px);
     display: flex;
@@ -697,9 +677,7 @@
     tbody tr {
         transition: all var(--ed-transition);
 
-        &:hover {
-            background: rgba(238, 242, 255, 0.4);
-        }
+        &:hover { background: rgba(238, 242, 255, 0.4); }
         & + tr td { border-top: 1px solid rgba(241, 245, 249, 0.8); }
     }
 
@@ -747,7 +725,7 @@
 .ed-htype-optional { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #b45309; }
 .ed-htype-restricted { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #be185d; }
 
-/* ===== Upcoming Celebrations (Birthdays) ===== */
+/* ===== Birthdays ===== */
 .ed-birthdays-card {
     height: calc(50% - 8px);
     display: flex;
@@ -797,9 +775,7 @@
     border-radius: var(--ed-radius-sm);
     transition: all var(--ed-transition);
 
-    &:hover {
-        background: rgba(252, 231, 243, 0.3);
-    }
+    &:hover { background: rgba(252, 231, 243, 0.3); }
     & + & { border-top: 1px solid rgba(241, 245, 249, 0.8); }
 }
 
@@ -868,37 +844,22 @@
     i { font-size: 9px; }
 }
 
-.ed-celeb-birthday {
-    background: linear-gradient(135deg, #fce7f3, #fbcfe8);
-    color: #be185d;
-}
+.ed-celeb-birthday { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #be185d; }
+.ed-celeb-anniversary { background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #6d28d9; }
 
-.ed-celeb-anniversary {
-    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
-    color: #6d28d9;
-}
-
-/* ===== Scrollbar Styling ===== */
+/* ===== Scrollbar ===== */
 .ed-holidays-list,
 .ed-birthdays-list {
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-    &::-webkit-scrollbar-track {
-        background: transparent;
-    }
+    &::-webkit-scrollbar { width: 5px; }
+    &::-webkit-scrollbar-track { background: transparent; }
     &::-webkit-scrollbar-thumb {
         background: rgba(99, 102, 241, 0.15);
         border-radius: 10px;
-
-        &:hover {
-            background: rgba(99, 102, 241, 0.3);
-        }
+        &:hover { background: rgba(99, 102, 241, 0.3); }
     }
 }
 
-/* ===== Odoo Action Container Overrides ===== */
-/* Ensure the Odoo wrapper allows the dashboard to scroll fully */
+/* ===== Odoo Overrides ===== */
 .o_action_manager .o_action:has(.ed-dashboard) {
     overflow: visible !important;
     height: auto !important;
@@ -910,24 +871,458 @@
     height: 100% !important;
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 768px) {
-    .ed-dashboard { padding: 16px; }
+/* ============================================================
+   TABLET (max-width: 1100px)
+   ============================================================ */
+@media (max-width: 1100px) {
+    .ed-main-content {
+        grid-template-columns: 1fr;
+    }
 
+    .ed-sidebar {
+        height: auto;
+        position: static;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .ed-holidays-card,
+    .ed-birthdays-card {
+        height: auto;
+        max-height: 360px;
+    }
+}
+
+/* ============================================================
+   MOBILE (max-width: 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+
+    .ed-dashboard {
+        padding: 12px 12px 48px;
+        background-attachment: scroll;
+    }
+
+    .ed-header {
+        margin-bottom: 16px;
+        h2 { font-size: 18px; }
+    }
+
+    /* KPI: 2 per row */
     .ed-kpi-row {
-        grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .ed-kpi-card {
+        padding: 14px;
+        gap: 10px;
+        border-radius: 14px;
+        &:hover { transform: none; }
+    }
+
+    .ed-kpi-icon-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        font-size: 16px;
+    }
+
+    .ed-kpi-label { font-size: 10px; letter-spacing: 0.5px; }
+    .ed-kpi-value { font-size: 16px; white-space: normal; word-break: break-word; }
+    .ed-kpi-expected { font-size: 11px; }
+
+    .ed-main-content {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .ed-sidebar {
+        height: auto;
+        position: static;
+        display: flex;
+        flex-direction: column;
         gap: 12px;
     }
 
-    .ed-kpi-card { padding: 16px 18px; }
-    .ed-kpi-value { font-size: 18px; }
-    .ed-calendar-header-cell { font-size: 10px; }
-
-    .ed-day-cell {
-        min-height: 64px;
-        padding: 5px 7px;
+    .ed-holidays-card,
+    .ed-birthdays-card {
+        height: auto;
+        max-height: 300px;
     }
 
-    .ed-calendar-legend { flex-wrap: wrap; gap: 10px; }
-    .ed-day-holiday-label { font-size: 8px; }
+    .ed-card-header {
+        padding: 14px 16px;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        h3, h4 {
+            font-size: 13px;
+            gap: 8px;
+            i { width: 28px; height: 28px; font-size: 12px; }
+        }
+    }
+
+    /* Calendar header: nav + legend stack vertically */
+    .ed-calendar-section .ed-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .ed-calendar-nav {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .ed-nav-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+    }
+
+    .ed-month-title {
+        font-size: 15px;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .ed-calendar-legend {
+        width: 100%;
+        gap: 10px;
+        font-size: 11px;
+        flex-wrap: wrap;
+    }
+
+    .ed-calendar-grid { padding: 8px 10px 14px; }
+
+    .ed-calendar-header-row,
+    .ed-calendar-week-row { gap: 3px; }
+
+    .ed-calendar-header-cell {
+        font-size: 9px;
+        padding: 7px 0;
+        letter-spacing: 0.5px;
+        border-radius: 6px;
+    }
+
+    .ed-day-cell {
+        min-height: 52px;
+        padding: 5px;
+        border-radius: 8px;
+        border-width: 1px;
+    }
+
+    .ed-day-empty { min-height: 52px; }
+    .ed-day-number { font-size: 11px; margin-bottom: 2px; }
+
+    .ed-day-today .ed-day-number {
+        width: 22px;
+        height: 22px;
+        font-size: 10px;
+    }
+
+    .ed-day-hours-plain { font-size: 9px; }
+
+    .ed-day-absent-label,
+    .ed-day-off-label {
+        font-size: 8px;
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
+
+    .ed-day-holiday-label {
+        font-size: 7.5px;
+        padding: 2px 4px;
+        border-radius: 4px;
+    }
+
+    .ed-holidays-table {
+        thead th { padding: 10px 12px; font-size: 9px; }
+        tbody td { padding: 10px 12px; font-size: 12px; }
+    }
+
+    .ed-holiday-type-badge { font-size: 9px; padding: 3px 8px; }
+
+    .ed-bday-row { gap: 10px; padding: 10px 6px; }
+    .ed-bday-avatar { width: 34px; height: 34px; }
+    .ed-bday-name { font-size: 12px; }
+    .ed-bday-dept { font-size: 10px; }
+    .ed-bday-date { font-size: 11px; }
+    .ed-celeb-type-badge { font-size: 9px; padding: 3px 7px; }
+    .ed-status-badge { font-size: 11px; padding: 4px 12px; }
+}
+
+/* ============================================================
+   SMALL MOBILE (max-width: 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+
+    .ed-dashboard { padding: 10px 8px 48px; }
+
+    .ed-kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    /* 5th card full width agar odd ho */
+    .ed-kpi-card:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
+
+    .ed-kpi-card { padding: 12px; gap: 8px; }
+    .ed-kpi-icon-wrap { width: 36px; height: 36px; font-size: 14px; border-radius: 10px; }
+    .ed-kpi-value { font-size: 14px; }
+    .ed-kpi-label { font-size: 9px; }
+
+    .ed-calendar-grid { padding: 6px 6px 10px; }
+
+    .ed-calendar-header-row,
+    .ed-calendar-week-row { gap: 2px; }
+
+    .ed-day-cell {
+        min-height: 44px;
+        padding: 4px 3px;
+        border-radius: 6px;
+    }
+
+    .ed-day-empty { min-height: 44px; }
+    .ed-day-number { font-size: 10px; }
+
+    /* Chote screen pe labels aur hours hide - sirf color coding dikhe */
+    .ed-day-hours-plain,
+    .ed-day-absent-label,
+    .ed-day-off-label,
+    .ed-day-holiday-label { display: none; }
+
+    .ed-holidays-card,
+    .ed-birthdays-card { max-height: 260px; }
+
+    .ed-card-header { padding: 12px 14px; }
+    .ed-month-title { font-size: 14px; }
+    .ed-nav-btn { width: 40px; height: 40px; }
+
+    /* Type column chhupa do holidays table me */
+    .ed-holidays-table thead th:last-child,
+    .ed-holidays-table tbody td:last-child { display: none; }
+
+    /* Birthday date info chhupa do */
+    .ed-bday-date-info { display: none; }
+}
+
+/* ============================================================
+   TOUCH DEVICES
+   ============================================================ */
+@media (hover: none) and (pointer: coarse) {
+
+    .ed-kpi-card:hover {
+        transform: none;
+        box-shadow: var(--ed-shadow-md);
+    }
+
+    .ed-nav-btn:hover {
+        background: rgba(255, 255, 255, 0.6);
+        color: var(--ed-text-secondary);
+        border-color: var(--ed-border-strong);
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Active (tap) feedback */
+    .ed-nav-btn:active {
+        background: linear-gradient(135deg, var(--ed-primary), var(--ed-accent));
+        color: #fff;
+        border-color: transparent;
+        transform: scale(0.95);
+    }
+
+    .ed-kpi-card:active {
+        transform: scale(0.98);
+        box-shadow: var(--ed-shadow-lg);
+    }
+
+    /* Mobile me scrollbar hide */
+    .ed-holidays-list,
+    .ed-birthdays-list {
+        &::-webkit-scrollbar { width: 0; }
+    }
+}
+
+/* ===== Punch In / Punch Out Bar ===== */
+.ed-punch-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--ed-surface);
+    backdrop-filter: var(--ed-blur);
+    border-radius: var(--ed-radius);
+    border: 1px solid var(--ed-border);
+    box-shadow: var(--ed-shadow-md);
+    padding: 16px 24px;
+    margin-bottom: 22px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.ed-punch-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ed-punch-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: ed-dot-pulse 2s ease-in-out infinite;
+    }
+}
+
+.ed-punch-dot-in {
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+
+    &::after { background: #22c55e; }
+}
+
+.ed-punch-dot-out {
+    background: #94a3b8;
+    box-shadow: none;
+
+    &::after { display: none; }
+}
+
+@keyframes ed-dot-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.6); opacity: 0; }
+}
+
+.ed-punch-status-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ed-text-primary);
+}
+
+.ed-punch-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.ed-punch-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 28px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all var(--ed-transition);
+    letter-spacing: 0.2px;
+    position: relative;
+    overflow: hidden;
+    min-width: 130px;
+    justify-content: center;
+
+    i { font-size: 15px; }
+
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(255,255,255,0.15);
+        opacity: 0;
+        transition: opacity var(--ed-transition);
+    }
+
+    &:hover:not(:disabled)::before { opacity: 1; }
+    &:active:not(:disabled) { transform: scale(0.97); }
+}
+
+.ed-punch-in-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+
+    &:hover:not(:disabled) {
+        box-shadow: 0 6px 22px rgba(16, 185, 129, 0.5);
+        transform: translateY(-2px);
+    }
+}
+
+.ed-punch-out-btn {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+
+    &:hover:not(:disabled) {
+        box-shadow: 0 6px 22px rgba(239, 68, 68, 0.5);
+        transform: translateY(-2px);
+    }
+}
+
+.ed-btn-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: ed-spin 0.6s linear infinite;
+    flex-shrink: 0;
+}
+
+/* ===== Punch Bar - Responsive ===== */
+@media (max-width: 768px) {
+    .ed-punch-bar {
+        padding: 14px 16px;
+        gap: 12px;
+        margin-bottom: 16px;
+        border-radius: 14px;
+    }
+
+    .ed-punch-status-text { font-size: 13px; }
+
+    .ed-punch-btn {
+        padding: 10px 20px;
+        font-size: 13px;
+        min-width: 110px;
+        border-radius: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ed-punch-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .ed-punch-actions {
+        width: 100%;
+    }
+
+    .ed-punch-btn {
+        flex: 1;
+        padding: 12px 16px;
+        font-size: 13px;
+        min-width: 0;
+    }
 }

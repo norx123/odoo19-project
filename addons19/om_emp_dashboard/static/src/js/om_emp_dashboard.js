@@ -28,6 +28,8 @@ export class EmployeeDashboard extends Component {
             isCalendarLoading: false,
             calendarWeeks: [],
             today: "",
+            isPunchedIn: false,
+            isPunching: false,
         });
 
         onWillStart(async () => {
@@ -95,7 +97,68 @@ export class EmployeeDashboard extends Component {
             this.state.upcomingHolidays = result.upcoming_holidays || [];
             this.state.upcomingBirthdays = result.upcoming_birthdays || [];
             this.state.currentEmployeeName = result.current_employee_name;
+            this.state.isPunchedIn = result.is_punched_in || false;
         }
+    }
+
+    /* ---- Punch In / Punch Out ---- */
+
+    async onPunchIn(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (this.state.isPunching) return;
+        this.state.isPunching = true;
+        try {
+            const result = await rpc("/om_emp_dashboard/punch_in", {});
+            if (result.success) {
+                this.state.isPunchedIn = true;
+                this.state.kpi.today_check_in = result.check_in;
+                this.state.kpi.today_check_out = "--:--";
+                this.state.kpi.today_status = "present";
+                this.notificationService.add(
+                    _t("Punched In at ") + result.check_in,
+                    { type: "success" }
+                );
+                // Refresh full data to update calendar
+                await this._fetchDashboardData();
+            } else {
+                this.notificationService.add(
+                    result.error || _t("Punch In failed"),
+                    { type: "warning" }
+                );
+            }
+        } catch (e) {
+            this.notificationService.add(_t("Punch In failed"), { type: "danger" });
+        }
+        this.state.isPunching = false;
+    }
+
+    async onPunchOut(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (this.state.isPunching) return;
+        this.state.isPunching = true;
+        try {
+            const result = await rpc("/om_emp_dashboard/punch_out", {});
+            if (result.success) {
+                this.state.isPunchedIn = false;
+                this.state.kpi.today_check_out = result.check_out;
+                this.notificationService.add(
+                    _t("Punched Out at ") + result.check_out,
+                    { type: "success" }
+                );
+                // Refresh full data to update calendar & hours
+                await this._fetchDashboardData();
+            } else {
+                this.notificationService.add(
+                    result.error || _t("Punch Out failed"),
+                    { type: "warning" }
+                );
+            }
+        } catch (e) {
+            this.notificationService.add(_t("Punch Out failed"), { type: "danger" });
+        }
+        this.state.isPunching = false;
     }
 
     /* ---- Calendar grid builder ---- */
@@ -143,9 +206,6 @@ export class EmployeeDashboard extends Component {
         this.state.calendarWeeks = weeks;
     }
 
-    /**
-     * Build a single calendar cell object.
-     */
     _makeDayCell(dt, isOther) {
         const y = dt.getFullYear();
         const m = dt.getMonth() + 1;
@@ -166,7 +226,6 @@ export class EmployeeDashboard extends Component {
             totalHours += e.worked_hours || 0;
         }
 
-        // Build holiday display name (first holiday only for space)
         let holidayName = "";
         if (holidays.length > 0) {
             holidayName = holidays[0].name;

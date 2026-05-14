@@ -410,6 +410,99 @@ class EmployeeDashboardController(http.Controller):
 
         upcoming_celebrations.sort(key=lambda x: x['days_until'])
 
+        # Check if employee is currently punched in (open attendance session)
+        is_punched_in = False
+        if employee and emp_id:
+            open_att = request.env['hr.attendance'].sudo().search([
+                ('employee_id', '=', emp_id),
+                ('check_out', '=', False),
+            ], limit=1)
+            is_punched_in = bool(open_att)
+
+        return {
+            'calendar_data': calendar_data,
+            'is_punched_in': is_punched_in,
+            'month': month,
+            'year': year,
+            'month_name': calendar.month_name[month],
+            'today': today.strftime('%Y-%m-%d'),
+            'kpi': {
+                'total_hours': round(total_hours, 1),
+                'working_days': days_present,
+                'scheduled_days': scheduled_working_days,
+                'days_absent': days_absent,
+                'holidays_count': holidays_count,
+                'today_status': today_status,
+                'today_check_in': today_check_in or '--:--',
+                'today_check_out': today_check_out or '--:--',
+                'today_worked': round(today_worked, 1),
+                'today_expected': round(today_expected, 1),
+                'today_is_working': today_is_working,
+            },
+            'upcoming_holidays': upcoming_holidays,
+            'upcoming_birthdays': upcoming_celebrations,
+            'current_employee_name': employee.name if employee else '',
+        }
+
+    @http.route('/om_emp_dashboard/punch_in', type='jsonrpc', auth='user')
+    def punch_in(self):
+        """Create a new attendance check-in for the current employee."""
+        user = request.env.user
+        employee = request.env['hr.employee'].sudo().search(
+            [('user_id', '=', user.id)], limit=1)
+        if not employee:
+            return {'success': False, 'error': 'No employee linked to your account.'}
+
+        # Prevent double punch-in
+        open_att = request.env['hr.attendance'].sudo().search([
+            ('employee_id', '=', employee.id),
+            ('check_out', '=', False),
+        ], limit=1)
+        if open_att:
+            return {'success': False, 'error': 'Already punched in.'}
+
+        now_utc = datetime.utcnow()
+        request.env['hr.attendance'].sudo().create({
+            'employee_id': employee.id,
+            'check_in': fields.Datetime.to_string(now_utc),
+        })
+
+        # Return updated check-in time in employee's local tz
+        tz_name = employee._get_tz() or 'UTC'
+        user_tz = pytz.timezone(tz_name)
+        local_time = pytz.utc.localize(now_utc).astimezone(user_tz)
+        return {
+            'success': True,
+            'check_in': local_time.strftime('%I:%M %p'),
+        }
+
+    @http.route('/om_emp_dashboard/punch_out', type='jsonrpc', auth='user')
+    def punch_out(self):
+        """Close the open attendance session for the current employee."""
+        user = request.env.user
+        employee = request.env['hr.employee'].sudo().search(
+            [('user_id', '=', user.id)], limit=1)
+        if not employee:
+            return {'success': False, 'error': 'No employee linked to your account.'}
+
+        open_att = request.env['hr.attendance'].sudo().search([
+            ('employee_id', '=', employee.id),
+            ('check_out', '=', False),
+        ], limit=1)
+        if not open_att:
+            return {'success': False, 'error': 'Not punched in.'}
+
+        now_utc = datetime.utcnow()
+        open_att.write({'check_out': fields.Datetime.to_string(now_utc)})
+
+        tz_name = employee._get_tz() or 'UTC'
+        user_tz = pytz.timezone(tz_name)
+        local_time = pytz.utc.localize(now_utc).astimezone(user_tz)
+        return {
+            'success': True,
+            'check_out': local_time.strftime('%I:%M %p'),
+        }
+
         return {
             'calendar_data': calendar_data,
             'month': month,

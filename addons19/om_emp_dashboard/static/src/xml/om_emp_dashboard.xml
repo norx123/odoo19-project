@@ -14,6 +14,39 @@
                 <h2>Welcome back, <strong t-esc="state.currentEmployeeName"/>!</h2>
             </div>
 
+            <!-- Punch In / Punch Out Button -->
+            <div class="ed-punch-bar">
+                <div class="ed-punch-status">
+                    <span t-attf-class="ed-punch-dot #{state.isPunchedIn ? 'ed-punch-dot-in' : 'ed-punch-dot-out'}"/>
+                    <span class="ed-punch-status-text">
+                        <t t-if="state.isPunchedIn">Currently Punched In</t>
+                        <t t-else="">Not Punched In</t>
+                    </span>
+                </div>
+                <div class="ed-punch-actions">
+                    <button
+                        t-if="!state.isPunchedIn"
+                        type="button"
+                        t-attf-class="ed-punch-btn ed-punch-in-btn #{state.isPunching ? 'ed-punch-loading' : ''}"
+                        t-on-click="onPunchIn"
+                        t-att-disabled="state.isPunching">
+                        <i t-if="!state.isPunching" class="fa fa-sign-in"/>
+                        <div t-if="state.isPunching" class="ed-btn-spinner"/>
+                        <span><t t-if="!state.isPunching">Punch In</t><t t-else="">Please wait...</t></span>
+                    </button>
+                    <button
+                        t-if="state.isPunchedIn"
+                        type="button"
+                        t-attf-class="ed-punch-btn ed-punch-out-btn #{state.isPunching ? 'ed-punch-loading' : ''}"
+                        t-on-click="onPunchOut"
+                        t-att-disabled="state.isPunching">
+                        <i t-if="!state.isPunching" class="fa fa-sign-out"/>
+                        <div t-if="state.isPunching" class="ed-btn-spinner"/>
+                        <span><t t-if="!state.isPunching">Punch Out</t><t t-else="">Please wait...</t></span>
+                    </button>
+                </div>
+            </div>
+
             <!-- KPI Cards Row -->
             <div class="ed-kpi-row">
                 <div class="ed-kpi-card ed-kpi-status">
@@ -135,19 +168,16 @@
                                         <div t-att-class="getDayClass(cell)">
                                             <div class="ed-day-number" t-esc="cell.day"/>
                                             <t t-if="!cell.isOtherMonth">
-                                                <!-- Holiday name label -->
                                                 <t t-if="cell.holidayName">
                                                     <div class="ed-day-holiday-label"
                                                          t-att-title="cell.holidayName"
                                                          t-esc="cell.holidayName"/>
                                                 </t>
-                                                <!-- Hours display -->
                                                 <t t-if="cell.hasData">
                                                     <div class="ed-day-hours-plain">
                                                         <t t-esc="formatHours(cell.totalHours)"/>
                                                     </div>
                                                 </t>
-                                                <!-- Day status indicator -->
                                                 <t t-elif="cell.dayStatus === 'absent'">
                                                     <div class="ed-day-absent-label">Absent</div>
                                                 </t>

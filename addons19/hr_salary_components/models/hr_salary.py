@@ -13,6 +13,8 @@ ESI_RATE_EMPLOYEE = 0.75    # 0.75% employee share
 
 GRATUITY_RATE     = 4.81    # 4.81% of basic (15/26 ÷ 12 × 100)
 
+EDLI_PF_ADMIN_RATE = 1.0    # EDLI Contribution + PF Admin Charges = 1% of PF wage
+
 
 class HrVersion(models.Model):
     _inherit = 'hr.version'
@@ -25,7 +27,12 @@ class HrVersion(models.Model):
     )
 
     # ── Annual CTC ───────────────────────────────────────────
-    annual_ctc = fields.Monetary(string="Annual CTC", currency_field='currency_id')
+    annual_ctc = fields.Monetary(
+        string="Annual CTC",
+        currency_field='currency_id',
+        compute="_compute_annual_ctc",
+        store=True,
+    )
 
     monthly_ctc = fields.Monetary(
         string="Monthly CTC",
@@ -98,6 +105,14 @@ class HrVersion(models.Model):
     )
     transport_allowance_percent = fields.Float(string="Transport Allowance %", digits=(5, 2))
 
+    bonus = fields.Monetary(
+        string="Bonus",
+        currency_field='currency_id',
+        compute="_compute_bonus",
+        store=True,
+    )
+    bonus_percent = fields.Float(string="Bonus %", digits=(5, 2))
+
     special_allowance = fields.Monetary(
         string="Special Allowance",
         currency_field='currency_id',
@@ -130,13 +145,27 @@ class HrVersion(models.Model):
         default=ESI_RATE_EMPLOYER,
     )
 
-    bonus = fields.Monetary(
-        string="Bonus",
+    gratuity = fields.Monetary(
+        string="Gratuity",
         currency_field='currency_id',
-        compute="_compute_bonus",
+        compute="_compute_gratuity",
         store=True,
     )
-    bonus_percent = fields.Float(string="Bonus %", digits=(5, 2))
+    gratuity_percent = fields.Float(
+        string="Gratuity %", digits=(5, 2),
+        default=GRATUITY_RATE,
+    )
+
+    edli_pf_admin = fields.Monetary(
+        string="EDLI Contribution + PF Admin Charges",
+        currency_field='currency_id',
+        compute="_compute_edli_pf_admin",
+        store=True,
+    )
+    edli_pf_admin_percent = fields.Float(
+        string="EDLI + PF Admin %", digits=(5, 2),
+        default=EDLI_PF_ADMIN_RATE,
+    )
 
     # ── Deductions ───────────────────────────────────────────
     pf_employee = fields.Monetary(
@@ -164,25 +193,41 @@ class HrVersion(models.Model):
     tds = fields.Monetary(string="TDS", currency_field='currency_id')
     tds_percent = fields.Float(string="TDS %", digits=(5, 2))
 
-    ltc = fields.Monetary(
-        string="Gratuity",
-        currency_field='currency_id',
-        compute="_compute_gratuity",
-        store=True,
-    )
-    ltc_percent = fields.Float(
-        string="Gratuity %", digits=(5, 2),
-        default=GRATUITY_RATE,
-    )
-
     # ══════════════════════════════════════════════════════════
     #  COMPUTE METHODS
     # ══════════════════════════════════════════════════════════
 
-    @api.depends('annual_ctc')
+    @api.depends(
+        'monthly_gross',
+        'pf_employer', 'esi_employer', 'gratuity', 'edli_pf_admin',
+    )
     def _compute_monthly_ctc(self):
+        """
+        Monthly CTC = Monthly Gross + Employer Contributions
+        (PF Employer + ESI Employer + Gratuity + EDLI + PF Admin Charges)
+        """
         for rec in self:
-            rec.monthly_ctc = (rec.annual_ctc or 0.0) / 12.0
+            rec.monthly_ctc = (
+                (rec.monthly_gross or 0.0)
+                + (rec.pf_employer or 0.0)
+                + (rec.esi_employer or 0.0)
+                + (rec.gratuity or 0.0)
+                + (rec.edli_pf_admin or 0.0)
+            )
+
+    @api.depends('monthly_ctc')
+    def _compute_annual_ctc(self):
+        """
+        Annual CTC = Monthly CTC × 12
+        """
+        for rec in self:
+            rec.annual_ctc = (rec.monthly_ctc or 0.0) * 12.0
+
+    @api.depends('monthly_gross')
+    def _compute_annual_gross(self):
+        for rec in self:
+            rec.annual_gross = (rec.monthly_gross or 0.0) * 12.0
+
 
     # ── Basic + DA ───────────────────────────────────────────
     @api.depends('basic_percent', 'monthly_gross', 'manual_basic')
@@ -244,6 +289,7 @@ class HrVersion(models.Model):
         'monthly_gross', 'basic', 'hra',
         'uniform_allowance', 'children_edu_allowance',
         'helper_allowance', 'medical_reimbursement', 'transport_allowance',
+        'bonus',
     )
     def _compute_special_allowance(self):
         for rec in self:
@@ -255,6 +301,7 @@ class HrVersion(models.Model):
                 + (rec.helper_allowance or 0.0)
                 + (rec.medical_reimbursement or 0.0)
                 + (rec.transport_allowance or 0.0)
+                + (rec.bonus or 0.0)
             )
             rec.special_allowance = max((rec.monthly_gross or 0.0) - components, 0.0)
 
@@ -265,20 +312,26 @@ class HrVersion(models.Model):
         """
         PF Employer = pf_employer_percent% of basic,
         capped at statutory ceiling (basic capped at ₹15,000).
+        If percent is explicitly set to 0, result is 0.
+        If percent is not set (False), default rate is used.
         """
         for rec in self:
             pf_basic = min(rec.basic or 0.0, PF_WAGE_CEILING)
-            rec.pf_employer = pf_basic * (rec.pf_employer_percent or PF_RATE_EMPLOYER) / 100.0
+            rate = PF_RATE_EMPLOYER if rec.pf_employer_percent is False else rec.pf_employer_percent
+            rec.pf_employer = pf_basic * rate / 100.0
 
     @api.depends('monthly_gross', 'esi_employer_percent')
     def _compute_esi_employer(self):
         """
         ESI Employer applicable only if monthly gross <= ₹21,000.
+        If percent is explicitly set to 0, result is 0.
+        If percent is not set (False), default rate is used.
         """
         for rec in self:
             gross = rec.monthly_gross or 0.0
             if gross <= ESI_WAGE_CEILING:
-                rec.esi_employer = gross * (rec.esi_employer_percent or ESI_RATE_EMPLOYER) / 100.0
+                rate = ESI_RATE_EMPLOYER if rec.esi_employer_percent is False else rec.esi_employer_percent
+                rec.esi_employer = gross * rate / 100.0
             else:
                 rec.esi_employer = 0.0
 
@@ -297,31 +350,51 @@ class HrVersion(models.Model):
         """
         PF Employee = pf_employee_percent% of basic,
         capped at statutory ceiling (basic capped at ₹15,000).
+        If percent is explicitly set to 0, result is 0.
+        If percent is not set (False), default rate is used.
         """
         for rec in self:
             pf_basic = min(rec.basic or 0.0, PF_WAGE_CEILING)
-            rec.pf_employee = pf_basic * (rec.pf_employee_percent or PF_RATE_EMPLOYEE) / 100.0
+            rate = PF_RATE_EMPLOYEE if rec.pf_employee_percent is False else rec.pf_employee_percent
+            rec.pf_employee = pf_basic * rate / 100.0
 
     @api.depends('monthly_gross', 'esi_employee_percent')
     def _compute_esi_employee(self):
         """
         ESI Employee applicable only if monthly gross <= ₹21,000.
+        If percent is explicitly set to 0, result is 0.
+        If percent is not set (False), default rate is used.
         """
         for rec in self:
             gross = rec.monthly_gross or 0.0
             if gross <= ESI_WAGE_CEILING:
-                rec.esi_employee = gross * (rec.esi_employee_percent or ESI_RATE_EMPLOYEE) / 100.0
+                rate = ESI_RATE_EMPLOYEE if rec.esi_employee_percent is False else rec.esi_employee_percent
+                rec.esi_employee = gross * rate / 100.0
             else:
                 rec.esi_employee = 0.0
 
-    @api.depends('basic', 'ltc_percent')
+    @api.depends('basic', 'gratuity_percent')
     def _compute_gratuity(self):
         """
-        Gratuity = ltc_percent% of basic (default 4.81% = 15/26 per month).
-        No statutory upper ceiling for monthly provision; just % of basic.
+        Gratuity = gratuity_percent% of basic (default 4.81% = 15/26 per month).
+        If percent is explicitly set to 0, result is 0.
+        If percent is not set (False), default rate is used.
         """
         for rec in self:
-            rec.ltc = (rec.basic or 0.0) * (rec.ltc_percent or GRATUITY_RATE) / 100.0
+            rate = GRATUITY_RATE if rec.gratuity_percent is False else rec.gratuity_percent
+            rec.gratuity = (rec.basic or 0.0) * rate / 100.0
+
+    @api.depends('basic', 'edli_pf_admin_percent')
+    def _compute_edli_pf_admin(self):
+        """
+        EDLI Contribution + PF Admin Charges = 1% of PF wage (basic capped at ₹15,000).
+        If percent is explicitly set to 0, result is 0.
+        If percent is not set (False), default rate is used.
+        """
+        for rec in self:
+            pf_basic = min(rec.basic or 0.0, PF_WAGE_CEILING)
+            rate = EDLI_PF_ADMIN_RATE if rec.edli_pf_admin_percent is False else rec.edli_pf_admin_percent
+            rec.edli_pf_admin = pf_basic * rate / 100.0
 
 
 # ─────────────────────────────────────────────────────────────
@@ -333,8 +406,8 @@ class HrEmployee(models.Model):
 
     manual_basic = fields.Boolean(related='version_id.manual_basic', store=True, readonly=False)
 
-    annual_ctc   = fields.Monetary(related='version_id.annual_ctc',   store=True, readonly=False)
-    monthly_ctc  = fields.Monetary(related='version_id.monthly_ctc',  store=True, readonly=False)
+    annual_ctc   = fields.Monetary(related='version_id.annual_ctc',   store=True, readonly=True)
+    monthly_ctc  = fields.Monetary(related='version_id.monthly_ctc',  store=True, readonly=True)
     annual_gross = fields.Monetary(related='version_id.annual_gross', store=True, readonly=False)
     monthly_gross = fields.Monetary(related='version_id.monthly_gross', store=True, readonly=False)
 
@@ -359,6 +432,9 @@ class HrEmployee(models.Model):
     transport_allowance         = fields.Monetary(related='version_id.transport_allowance',         store=True, readonly=False)
     transport_allowance_percent = fields.Float(   related='version_id.transport_allowance_percent', store=True, readonly=False)
 
+    bonus         = fields.Monetary(related='version_id.bonus',         store=True, readonly=False)
+    bonus_percent = fields.Float(   related='version_id.bonus_percent', store=True, readonly=False)
+
     special_allowance = fields.Monetary(related='version_id.special_allowance', store=True, readonly=False)
 
     # Employer
@@ -368,8 +444,11 @@ class HrEmployee(models.Model):
     esi_employer         = fields.Monetary(related='version_id.esi_employer',         store=True, readonly=False)
     esi_employer_percent = fields.Float(   related='version_id.esi_employer_percent', store=True, readonly=False)
 
-    bonus         = fields.Monetary(related='version_id.bonus',         store=True, readonly=False)
-    bonus_percent = fields.Float(   related='version_id.bonus_percent', store=True, readonly=False)
+    gratuity         = fields.Monetary(related='version_id.gratuity',         store=True, readonly=False)
+    gratuity_percent = fields.Float(   related='version_id.gratuity_percent', store=True, readonly=False)
+
+    edli_pf_admin         = fields.Monetary(related='version_id.edli_pf_admin',         store=True, readonly=False)
+    edli_pf_admin_percent = fields.Float(   related='version_id.edli_pf_admin_percent', store=True, readonly=False)
 
     # Deductions
     pf_employee         = fields.Monetary(related='version_id.pf_employee',         store=True, readonly=False)
@@ -380,6 +459,3 @@ class HrEmployee(models.Model):
 
     tds         = fields.Monetary(related='version_id.tds',         store=True, readonly=False)
     tds_percent = fields.Float(   related='version_id.tds_percent', store=True, readonly=False)
-
-    ltc         = fields.Monetary(related='version_id.ltc',         store=True, readonly=False)
-    ltc_percent = fields.Float(   related='version_id.ltc_percent', store=True, readonly=False)

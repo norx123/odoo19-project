@@ -11,8 +11,8 @@
                     <!-- ANNUAL -->
                     <group string="Annual CTC">
                         <group>
-                            <field name="annual_ctc"/>
-                            <field name="monthly_ctc"/>
+                            <field name="annual_ctc" readonly="1"/>
+                            <field name="monthly_ctc" readonly="1"/>
                         </group>
                         <group>
                             <field name="annual_gross"/>
@@ -77,6 +77,12 @@
                         <field name="transport_allowance_percent" nolabel="1"/>
                         <span>%</span>
 
+                        <!-- Bonus -->
+                        <field name="bonus" colspan="2" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="bonus_percent" nolabel="1"/>
+                        <span>%</span>
+
                         <!-- Special -->
                         <field name="special_allowance" colspan="2" readonly="1"/>
                         <span>/ month</span>
@@ -96,9 +102,14 @@
                         <field name="esi_employer_percent"/>
                         <span>%</span>
 
-                        <field name="bonus" readonly="1"/>
+                        <field name="gratuity" readonly="1"/>
                         <span>/ month</span>
-                        <field name="bonus_percent"/>
+                        <field name="gratuity_percent"/>
+                        <span>%</span>
+
+                        <field name="edli_pf_admin" readonly="1"/>
+                        <span>/ month</span>
+                        <field name="edli_pf_admin_percent"/>
                         <span>%</span>
                     </group>
 
@@ -117,11 +128,6 @@
                         <field name="tds"/>
                         <span>/ month</span>
                         <field name="tds_percent"/>
-                        <span>%</span>
-
-                        <field name="ltc" readonly="1"/>
-                        <span>/ month</span>
-                        <field name="ltc_percent"/>
                         <span>%</span>
                     </group>
 
