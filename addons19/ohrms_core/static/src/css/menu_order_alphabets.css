@@ -2,14 +2,17 @@
     float: left;
     position: relative;
     width: 99vw;
-    height: 100vh;
+    min-height: auto;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    overflow-x: hidden;
     background: #fff;
     display: flex;
     justify-content: start;
     align-items: start;
-    padding: 0px 20rem;
-    margin-top: -20px;
-
+    padding: 20px 10rem;
+    margin-top: 0px;
+    box-sizing: border-box;
 }
 .o_main_navbar .dropdown-menu .show {
     max-height: auto !important;
@@ -26,12 +29,14 @@
     overflow: unset;
 }
 .dropdown-item.o_app.mt0 {
-    flex-basis: 20%;
+    flex-basis: 16.66%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-bottom: 23px;
+    margin-bottom: 20px;
+    padding: 10px 6px;
+    gap: 6px;
 }
 .dropdown-menu fullscreen-menu show{
     width:1000px !important;
@@ -75,15 +80,14 @@
 
 }
 .o_main_navbar .dropdown-menu.show {
-    max-height: none !important;
+    max-height: 100vh !important;
     min-width: 100vw;
-    min-heigt: 100vh;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     margin-top: 0;
     position: relative;
     margin-top: 46px;
     margin-left: -18px;
-}
 }
 .o-menu-search-result.dropdown-item.col-12.ml-auto.mr-auto {
 
@@ -96,32 +100,51 @@
     padding: 0 !important;
 }
 @media (max-width: 1371px){
-
+    .nav-container {
+        padding: 20px 5rem;
+    }
+    .dropdown-item.o_app.mt0 {
+        flex-basis: 20%;
+    }
 }
 
 @media (max-width:992px) {
-
+    .nav-container {
+        padding: 16px 2rem;
+    }
+    .dropdown-item.o_app.mt0 {
+        flex-basis: 25%;
+    }
 }
 
 @media (max-width:400px) {
-
+    .nav-container {
+        padding: 12px 0.5rem;
+    }
+    .dropdown-item.o_app.mt0 {
+        flex-basis: 50%;
+    }
 }
 
 @media (max-width: 684px){
 
 .nav-container {
-    background:red;
     float: left;
     position: relative;
     width: 99vw;
-    height: 100vh;
     background: #fff;
     display: flex;
     justify-content: start;
     align-items: start;
-    padding: 0px 10rem;
-    margin-top: -20px;
+    padding: 12px 1rem;
+    margin-top: 0px;
+    min-height: auto;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
 }
+    .dropdown-item.o_app.mt0 {
+        flex-basis: 33.33%;
+    }
 
 }
 
@@ -142,4 +165,36 @@
 
     }
 
+/* ===== NORX ERP FOOTER BRANDING ===== */
+.norx-branding-footer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 14px 0 18px 0;
+    border-top: 1px solid #e0eeff;
+    margin-top: 10px;
+    background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+}
 
+.norx-footer-logo {
+    height: 32px !important;
+    width: auto !important;
+    object-fit: contain;
+    margin-bottom: 4px;
+    opacity: 0.9;
+}
+
+.norx-footer-tagline {
+    font-size: 10px;
+    color: #0078d4;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+/* ===== END NORX FOOTER BRANDING ===== */

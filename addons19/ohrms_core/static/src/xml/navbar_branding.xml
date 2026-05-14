@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <!-- Inherit NavBar to add Norx Logo in top bar -->
+    <t t-inherit="web.NavBar" t-inherit-mode="extension" owl="1">
+        <xpath expr="//nav[hasclass('o_main_navbar')]" position="inside">
+            <div class="norx-navbar-brand d-flex align-items-center">
+                <img src="/ohrms_core/static/src/img/norx_logo.png"
+                     alt="Norx ERP"
+                     style="height:28px; width:auto; object-fit:contain; filter:brightness(0) invert(1); margin-left:8px; margin-right:4px;"/>
+            </div>
+        </xpath>
+    </t>
+</templates>
