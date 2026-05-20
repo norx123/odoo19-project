@@ -1,0 +1,342 @@
+/* =========================================================
+   Norx ERP Theme - Custom UI for Odoo 19 Community
+   Primary  : #007dff
+   Secondary: #404040
+   White    : #ffffff
+   ========================================================= */
+
+:root {
+    --norx-primary: #007dff;
+    --norx-primary-hover: #0066d1;
+    --norx-secondary: #404040;
+    --norx-white: #ffffff;
+    --norx-bg: #f4f7fb;
+}
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+body.bg-100,
+body.o_web_client {
+    background: var(--norx-bg) !important;
+}
+
+a { color: var(--norx-primary); }
+a:hover { color: var(--norx-primary-hover); }
+
+/* =========================================================
+   MAIN NAVBAR (Top Blue Bar)
+   ========================================================= */
+.o_main_navbar {
+    background: var(--norx-primary) !important;
+    border-bottom: none !important;
+}
+
+.o_main_navbar .o_nav_entry,
+.o_main_navbar .dropdown-toggle,
+.o_main_navbar .nav-link,
+.o_main_navbar a,
+.o_main_navbar .oe_topbar_name,
+.o_main_navbar .o_menu_brand,
+.o_main_navbar button {
+    color: var(--norx-white) !important;
+    background: transparent !important;
+}
+
+/* Active / hovered / focused / open-dropdown navbar items.
+   Force them to stay in the PRIMARY color so menus like
+   "Learning" don't show in a different (purple) color. */
+.o_main_navbar .o_nav_entry:hover,
+.o_main_navbar .o_nav_entry:focus,
+.o_main_navbar .o_nav_entry.show,
+.o_main_navbar .o_nav_entry.active,
+.o_main_navbar .dropdown-toggle:hover,
+.o_main_navbar .dropdown-toggle:focus,
+.o_main_navbar .dropdown-toggle.show,
+.o_main_navbar .dropdown.show > .dropdown-toggle,
+.o_main_navbar .show > .o_nav_entry,
+.o_main_navbar .nav-item.show > .nav-link,
+.o_main_navbar .nav-item.show > a,
+.o_main_navbar .nav-link:hover,
+.o_main_navbar .nav-link.active,
+.o_main_navbar .nav-link.show,
+.o_main_navbar li.show > a,
+.o_main_navbar li.active > a {
+    background-color: var(--norx-primary-hover) !important;
+    background-image: none !important;
+    color: var(--norx-white) !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+/* Dropdown menus that fly OUT of the navbar:
+   white background, dark text, primary highlight on hover */
+.o_main_navbar .dropdown-menu {
+    background: var(--norx-white) !important;
+    border: 1px solid #e5e5e5 !important;
+}
+.o_main_navbar .dropdown-menu .dropdown-item,
+.o_main_navbar .dropdown-menu a {
+    color: var(--norx-secondary) !important;
+    background: transparent !important;
+}
+.o_main_navbar .dropdown-menu .dropdown-item:hover,
+.o_main_navbar .dropdown-menu .dropdown-item.active,
+.o_main_navbar .dropdown-menu .dropdown-item:focus {
+    background-color: var(--norx-primary) !important;
+    color: var(--norx-white) !important;
+}
+
+/* =========================================================
+   HOME / APPS DASHBOARD
+   Module labels were white-on-white -> make them secondary
+   ========================================================= */
+.o_home_menu,
+.o_HomeMenu,
+.o_action_manager .o_home_menu_background {
+    background: var(--norx-white) !important;
+}
+
+.o_apps .o_app,
+.o_home_menu .o_app,
+.o_HomeMenu .o_app {
+    color: var(--norx-secondary) !important;
+}
+
+.o_apps .o_app .o_caption,
+.o_apps .o_app .o_app_name,
+.o_apps .o_app span,
+.o_apps .o_app div,
+.o_apps .o_app p,
+.o_home_menu .o_app .o_caption,
+.o_home_menu .o_app span,
+.o_home_menu .o_app div,
+.o_HomeMenu .o_app .o_caption,
+.o_HomeMenu .o_app span,
+.o_HomeMenu .o_app div {
+    color: var(--norx-secondary) !important;
+    font-weight: 500;
+}
+
+.o_apps .o_app:hover,
+.o_apps .o_app:focus,
+.o_home_menu .o_app:hover,
+.o_HomeMenu .o_app:hover {
+    color: var(--norx-secondary) !important;
+}
+.o_apps .o_app:hover .o_caption,
+.o_apps .o_app:hover span,
+.o_home_menu .o_app:hover .o_caption,
+.o_home_menu .o_app:hover span,
+.o_HomeMenu .o_app:hover .o_caption,
+.o_HomeMenu .o_app:hover span {
+    color: var(--norx-secondary) !important;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+.btn-primary,
+.o_list_button_add,
+.o-kanban-button-new,
+.btn-fill-primary {
+    background-color: var(--norx-primary) !important;
+    border-color: var(--norx-primary) !important;
+    color: var(--norx-white) !important;
+    border-radius: 8px !important;
+}
+
+.btn-primary:hover,
+.o_list_button_add:hover,
+.o-kanban-button-new:hover,
+.btn-fill-primary:hover {
+    background-color: var(--norx-primary-hover) !important;
+    border-color: var(--norx-primary-hover) !important;
+}
+
+/* =========================================================
+   SEARCH / CONTROL PANEL / KANBAN / TABLES
+   ========================================================= */
+.o_searchview {
+    border-radius: 8px !important;
+    border: 1px solid var(--norx-primary) !important;
+}
+
+.o_control_panel { background: var(--norx-white) !important; }
+
+.o_kanban_record {
+    border-radius: 12px !important;
+    border: 1px solid #e5e5e5 !important;
+    transition: all 0.3s ease;
+}
+.o_kanban_record:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.table thead {
+    background: var(--norx-primary) !important;
+    color: var(--norx-white) !important;
+}
+
+/* =========================================================
+   LOGIN / SIGNUP / RESET PASSWORD
+   ========================================================= */
+.oe_login_form,
+.oe_signup_form,
+.oe_reset_password_form {
+    border-radius: 16px !important;
+    background: var(--norx-white) !important;
+    box-shadow: 0 0 30px rgba(0,0,0,0.08) !important;
+    padding: 30px !important;
+}
+
+.oe_login_form label,
+.oe_login_form small,
+.oe_signup_form label,
+.oe_signup_form small,
+.oe_reset_password_form label,
+.oe_reset_password_form small {
+    color: var(--norx-secondary) !important;
+}
+
+.oe_login_form input,
+.oe_signup_form input,
+.oe_reset_password_form input {
+    border-radius: 8px !important;
+    border: 1px solid #d6d6d6 !important;
+    min-height: 42px;
+}
+
+.oe_login_form input:focus,
+.oe_signup_form input:focus,
+.oe_reset_password_form input:focus {
+    border-color: var(--norx-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(0,125,255,0.20) !important;
+}
+
+/* Primary submit on auth forms (Log in / Sign up / Reset) */
+.oe_login_form .btn-primary,
+.oe_signup_form .btn-primary,
+.oe_reset_password_form .btn-primary {
+    background: var(--norx-primary) !important;
+    border-color: var(--norx-primary) !important;
+    color: var(--norx-white) !important;
+    border-radius: 8px !important;
+    min-height: 44px;
+    font-weight: 500;
+}
+.oe_login_form .btn-primary:hover,
+.oe_signup_form .btn-primary:hover,
+.oe_reset_password_form .btn-primary:hover {
+    background: var(--norx-primary-hover) !important;
+    border-color: var(--norx-primary-hover) !important;
+}
+
+/* ---- Convert the bottom "secondary" buttons into TEXT LINKS
+        in the secondary color (no more blue pill buttons) ---- */
+.oe_login_form a.btn,
+.oe_signup_form a.btn,
+.oe_reset_password_form a.btn,
+.oe_login_form .btn-link,
+.oe_signup_form .btn-link,
+.oe_reset_password_form .btn-link,
+.oe_login_form .btn-secondary,
+.oe_signup_form .btn-secondary,
+.oe_reset_password_form .btn-secondary,
+.oe_login_form .oe_login_buttons .btn:not(.btn-primary),
+.oe_signup_form .oe_login_buttons .btn:not(.btn-primary),
+.oe_reset_password_form .oe_login_buttons .btn:not(.btn-primary) {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: var(--norx-secondary) !important;
+    text-decoration: underline !important;
+    font-weight: 500 !important;
+    padding: 8px 4px !important;
+    display: inline-block !important;
+    width: auto !important;
+    min-height: auto !important;
+}
+
+.oe_login_form a.btn:hover,
+.oe_signup_form a.btn:hover,
+.oe_reset_password_form a.btn:hover,
+.oe_login_form .btn-link:hover,
+.oe_signup_form .btn-link:hover,
+.oe_reset_password_form .btn-link:hover,
+.oe_login_form .btn-secondary:hover,
+.oe_signup_form .btn-secondary:hover,
+.oe_reset_password_form .btn-secondary:hover {
+    color: var(--norx-primary) !important;
+    background: transparent !important;
+    text-decoration: underline !important;
+}
+
+/* Small top-of-field links: Reset Password, Choose a user, etc. */
+.oe_login_form a[href*="reset_password"],
+.oe_login_form a[href*="signup"],
+.oe_login_form .o_login_user_choice {
+    color: var(--norx-secondary) !important;
+    text-decoration: none !important;
+}
+.oe_login_form a[href*="reset_password"]:hover,
+.oe_login_form a[href*="signup"]:hover {
+    color: var(--norx-primary) !important;
+    text-decoration: underline !important;
+}
+
+/* =========================================================
+   "POWERED BY" HANDLING
+   ---------------------------------------------------------
+   1) Kill the previously-injected sticky footer.
+   2) Hide Odoo's "Powered by Odoo" everywhere.
+   3) "Powered by Norx ERP" is rendered by an XML template
+      only on login / signup / reset password pages, and is
+      a normal (non-sticky) inline block.
+   ========================================================= */
+
+/* 1) Remove the global sticky pseudo-element */
+body::after,
+body::before {
+    content: none !important;
+    display: none !important;
+}
+
+/* 2) Hide Odoo's "Powered by Odoo" link wherever it appears */
+.o_footer a[href*="odoo.com"],
+.oe_footer a[href*="odoo.com"],
+footer a[href*="odoo.com"],
+a[href="https://www.odoo.com"],
+a[href="http://www.odoo.com"],
+a[href*="odoo.com"][title*="Odoo"],
+a.o_footer_powered_by,
+.o_main_navbar a[href*="odoo.com"],
+small a[href*="odoo.com"],
+.text-muted a[href*="odoo.com"] {
+    display: none !important;
+}
+
+/* If a footer wrapper exists only for "Powered by Odoo", hide it.
+   (Safe because we replace it with .norx_powered via the template.) */
+div.o_footer:not(:has(.norx_powered)),
+.o_database_list .text-center .text-muted:not(:has(.norx_powered)) {
+    display: none !important;
+}
+
+/* 3) Norx footer (rendered by XML on auth pages only) */
+.norx_powered,
+.norx_powered_fixed {
+    text-align: center !important;
+    color: var(--norx-secondary) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    margin: 18px 0 8px 0 !important;
+    padding: 6px 0 !important;
+    position: static !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+    z-index: auto !important;
+}

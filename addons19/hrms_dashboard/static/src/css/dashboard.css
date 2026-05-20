@@ -4,7 +4,8 @@ overflow: auto !important;
 
 .oh_dashboards{
     padding-top :15px;
-    background-color: #f8faff !important;
+    background-color: #ffffff !important;
+    min-height: 100vh;
 }
 
 .oh-card h4 {
@@ -197,7 +198,7 @@ rect:hover {  fill:#934da5; }
 /*=====================New Dashboard===========================*/
 
 .oh_dashboards {
-    background-color: #f8faff !important;
+    background-color: #ffffff !important;
     padding: 0px !important;
 
 }
@@ -1207,4 +1208,379 @@ h4 .stat-count {
 }
 .address p {
     color: black !important;
+}
+
+/* ============================================================
+   MANAGER EXTENDED DASHBOARD — New Styles
+   ============================================================ */
+
+/* ── Summary Stat Cards ── */
+.oh_manager_extended_dashboard {
+    margin-top: 0;
+}
+
+.oh-mgr-stat-row {
+    margin-top: 16px;
+}
+
+.oh-mgr-stat-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 4px 0 12px 0;
+}
+
+.oh-mgr-stat-card {
+    flex: 1 1 140px;
+    min-width: 130px;
+    max-width: 200px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-left: 5px solid #ddd;
+    transition: box-shadow 0.2s;
+}
+
+.oh-mgr-stat-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+}
+
+.oh-stat-blue  { border-left-color: #208cc2; }
+.oh-stat-orange{ border-left-color: #f65337; }
+.oh-stat-yellow{ border-left-color: #ffa433; }
+.oh-stat-red   { border-left-color: #cf3650; }
+.oh-stat-green { border-left-color: #659d4e; }
+.oh-stat-purple{ border-left-color: #8e559e; }
+
+.oh-mgr-stat-icon {
+    font-size: 24px;
+    opacity: 0.75;
+    min-width: 28px;
+    text-align: center;
+}
+
+.oh-stat-blue   .oh-mgr-stat-icon { color: #208cc2; }
+.oh-stat-orange .oh-mgr-stat-icon { color: #f65337; }
+.oh-stat-yellow .oh-mgr-stat-icon { color: #ffa433; }
+.oh-stat-red    .oh-mgr-stat-icon { color: #cf3650; }
+.oh-stat-green  .oh-mgr-stat-icon { color: #659d4e; }
+.oh-stat-purple .oh-mgr-stat-icon { color: #8e559e; }
+
+.oh-mgr-stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.oh-mgr-stat-num {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    line-height: 1.2;
+}
+
+.oh-mgr-stat-label {
+    font-size: 11px;
+    color: #777;
+    margin-top: 2px;
+}
+
+/* ── Table Styles ── */
+.oh-mgr-table-wrap {
+    overflow-x: auto;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 6px;
+}
+
+.oh-mgr-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.oh-mgr-table thead tr {
+    background: #f0f4f8;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.oh-mgr-table thead th {
+    padding: 9px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 2px solid #dde3eb;
+}
+
+.oh-mgr-table tbody tr {
+    border-bottom: 1px solid #eef0f3;
+    transition: background 0.15s;
+}
+
+.oh-mgr-table tbody tr:hover {
+    background: #f7fafc;
+}
+
+.oh-mgr-table tbody td {
+    padding: 8px 12px;
+    color: #555;
+    vertical-align: middle;
+}
+
+.oh-emp-name {
+    font-weight: 600;
+    color: #2d3748 !important;
+}
+
+.oh-time-in {
+    color: #27ae60 !important;
+    font-weight: 600;
+    font-family: monospace;
+}
+
+.oh-time-out {
+    color: #e67e22 !important;
+    font-family: monospace;
+}
+
+.oh-amount {
+    font-weight: 700;
+    color: #6c3483 !important;
+}
+
+.oh-resign-date {
+    color: #c0392b !important;
+    font-weight: 600;
+}
+
+.oh-join-date {
+    color: #27ae60 !important;
+    font-weight: 600;
+}
+
+.oh-empty-row {
+    text-align: center;
+    color: #aaa;
+    padding: 20px !important;
+    font-style: italic;
+}
+
+/* ── Status Badges ── */
+.oh-state-badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.oh-state-submitted   { background: #d6eaf8; color: #1a5276; }
+.oh-state-approved    { background: #d5f5e3; color: #1d6a2e; }
+.oh-state-done        { background: #d5f5e3; color: #1d6a2e; }
+.oh-state-pending     { background: #fef9e7; color: #7d6608; border: 1px solid #f9e79f; }
+.oh-state-to-report   { background: #d6eaf8; color: #1a5276; }
+.oh-state-to-submit   { background: #d6eaf8; color: #1a5276; }
+.oh-state-refused     { background: #fadbd8; color: #922b21; }
+.oh-state-to-approve  { background: #fdebd0; color: #784212; }
+.oh-state-second-approval { background: #e8f8f5; color: #0e6655; }
+
+/* ── Count Badges in headings ── */
+.oh-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.oh-badge-blue   { background: #208cc2; color: #fff; }
+.oh-badge-red    { background: #cf3650; color: #fff; }
+.oh-badge-yellow { background: #ffa433; color: #fff; }
+.oh-badge-green  { background: #659d4e; color: #fff; }
+.oh-badge-purple { background: #8e559e; color: #fff; }
+
+/* ── Dept Bar Chart ── */
+.oh-dept-bar-wrap {
+    padding: 12px 16px;
+    height: 280px;
+}
+
+
+/* ============================================================
+   White background + Mobile responsive overrides
+   (Added after removing employee profile, top action buttons,
+   Monthly Leave Analysis, Monthly Join/Resign, Attrition Rate)
+   ============================================================ */
+
+/* Force white background everywhere on the dashboard */
+.o_action_manager,
+.oh_dashboards,
+.oh_dashboards .container-fluid.o_hr_dashboard,
+.employee_dashboard_main,
+.oh_manager_extended_dashboard {
+    background-color: #ffffff !important;
+}
+
+/* Since the left "dummy" spacer columns are removed, use the
+   full width with comfortable horizontal padding on all sides. */
+.oh_dashboards .container-fluid.o_hr_dashboard {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+}
+
+.row.main-section {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 12px;
+}
+
+/* Cards should also be white (some legacy rules use light blue/grey) */
+.oh-card,
+.oh_card,
+.hr_notification {
+    background-color: #ffffff !important;
+}
+
+/* Make stat cards grid stretch nicely on wide screens too */
+.oh-mgr-stat-cards {
+    justify-content: flex-start;
+}
+
+.oh-mgr-stat-card {
+    max-width: none;
+}
+
+/* ----------- Tablet (≤ 992px) ----------- */
+@media (max-width: 992px) {
+    .oh_dashboards .container-fluid.o_hr_dashboard {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    /* Stat cards: 3 per row */
+    .oh-mgr-stat-card {
+        flex: 1 1 calc(33.333% - 12px);
+        min-width: 0;
+    }
+
+    /* Tables become horizontally scrollable instead of breaking layout */
+    .oh-mgr-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .oh-mgr-table {
+        min-width: 520px;
+    }
+}
+
+/* ----------- Mobile (≤ 768px) ----------- */
+@media (max-width: 768px) {
+    .oh_dashboards {
+        padding-top: 8px !important;
+    }
+
+    .oh_dashboards .container-fluid.o_hr_dashboard {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .row.main-section {
+        margin-top: 8px;
+    }
+
+    /* All grid columns become full width */
+    .row.main-section > [class*="col-"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+        margin-bottom: 12px;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /* Stat cards: 2 per row on mobile */
+    .oh-mgr-stat-cards {
+        gap: 8px;
+    }
+    .oh-mgr-stat-card {
+        flex: 1 1 calc(50% - 8px);
+        min-width: 0;
+        padding: 12px;
+    }
+    .oh-mgr-stat-num {
+        font-size: 18px;
+    }
+    .oh-mgr-stat-label {
+        font-size: 12px;
+    }
+
+    /* Card content padding */
+    .oh-card {
+        margin-bottom: 0;
+        border-radius: 8px;
+    }
+    .oh-card-body {
+        padding: 10px 12px !important;
+    }
+
+    .stat_head,
+    .stat-head {
+        font-size: 14px;
+        flex-wrap: wrap;
+    }
+
+    /* Bottom 3-card row (Birthdays / Events / Announcements) full width */
+    .hr_notification {
+        margin-bottom: 12px;
+        border-radius: 8px;
+    }
+    .hr_notification-head {
+        font-size: 15px;
+        padding: 10px 12px;
+    }
+
+    /* Department bar chart shrinks */
+    .oh-dept-bar-wrap {
+        height: 240px;
+        padding: 8px 6px;
+    }
+
+    /* Tables stay scrollable */
+    .oh-mgr-table {
+        font-size: 12px;
+        min-width: 480px;
+    }
+    .oh-mgr-table th,
+    .oh-mgr-table td {
+        padding: 6px 8px;
+    }
+}
+
+/* ----------- Small mobile (≤ 480px) ----------- */
+@media (max-width: 480px) {
+    /* Stat cards: 1 per row */
+    .oh-mgr-stat-card {
+        flex: 1 1 100%;
+    }
+    .oh-mgr-stat-num {
+        font-size: 20px;
+    }
+    .oh-dept-bar-wrap {
+        height: 220px;
+    }
 }

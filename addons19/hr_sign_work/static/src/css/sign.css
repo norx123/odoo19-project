@@ -1,0 +1,1129 @@
+/* =========================================================
+   HR SIGN MODULE — PROFESSIONAL LAYOUT
+   ========================================================= */
+
+.o_sign_template_form .o_form_sheet {
+    padding: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+.o_sign_template_form .o_form_sheet_bg {
+    padding: 0 !important;
+}
+
+/* ── BREADCRUMB NAV BAR ──────────────────────────────── */
+.o_sign_breadcrumb_bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    min-height: 44px;
+}
+
+.o_sign_breadcrumb_link {
+    color: #875A7B;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.15s;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.o_sign_breadcrumb_link:hover {
+    background: #f3eef7;
+    color: #6e4866;
+    text-decoration: none;
+}
+.o_sign_breadcrumb_link i { font-size: 12px; }
+
+.o_sign_breadcrumb_sep {
+    color: #aaa;
+    font-size: 14px;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.o_sign_breadcrumb_current {
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+.o_sign_breadcrumb_current .o_field_widget {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.o_sign_breadcrumb_current .o_field_widget input {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    background: transparent !important;
+    padding: 2px 4px !important;
+    border-radius: 3px !important;
+    outline: none !important;
+    transition: border-color 0.15s, background 0.15s;
+    max-width: 340px;
+}
+.o_sign_breadcrumb_current .o_field_widget input:hover { background: #f3eef7 !important; }
+.o_sign_breadcrumb_current .o_field_widget input:focus {
+    border-bottom-color: #875A7B !important;
+    background: #fdf7ff !important;
+}
+
+
+/* TITLE BAR */
+.o_sign_title_bar {
+    padding: 12px 20px;
+    border-bottom: 1px solid #dee2e6;
+    background: #fff;
+    flex-shrink: 0;
+}
+.o_sign_title_bar h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* MAIN WRAP — one scroll only */
+.o_sign_editor_wrap {
+    display: flex;
+    height: calc(100vh - 192px); /* extra 44px for breadcrumb bar */
+    overflow: hidden;
+}
+
+/* SIDEBAR */
+.o_sign_sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: #1e1e2e;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 12px;
+    gap: 20px;
+    overflow-y: auto;
+    flex-shrink: 0;
+    border-right: 2px solid #111;
+}
+
+.o_sign_sidebar_label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.o_sign_upload_area {
+    background: #2d2d44;
+    border: 1px dashed #555;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.o_sign_field_list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.o_sign_field_btn {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    text-align: left;
+    cursor: grab;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.15s;
+    color: #fff;
+}
+.o_sign_field_btn:active { cursor: grabbing; opacity: 0.7; }
+.o_sign_field_btn:hover  { filter: brightness(1.15); }
+
+/* PDF AREA — only this scrolls */
+.o_sign_pdf_area {
+    flex: 1;
+    background: #525659;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 28px 20px;
+}
+
+/* PDF canvas wrapper — position:relative so overlay + iframe stack correctly */
+#o_sign_pdf_canvas {
+    position: relative;
+    width: 820px;
+    min-height: 1100px;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+/* Transparent overlay — sits on top of iframe, catches all drag events */
+#o_sign_drop_overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: transparent;
+    border-radius: 4px;
+}
+
+/* PDF iframe behind overlay */
+#o_sign_pdf_canvas iframe.o_pdf_frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 1100px;
+    border: none;
+    display: block;
+    z-index: 1;
+}
+
+/* PLACEHOLDER */
+.o_sign_placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    color: #bbb;
+    text-align: center;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+}
+.o_sign_placeholder .icon  { font-size: 72px; }
+.o_sign_placeholder .title { font-size: 18px; font-weight: 600; }
+.o_sign_placeholder .sub   { font-size: 13px; color: #999; }
+
+/* PLACED FIELD WIDGET */
+.o_sign_field_placed {
+    position: absolute;
+    min-width: 200px;
+    z-index: 20;
+    background: #fff;
+    border: 2px solid #875A7B;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+}
+
+.o_sign_field_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #875A7B;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    cursor: move;
+    user-select: none;
+}
+
+.o_sign_field_label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.o_remove_field {
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    opacity: 0.8;
+}
+.o_remove_field:hover { opacity: 1; }
+
+.o_sign_field_body {
+    padding: 6px 8px;
+    background: #fff;
+}
+
+.o_sign_input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    outline: none;
+    font-size: 13px;
+    padding: 2px 0;
+    background: transparent;
+    color: #333;
+    box-sizing: border-box;
+}
+.o_sign_input:focus { border-bottom-color: #875A7B; }
+
+.o_sign_sig_btn {
+    width: 100%;
+    background: #f3eef7;
+    border: 1px dashed #875A7B;
+    border-radius: 4px;
+    color: #875A7B;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px;
+    cursor: pointer;
+}
+.o_sign_sig_btn:hover { background: #e8dff0; }
+
+/* SIGNATURE PAD OVERLAY */
+#o_sign_pad_overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+}
+
+#o_sign_pad_box {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+    width: 520px;
+}
+
+#o_sign_pad_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+#o_sign_pad_close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    line-height: 1;
+}
+#o_sign_pad_close:hover { color: #333; }
+
+#o_sign_pad_canvas {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fafafa;
+    cursor: crosshair;
+    display: block;
+}
+
+#o_sign_pad_actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+#o_sign_pad_clear {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 6px 18px;
+    cursor: pointer;
+    font-size: 13px;
+}
+#o_sign_pad_clear:hover { background: #e9ecef; }
+
+#o_sign_pad_save {
+    background: #875A7B;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 22px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+}
+#o_sign_pad_save:hover { background: #6e4866; }
+/* FIELD POPUP */
+#o_sign_field_popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.22);
+    width: 320px;
+    padding: 0;
+    overflow: hidden;
+    font-family: inherit;
+}
+
+.o_popup_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #875A7B;
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.o_popup_close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.8;
+}
+.o_popup_close:hover { opacity: 1; }
+
+.o_popup_row {
+    padding: 12px 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.o_popup_row label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.o_popup_row textarea {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+    min-height: 60px;
+}
+.o_popup_row textarea:focus { border-color: #875A7B; }
+
+.o_popup_row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #875A7B;
+    margin-top: 2px;
+}
+
+.o_popup_actions {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px;
+    justify-content: flex-end;
+}
+
+.o_popup_actions button {
+    padding: 7px 20px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#o_popup_save {
+    background: #875A7B;
+    color: #fff;
+}
+#o_popup_save:hover { background: #6e4866; }
+
+#o_popup_delete {
+    background: #f8f9fa;
+    color: #dc3545;
+    border: 1px solid #dee2e6;
+}
+#o_popup_delete:hover { background: #fee2e2; }
+
+/* POPUP BACKDROP */
+#o_sign_popup_backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(0,0,0,0.15);
+}
+
+/* POPUP ALIGNMENT BUTTONS */
+.o_popup_align_btns {
+    display: flex;
+    gap: 6px;
+}
+.o_align_btn {
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #555;
+}
+.o_align_btn.active {
+    background: #875A7B;
+    color: #fff;
+    border-color: #875A7B;
+}
+.o_align_btn:hover:not(.active) { background: #e0e0e0; }
+
+/* POPUP CHECKBOXES ROW */
+.o_popup_checks {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.o_check_label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-weight: 500 !important;
+}
+.o_check_label input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    accent-color: #875A7B;
+}
+
+/* POPUP ACTION BUTTONS */
+.o_popup_actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 16px;
+}
+#o_popup_save {
+    flex: 1;
+    background: #875A7B;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+#o_popup_save:hover { background: #6e4866; }
+
+#o_popup_copy, #o_popup_delete {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #555;
+}
+#o_popup_copy:hover { background: #e9ecef; }
+#o_popup_delete { color: #dc3545; }
+#o_popup_delete:hover { background: #fee2e2; border-color: #dc3545; }
+
+
+/* =====================================================
+   SIGN DOC — Google Docs Style
+   ===================================================== */
+
+.o_sign_doc_form .o_form_sheet_bg,
+.o_sign_doc_form .o_form_view {
+    background: #f0f4f9 !important;
+    padding: 0 !important;
+}
+.o_sign_doc_form .o_form_sheet {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border: none !important;
+}
+.o_sign_doc_title_wrap {
+    background: #f0f4f9;
+    padding: 28px 80px 6px 80px;
+}
+.o_sign_doc_title .o_field_widget input,
+.o_sign_doc_title input {
+    font-size: 1.8rem !important;
+    font-weight: 400 !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    background: transparent !important;
+    color: #202124 !important;
+    width: 100% !important;
+    padding: 4px 0 !important;
+    outline: none !important;
+    transition: border-color 0.15s;
+    font-family: Arial, sans-serif !important;
+}
+.o_sign_doc_title .o_field_widget input:focus,
+.o_sign_doc_title input:focus {
+    border-bottom: 2px solid #1a73e8 !important;
+}
+.o_sign_doc_meta {
+    background: #f0f4f9;
+    padding: 6px 80px 16px 80px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: #5f6368;
+}
+.o_sign_doc_meta .o_field_widget { margin: 0 !important; }
+.o_sign_doc_page_wrap {
+    background: #f0f4f9;
+    padding: 30px 40px 80px 40px;
+    min-height: calc(100vh - 180px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+.o_sign_doc_page {
+    background: #ffffff;
+    width: 850px;
+    min-height: 1100px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.12);
+    padding: 72px 72px;
+    box-sizing: border-box;
+}
+.o_sign_doc_editor .odoo-editor-editable,
+.o_sign_doc_editor .o_editable {
+    min-height: 870px !important;
+    font-size: 11pt !important;
+    font-family: Arial, sans-serif !important;
+    line-height: 1.6 !important;
+    color: #202124 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    text-align: justify !important;
+    hyphens: auto !important;
+}
+
+/* Justify all paragraph-level elements inside the editor */
+.o_sign_doc_editor .odoo-editor-editable p,
+.o_sign_doc_editor .o_editable p,
+.o_sign_doc_editor .odoo-editor-editable div,
+.o_sign_doc_editor .o_editable div {
+    text-align: justify !important;
+    hyphens: auto !important;
+}
+.o_sign_doc_editor .o_field_html {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* ── When inside gdoc_shell — override Odoo page_wrap & page styles ── */
+#gdoc_shell .o_sign_doc_page_wrap {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    justify-content: unset !important;
+    align-items: unset !important;
+    min-height: unset !important;
+}
+#gdoc_shell .o_sign_doc_page {
+    width: 100% !important;
+    min-height: 1100px !important;
+    box-shadow: none !important;
+    padding: 72px 72px !important;
+    box-sizing: border-box !important;
+    background: #fff !important;
+    margin: 0 !important;
+}
+#gdoc_shell .o_sign_doc_editor .odoo-editor-editable,
+#gdoc_shell .o_sign_doc_editor .o_editable,
+#gdoc_shell .odoo-editor-editable,
+#gdoc_shell [contenteditable="true"] {
+    min-height: 600px !important;
+    font-size: 11pt !important;
+    font-family: Arial, sans-serif !important;
+    line-height: 1.6 !important;
+    color: #202124 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    text-align: justify !important;
+}
+#gdoc_shell .o_sign_doc_editor .o_field_html {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+.o_sign_share_link_box {
+    background: #f8f9fa;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+.o_sign_share_link_input input {
+    font-size: 0.85rem !important;
+    color: #1a73e8 !important;
+    background: transparent !important;
+    border: none !important;
+    width: 100% !important;
+}
+
+/* ── GDOC SHELL ──────────────────────────────────────── */
+.o_sign_doc_form .o_control_panel,
+.o_sign_doc_form .o_statusbar,
+.o_sign_doc_form .o_form_statusbar { display: none !important; }
+.o_sign_doc_form .o_form_sheet_bg { background: #f0f4f9 !important; padding: 0 !important; }
+.o_sign_doc_form .o_form_sheet { max-width: 100% !important; padding: 0 !important; box-shadow: none !important; background: transparent !important; }
+
+.gdoc_shell {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Google Sans', Arial, sans-serif;
+    background: #fff;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 9999 !important;
+}
+.gdoc_topbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+    min-height: 52px;
+}
+.gdoc_logo { display: flex; align-items: center; flex-shrink: 0; margin-right: 4px; }
+.gdoc_logo svg { width: 36px; height: 36px; }
+.gdoc_title_input {
+    flex: 1;
+    max-width: 400px;
+    font-size: 18px;
+    font-weight: 400;
+    border: none;
+    outline: none;
+    color: #202124;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background 0.15s;
+    font-family: inherit;
+}
+.gdoc_title_input:hover, .gdoc_title_input:focus { background: #f1f3f4; }
+.gdoc_title_icons { display: flex; gap: 2px; align-items: center; }
+.gdoc_icon_btn {
+    background: none; border: none; cursor: pointer;
+    padding: 6px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+}
+.gdoc_icon_btn:hover { background: #f1f3f4; }
+.gdoc_topbar_right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.gdoc_share_btn {
+    display: flex; align-items: center;
+    background: #1a73e8; color: #fff;
+    border: none; border-radius: 20px;
+    padding: 8px 20px; font-size: 14px; font-weight: 500; cursor: pointer;
+}
+.gdoc_share_btn:hover { background: #1765cc; }
+.gdoc_avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #5f6368; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 500; cursor: pointer; user-select: none;
+}
+.gdoc_menubar {
+    display: flex; align-items: center; gap: 0;
+    padding: 0 60px; background: #fff; flex-shrink: 0;
+}
+.gdoc_menu_item {
+    background: none; border: none; font-size: 13px;
+    color: #202124; padding: 5px 10px; cursor: pointer;
+    border-radius: 4px; font-family: inherit;
+}
+.gdoc_menu_item:hover { background: #f1f3f4; }
+.gdoc_toolbar {
+    display: flex; align-items: center; gap: 2px;
+    padding: 4px 60px;
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0; flex-wrap: wrap; min-height: 40px;
+}
+.gdoc_tb_btn {
+    background: none; border: none; padding: 5px 7px; cursor: pointer;
+    border-radius: 4px; font-size: 13px; color: #202124;
+    display: flex; align-items: center; justify-content: center;
+    min-width: 28px; height: 28px;
+}
+.gdoc_tb_btn:hover { background: #e8eaed; }
+.gdoc_tb_sep { width: 1px; height: 20px; background: #dadce0; margin: 0 4px; flex-shrink: 0; }
+.gdoc_tb_select {
+    border: none; background: transparent; font-size: 13px;
+    color: #202124; cursor: pointer; padding: 4px 6px;
+    border-radius: 4px; font-family: inherit; outline: none;
+}
+.gdoc_tb_select:hover { background: #e8eaed; }
+.gdoc_font_size {
+    width: 38px; border: none; background: transparent;
+    font-size: 13px; text-align: center; padding: 3px 0;
+    border-radius: 4px; outline: none;
+}
+.gdoc_font_size:hover, .gdoc_font_size:focus { background: #e8eaed; }
+.gdoc_fmt { font-size: 14px; font-weight: 600; }
+.gdoc_italic { font-style: italic; }
+.gdoc_underline { text-decoration: underline; }
+.gdoc_strike { text-decoration: line-through; }
+.gdoc_ruler_wrap {
+    background: #f8f9fa; display: flex; justify-content: center;
+    border-bottom: 1px solid #e0e0e0; flex-shrink: 0; overflow: hidden;
+}
+.gdoc_body { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+.gdoc_sidebar {
+    width: 240px; min-width: 240px; background: #fff;
+    border-right: 1px solid #e0e0e0;
+    display: flex; flex-direction: column;
+    padding: 8px 0; overflow-y: auto; flex-shrink: 0;
+    height: 100%;
+    box-sizing: border-box;
+}
+.gdoc_sidebar_back {
+    background: none; border: none; cursor: pointer;
+    padding: 8px 12px; display: flex; align-items: center;
+    border-radius: 4px; margin: 0 8px;
+}
+.gdoc_sidebar_back:hover { background: #f1f3f4; }
+.gdoc_sidebar_header { display: flex; align-items: center; justify-content: space-between; padding: 6px 16px; }
+.gdoc_sidebar_title { font-size: 13px; font-weight: 500; color: #202124; }
+.gdoc_sidebar_add {
+    background: none; border: none; font-size: 20px;
+    color: #5f6368; cursor: pointer; padding: 2px 6px; border-radius: 4px;
+}
+.gdoc_sidebar_add:hover { background: #f1f3f4; }
+.gdoc_tab_list { padding: 4px 8px; }
+.gdoc_tab {
+    display: flex; align-items: center; padding: 7px 10px;
+    border-radius: 6px; font-size: 13px; color: #202124;
+    cursor: pointer; position: relative;
+}
+.gdoc_tab:hover { background: #f1f3f4; }
+.gdoc_tab_active { background: #e8f0fe; color: #1a73e8; }
+.gdoc_tab_more {
+    background: none; border: none; font-size: 16px;
+    color: #5f6368; cursor: pointer; margin-left: auto; padding: 0 4px; border-radius: 4px;
+}
+.gdoc_tab_more:hover { background: #dadce0; }
+.gdoc_tab_hint { font-size: 11px; color: #80868b; padding: 8px 10px; line-height: 1.4; }
+.gdoc_page_area {
+    flex: 1;
+    background: #f0f4f9;
+    overflow-y: auto;
+    overflow-x: auto;
+    padding: 30px 40px 80px 40px;
+    min-height: 0;
+    scroll-behavior: smooth;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ── v4 engine: doc wrapper ── */
+#gdoc_doc_wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* ── Single contenteditable editor (all content, all pages) ── */
+#gdoc_main_editor {
+    position: relative;
+    z-index: 2;
+    /* CARD_W = 794 + 96*2 = 986px total */
+    width: 986px;
+    /* padding = the visible margins (96px each side = ~1 inch) */
+    padding: 96px 96px 96px 96px;
+    min-height: 1123px;
+    font-size: 11pt;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #202124;
+    outline: none;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    /* content-box: padding is EXTRA — content stays in 794px zone */
+    box-sizing: content-box;
+    cursor: text;
+    caret-color: #202124;
+    text-align: justify;
+    hyphens: auto;
+}
+#gdoc_main_editor:focus { outline: none !important; }
+
+/* Global containment — nothing escapes the page card */
+#gdoc_doc_wrap {
+    /* width set dynamically by JS */
+}
+#gdoc_bg_card {
+    /* height set dynamically by JS */
+}
+
+/* Paragraph & text element resets */
+#gdoc_main_editor p         { margin: 0; padding: 0; min-height: 1.6em; text-align: justify; hyphens: auto; }
+#gdoc_main_editor div       { min-height: 1.6em; text-align: justify; hyphens: auto; }
+#gdoc_main_editor h1        { font-size: 2em;   font-weight: 700; margin: 0.5em 0 0.25em; }
+#gdoc_main_editor h2        { font-size: 1.5em; font-weight: 700; margin: 0.45em 0 0.2em; }
+#gdoc_main_editor h3        { font-size: 1.2em; font-weight: 700; margin: 0.4em 0 0.15em; }
+#gdoc_main_editor h4,
+#gdoc_main_editor h5,
+#gdoc_main_editor h6        { font-weight: 700; margin: 0.35em 0 0.1em; }
+#gdoc_main_editor ul,
+#gdoc_main_editor ol        { margin: 0.25em 0; padding-left: 2em; }
+#gdoc_main_editor li        { margin: 0.1em 0; }
+#gdoc_main_editor blockquote {
+    margin: 0.5em 0 0.5em 1.5em;
+    padding: 0 0 0 0.75em;
+    border-left: 3px solid #dadce0;
+    color: #5f6368;
+}
+#gdoc_main_editor table     { border-collapse: collapse; width: 100%; margin: 0.5em 0; }
+#gdoc_main_editor td,
+#gdoc_main_editor th        { border: 1px solid #dadce0; padding: 6px 10px; }
+#gdoc_main_editor img       {
+    /* Images must stay within content area (794px), not spill into margins */
+    max-width: 794px !important;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0.5em auto;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border-radius: 2px;
+}
+
+/* Image wrapper */
+.gdoc_img_wrap {
+    max-width: 794px !important;
+    box-sizing: border-box;
+}
+.gdoc_img_wrap img {
+    max-width: 100% !important;
+    transition: outline 0.1s;
+}
+.gdoc_img_wrap img:hover {
+    cursor: pointer;
+}
+
+/* Clear floats after image wrappers */
+.gdoc_img_wrap[style*="float"]::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+/* After a float block, clear so text doesn't overlap page break */
+#gdoc_main_editor > p::before {
+    content: '';
+    display: table;
+}
+
+/* Koi bhi block element page ke beech clip na ho */
+#gdoc_main_editor p,
+#gdoc_main_editor div,
+#gdoc_main_editor h1,
+#gdoc_main_editor h2,
+#gdoc_main_editor h3,
+#gdoc_main_editor h4,
+#gdoc_main_editor h5,
+#gdoc_main_editor h6,
+#gdoc_main_editor ul,
+#gdoc_main_editor ol,
+#gdoc_main_editor li,
+#gdoc_main_editor table,
+#gdoc_main_editor figure,
+#gdoc_main_editor blockquote {
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+#gdoc_main_editor a         { color: #1a73e8; }
+
+/* Stripe canvas and bg card are absolutely positioned — no CSS needed */
+#gdoc_stripe_canvas { pointer-events: none; }
+#gdoc_bg_card       { pointer-events: none; }
+
+/* Hide legacy elements from v1/v2/v3 */
+.gdoc_page_card  { display: none !important; }
+.gdoc_vpage      { display: none !important; }
+#gdoc_page_stack { display: none !important; }
+#gdoc_paper_wrap { display: none !important; }
+#gdoc_break_layer{ display: none !important; }
+
+@media (max-width: 900px) {
+    .o_sign_doc_page { width: 100%; padding: 40px 32px; }
+    .o_sign_doc_title_wrap, .o_sign_doc_meta { padding-left: 24px; padding-right: 24px; }
+    .o_sign_doc_page_wrap { padding: 16px; }
+}
+
+/* ── GDOC SIDEBAR NAV LINKS ──────────────────────────── */
+.gdoc_nav_links {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 8px;
+}
+
+.gdoc_nav_link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #444;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.15s;
+    cursor: pointer;
+}
+.gdoc_nav_link:hover {
+    background: #f1f3f4;
+    text-decoration: none;
+    color: #202124;
+}
+.gdoc_nav_link_active {
+    background: #e8f0fe;
+    color: #1a73e8;
+}
+.gdoc_nav_link_active:hover {
+    background: #d2e3fc;
+    color: #1a73e8;
+}
+
+/* ── ODOO-STYLE PURPLE NAVBAR inside Doc form ────────── */
+.gdoc_odoo_navbar {
+    background: #714B67;
+    flex-shrink: 0;
+    padding: 0 16px;
+}
+.gdoc_odoo_navbar_inner {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 44px;
+}
+.gdoc_odoo_app_name {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 0 20px 0 8px;
+    opacity: 0.95;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+}
+.gdoc_odoo_nav_tabs {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: 0;
+}
+.gdoc_odoo_tab {
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0 16px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    border-bottom: 3px solid transparent;
+    transition: background 0.15s, color 0.15s;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.gdoc_odoo_tab:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    text-decoration: none;
+}
+.gdoc_odoo_tab_active {
+    color: #fff !important;
+    border-bottom: 3px solid #fff;
+    background: rgba(255,255,255,0.1);
+}
+
+/* ── GDOC DROPDOWN MENUS ─────────────────────────────── */
+.gdoc_dropdown {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    min-width: 220px;
+    padding: 4px 0;
+    font-size: 13px;
+    color: #202124;
+}
+.gdoc_dropdown_item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 0;
+    gap: 24px;
+}
+.gdoc_dropdown_item:hover {
+    background: #f1f3f4;
+}
+.gdoc_dropdown_shortcut {
+    color: #80868b;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+.gdoc_dropdown_sep {
+    height: 1px;
+    background: #e0e0e0;
+    margin: 4px 0;
+}

@@ -9,16 +9,6 @@
 #
 #    You can modify it under the terms of the GNU LESSER
 #    GENERAL PUBLIC LICENSE (LGPL v3), Version 3.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the1`
-#    GNU LESSER GENERAL PUBLIC LICENSE (LGPL v3) for more details.
-#
-#    You should have received a copy of the GNU LESSER GENERAL PUBLIC LICENSE
-#    (LGPL v3) along with this program.
-#    If not, see <http://www.gnu.org/licenses/>.
-#
 #############################################################################
 import pandas as pd
 from collections import defaultdict
@@ -72,17 +62,16 @@ class HrEmployee(models.Model):
 
     @api.model
     def check_user_group(self):
-        """To check the user is a hr manager or not"""
+        """Check if user is HR Manager or HR Officer (can access manager dashboard)"""
         uid = request.session.uid
         user = self.env['res.users'].sudo().search([('id', '=', uid)], limit=1)
-        if user.has_group('hr.group_hr_manager'):
+        if user.has_group('hr.group_hr_manager') or user.has_group('hr.group_hr_user'):
             return True
-        else:
-            return False
+        return False
 
     @api.model
     def get_user_employee_details(self):
-        """To fetch the details of employee"""
+        """Fetch details of logged-in employee"""
         uid = request.session.uid
         employee = self.env['hr.employee'].sudo().search_read(
             [('user_id', '=', uid)], limit=1)
@@ -93,7 +82,7 @@ class HrEmployee(models.Model):
         for line in attendance:
             if line['check_in'] and line['check_out']:
                 val = {
-                    'id':line['id'],
+                    'id': line['id'],
                     'date': line['check_in'].date(),
                     'sign_in': line['check_in'].time().strftime('%H:%M'),
                     'sign_out': line['check_out'].time().strftime('%H:%M'),
@@ -102,8 +91,7 @@ class HrEmployee(models.Model):
                 attendance_line.append(val)
         leaves = self.env['hr.leave'].sudo().search_read(
             [('employee_id', '=', employee[0]['id'])],
-            fields=['request_date_from', 'request_date_to', 'state',
-                    'holiday_status_id'])
+            fields=['request_date_from', 'request_date_to', 'state', 'holiday_status_id'])
         for line in leaves:
             line['type'] = line.pop('holiday_status_id')[1]
             if line['state'] == 'confirm':
@@ -149,19 +137,18 @@ class HrEmployee(models.Model):
         query = """
         select count(id)
         from hr_leave
-        WHERE (hr_leave.date_from::DATE,hr_leave.date_to::DATE) 
+        WHERE (hr_leave.date_from::DATE,hr_leave.date_to::DATE)
         OVERLAPS ('%s', '%s') and
         state='validate'""" % (today, today)
         cr = self._cr
         cr.execute(query)
         leaves_today = cr.fetchall()
         first_day = date.today().replace(day=1)
-        last_day = (date.today() + relativedelta(months=1, day=1)) - timedelta(
-            1)
+        last_day = (date.today() + relativedelta(months=1, day=1)) - timedelta(1)
         query = """
                 select count(id)
                 from hr_leave
-                WHERE (hr_leave.date_from::DATE,hr_leave.date_to::DATE) 
+                WHERE (hr_leave.date_from::DATE,hr_leave.date_to::DATE)
                 OVERLAPS ('%s', '%s')
                 and  state='validate'""" % (first_day, last_day)
         cr = self._cr
@@ -173,67 +160,207 @@ class HrEmployee(models.Model):
             [('project_id', '!=', False), ('user_id', '=', uid)])
         contract_count = self.env['hr.version'].sudo().search_count(
             [('employee_id', '=', employee[0]['id'])])
-        timesheet_view_id = self.env.ref(
-            'hr_timesheet.hr_timesheet_line_search')
+        timesheet_view_id = self.env.ref('hr_timesheet.hr_timesheet_line_search')
         job_applications = self.env['hr.applicant'].sudo().search_count([])
         if employee:
-            sql = """select broad_factor from hr_employee_broad_factor 
-            where id =%s"""
+            sql = """select broad_factor from hr_employee_broad_factor where id =%s"""
             self.env.cr.execute(sql, (employee[0]['id'],))
             result = self.env.cr.dictfetchall()
-            broad_factor = result[0]['broad_factor'] if result[0][
-                'broad_factor'] else False
+            broad_factor = result[0]['broad_factor'] if result and result[0]['broad_factor'] else False
             if employee[0]['birthday']:
                 diff = relativedelta(datetime.today(), employee[0]['birthday'])
                 age = diff.years
             else:
                 age = False
             if employee[0]['joining_date']:
-                diff = relativedelta(datetime.today(),
-                                     employee[0]['joining_date'])
+                diff = relativedelta(datetime.today(), employee[0]['joining_date'])
                 years = diff.years
                 months = diff.months
                 days = diff.days
-                experience = '{} years {} months {} days'.format(years, months,
-                                                                 days)
+                experience = '{} years {} months {} days'.format(years, months, days)
             else:
                 experience = False
-            if employee:
-                data = {
-                    'broad_factor': broad_factor if broad_factor else 0,
-                    'leaves_to_approve': leaves_to_approve,
-                    'leaves_today': leaves_today,
-                    'leaves_this_month': leaves_this_month,
-                    'leaves_alloc_req': leaves_alloc_req,
-                    'emp_timesheets': timesheet_count,
-                    'contracts_count': contract_count,
-                    'job_applications': job_applications,
-                    'timesheet_view_id': timesheet_view_id,
-                    'experience': experience,
-                    'age': age,
-                    'attendance_lines': attendance_line,
-                    'leave_lines': leaves,
-                    'expense_lines': expense
-                }
-                employee[0].update(data)
+            data = {
+                'broad_factor': broad_factor if broad_factor else 0,
+                'leaves_to_approve': leaves_to_approve,
+                'leaves_today': leaves_today,
+                'leaves_this_month': leaves_this_month,
+                'leaves_alloc_req': leaves_alloc_req,
+                'emp_timesheets': timesheet_count,
+                'contracts_count': contract_count,
+                'job_applications': job_applications,
+                'timesheet_view_id': timesheet_view_id,
+                'experience': experience,
+                'age': age,
+                'attendance_lines': attendance_line,
+                'leave_lines': leaves,
+                'expense_lines': expense
+            }
+            employee[0].update(data)
             return employee
         else:
             return False
 
     @api.model
+    def get_manager_dashboard_data(self):
+        """
+        Manager/Admin/Director dashboard data.
+        Pure ORM — no raw SQL on employee/department fields.
+        """
+        uid = request.session.uid
+        user = self.env['res.users'].sudo().search([('id', '=', uid)], limit=1)
+        if not (user.has_group('hr.group_hr_manager') or user.has_group('hr.group_hr_user')):
+            return {'access_denied': True}
+
+        today = date.today()
+        first_day = today.replace(day=1)
+        last_day = (today + relativedelta(months=1, day=1)) - timedelta(1)
+
+        # ── 1. AAJ KE CHECK-IN ──────────────────────────────────────────────
+        attendances = self.env['hr.attendance'].sudo().search([
+            ('check_in', '>=', datetime.combine(today, datetime.min.time())),
+            ('check_in', '<',  datetime.combine(today + timedelta(days=1), datetime.min.time())),
+        ], order='check_in asc')
+        today_checkins = []
+        for att in attendances:
+            today_checkins.append({
+                'name': att.employee_id.name or '',
+                'dept': att.employee_id.department_id.name or '',
+                'check_in_time':  att.check_in.strftime('%H:%M')  if att.check_in  else '',
+                'check_out_time': att.check_out.strftime('%H:%M') if att.check_out else 'Still In',
+            })
+
+        # ── 2. AAJ LEAVE PAR KAUN HAI ───────────────────────────────────────
+        on_leave_recs = self.env['hr.leave'].sudo().search([
+            ('state', '=', 'validate'),
+            ('date_from', '<=', datetime.combine(today + timedelta(days=1), datetime.min.time())),
+            ('date_to',   '>=', datetime.combine(today, datetime.min.time())),
+        ])
+        on_leave_today = []
+        for lv in on_leave_recs:
+            on_leave_today.append({
+                'name':       lv.employee_id.name or '',
+                'dept':       lv.employee_id.department_id.name or '',
+                'leave_type': lv.holiday_status_id.name or '',
+                'from_date':  str(lv.request_date_from),
+                'to_date':    str(lv.request_date_to),
+            })
+
+        # ── 3. IS MONTH KI EXPENSES ─────────────────────────────────────────
+        state_map = {
+            'draft': 'To Report', 'reported': 'To Submit',
+            'submitted': 'Submitted', 'approved': 'Approved',
+            'done': 'Done', 'refused': 'Refused',
+        }
+        expenses = self.env['hr.expense'].sudo().search([
+            ('date', '>=', first_day),
+            ('date', '<=', last_day),
+        ], order='date desc')
+        monthly_expenses = []
+        for ex in expenses:
+            monthly_expenses.append({
+                'name':    ex.employee_id.name or '',
+                'dept':    ex.employee_id.department_id.name or '',
+                'subject': ex.name or '',
+                'amount':  float(ex.total_amount or 0),
+                'date':    str(ex.date),
+                'state':   state_map.get(ex.state, ex.state),
+            })
+
+        # ── 4. RESIGNATIONS (last 3 months) ─────────────────────────────────
+        three_months_ago = today - relativedelta(months=3)
+        resign_recs = self.env['hr.employee'].sudo().search([
+            ('resign_date', '!=', False),
+            ('resign_date', '>=', three_months_ago),
+        ], order='resign_date desc')
+        resignations = []
+        for emp in resign_recs:
+            resignations.append({
+                'name':        emp.name or '',
+                'dept':        emp.department_id.name or '',
+                'job':         emp.job_id.name or '',
+                'resign_date': str(emp.resign_date),
+            })
+
+        # ── 5. PENDING LEAVE REQUESTS ────────────────────────────────────────
+        pending_leaves = self.env['hr.leave'].sudo().search([
+            ('state', 'in', ['confirm', 'validate1']),
+        ], order='request_date_from asc')
+        pending_leave_requests = []
+        for lv in pending_leaves:
+            pending_leave_requests.append({
+                'id':         lv.id,
+                'employee':   lv.employee_id.name or '',
+                'leave_type': lv.holiday_status_id.name or '',
+                'from_date':  str(lv.request_date_from),
+                'to_date':    str(lv.request_date_to),
+                'days':       round(lv.number_of_days, 1),
+                'state':      'Second Approval' if lv.state == 'validate1' else 'To Approve',
+            })
+
+        # ── 6. NAYE JOINERS IS MONTH ─────────────────────────────────────────
+        joiner_recs = self.env['hr.employee'].sudo().search([
+            ('joining_date', '>=', first_day),
+            ('joining_date', '<=', last_day),
+            ('active', '=', True),
+        ], order='joining_date desc')
+        new_joiners = []
+        for emp in joiner_recs:
+            new_joiners.append({
+                'name':         emp.name or '',
+                'dept':         emp.department_id.name or '',
+                'job':          emp.job_id.name or '',
+                'joining_date': str(emp.joining_date),
+            })
+
+        # ── 7. DEPARTMENT-WISE EMPLOYEE COUNT ────────────────────────────────
+        all_emps = self.env['hr.employee'].sudo().search([
+            ('active', '=', True),
+            ('department_id', '!=', False),
+        ])
+        dept_map = {}
+        for emp in all_emps:
+            d = emp.department_id.name or 'Unknown'
+            dept_map[d] = dept_map.get(d, 0) + 1
+        dept_employee_count = [
+            {'dept': k, 'count': v}
+            for k, v in sorted(dept_map.items(), key=lambda x: -x[1])
+        ]
+
+        total_employees = self.env['hr.employee'].sudo().search_count([('active', '=', True)])
+
+        return {
+            'access_denied': False,
+            'today_checkins':        today_checkins,
+            'on_leave_today':        on_leave_today,
+            'monthly_expenses':      monthly_expenses,
+            'resignations':          resignations,
+            'pending_leave_requests': pending_leave_requests,
+            'new_joiners':           new_joiners,
+            'dept_employee_count':   dept_employee_count,
+            'total_employees':       total_employees,
+            'stats': {
+                'checkin_count':      len(today_checkins),
+                'on_leave_count':     len(on_leave_today),
+                'pending_leave_count': len(pending_leave_requests),
+                'resignation_count':  len(resignations),
+                'new_joiner_count':   len(new_joiners),
+                'expense_total':      sum(e['amount'] for e in monthly_expenses),
+                'expense_count':      len(monthly_expenses),
+            }
+        }
+
+    @api.model
     def get_upcoming(self):
         """It returns upcoming events, announcements and birthday"""
-        cr = self._cr
         uid = request.session.uid
-        employee = self.env['hr.employee'].search([('user_id', '=', uid)],
-                                                  limit=1)
+        employee = self.env['hr.employee'].search([('user_id', '=', uid)], limit=1)
         today = fields.Date.today()
         birthday_employees = self.env['hr.employee'].search_read(
-            [('birthday', '!=', False)], fields=['id', 'name', 'birthday'], order='birthday ASC', limit=4)
-
+            [('birthday', '!=', False)], fields=['id', 'name', 'birthday'],
+            order='birthday ASC', limit=4)
         for emp in birthday_employees:
-            if emp['birthday'].month == today.month and emp[
-                'birthday'].day == today.day:
+            if emp['birthday'].month == today.month and emp['birthday'].day == today.day:
                 emp['is_birthday'] = True
             else:
                 emp_birthday = emp['birthday'].replace(year=today.year)
@@ -247,13 +374,11 @@ class HrEmployee(models.Model):
              ('department_ids', 'in', employee.department_id.id),
              ('position_ids', 'in', employee.job_id.id),
              ], fields=['announcement_reason', 'date_start', 'date_end'])
-
         events = self.env['event.event'].search_read(
             domain=[('date_begin', '>=', fields.Datetime.now())],
-            fields=['id','name', 'date_begin', 'date_end', 'address_id'],
+            fields=['id', 'name', 'date_begin', 'date_end', 'address_id'],
             order='date_begin'
         )
-
         return {
             'birthday': birthday_employees,
             'event': events,
@@ -263,16 +388,13 @@ class HrEmployee(models.Model):
     @api.model
     def get_dept_employee(self):
         """Retrieve the details of employees in each department."""
-        cr = self._cr
-        cr.execute(""" SELECT e.department_id, d.name, COUNT(e.id)
-    FROM hr_employee_public e
-    JOIN hr_department d ON d.id = e.department_id
-    GROUP BY e.department_id, d.name""")
-        dat = cr.fetchall()
-        data = []
-        for i in range(0, len(dat)):
-            data.append(
-                {'label': list(dat[i][1].values())[0], 'value': dat[i][2]})
+        # hr_employee_public mein department_id nahi hota, hr_employee use karo
+        employees = self.env['hr.employee'].sudo().search([('active', '=', True), ('department_id', '!=', False)])
+        dept_counts = {}
+        for emp in employees:
+            dept_name = emp.department_id.name or 'Unknown'
+            dept_counts[dept_name] = dept_counts.get(dept_name, 0) + 1
+        data = [{'label': k, 'value': v} for k, v in dept_counts.items()]
         return data
 
     @api.model
@@ -287,21 +409,17 @@ class HrEmployee(models.Model):
             last_month = datetime.now() - relativedelta(months=i)
             text = format(last_month, '%B %Y')
             month_list.append(text)
-        self.env.cr.execute(
-            """select id, name from hr_department where active=True """)
+        self.env.cr.execute("""select id, name from hr_department where active=True """)
         departments = self.env.cr.dictfetchall()
         department_list = [list(x['name'].values())[0] for x in departments]
         for month in month_list:
             leave = {}
             for dept in departments:
                 leave[list(dept['name'].values())[0]] = 0
-            vals = {
-                'l_month': month,
-                'leave': leave
-            }
+            vals = {'l_month': month, 'leave': leave}
             graph_result.append(vals)
         sql = """
-        SELECT h.id, h.employee_id,h.department_id
+        SELECT h.id, h.employee_id, h.department_id
              , extract('month' FROM y)::int AS leave_month
              , to_char(y, 'Month YYYY') as month_year
              , GREATEST(y                    , h.date_from) AS date_from
@@ -310,9 +428,9 @@ class HrEmployee(models.Model):
              , generate_series(date_trunc('month', date_from::timestamp)
                              , date_trunc('month', date_to::timestamp)
                              , interval '1 month') y
-        where date_trunc('month', GREATEST(y , h.date_from)) >= 
+        where date_trunc('month', GREATEST(y , h.date_from)) >=
         date_trunc('month', now()) - interval '6 month' and
-        date_trunc('month', GREATEST(y , h.date_from)) <= 
+        date_trunc('month', GREATEST(y , h.date_from)) <=
         date_trunc('month', now())
         and h.department_id is not null
         """
@@ -338,22 +456,17 @@ class HrEmployee(models.Model):
             for month in month_list:
                 for line in result_lines:
                     if month.replace(' ', '') == line[0].replace(' ', ''):
-                        match = list(filter(lambda d: d['l_month'] in [month],
-                                            graph_result))[0]['leave']
-                        dept_name = self.env['hr.department'].browse(
-                            line[1]).name
+                        match = list(filter(lambda d: d['l_month'] in [month], graph_result))[0]['leave']
+                        dept_name = self.env['hr.department'].browse(line[1]).name
                         if match:
                             match[dept_name] = result_lines[line]['days']
         for result in graph_result:
-            result['l_month'] = result['l_month'].split(' ')[:1][0].strip()[
-                                :3] + " " + \
-                                result['l_month'].split(' ')[1:2][0]
-
+            result['l_month'] = result['l_month'].split(' ')[:1][0].strip()[:3] + " " + \
+                                 result['l_month'].split(' ')[1:2][0]
         return graph_result, department_list
 
     def get_work_days_dashboard(self, from_datetime, to_datetime,
-                                compute_leaves=False, calendar=None,
-                                domain=None):
+                                compute_leaves=False, calendar=None, domain=None):
         """Calculate employee worked hours/day details"""
         resource = self.resource_id
         calendar = calendar or self.resource_calendar_id
@@ -363,25 +476,19 @@ class HrEmployee(models.Model):
             to_datetime = to_datetime.replace(tzinfo=utc)
         from_full = from_datetime - timedelta(days=1)
         to_full = to_datetime + timedelta(days=1)
-        intervals = calendar._attendance_intervals_batch(from_full, to_full,
-                                                         resource)
+        intervals = calendar._attendance_intervals_batch(from_full, to_full, resource)
         day_total = defaultdict(float)
         for start, stop, meta in intervals[resource.id]:
             day_total[start.date()] += (stop - start).total_seconds() / 3600
         if compute_leaves:
-            intervals = calendar._work_intervals_batch(from_datetime,
-                                                       to_datetime, resource,
-                                                       domain)
+            intervals = calendar._work_intervals_batch(from_datetime, to_datetime, resource, domain)
         else:
-            intervals = calendar._attendance_intervals_batch(from_datetime,
-                                                             to_datetime,
-                                                             resource)
+            intervals = calendar._attendance_intervals_batch(from_datetime, to_datetime, resource)
         day_hours = defaultdict(float)
         for start, stop, meta in intervals[resource.id]:
             day_hours[start.date()] += (stop - start).total_seconds() / 3600
         days = sum(
-            float_utils.round(ROUNDING_FACTOR * day_hours[day] / day_total[
-                day]) / ROUNDING_FACTOR
+            float_utils.round(ROUNDING_FACTOR * day_hours[day] / day_total[day]) / ROUNDING_FACTOR
             for day in day_hours
         )
         return days
@@ -400,10 +507,7 @@ class HrEmployee(models.Model):
         employee = self.env['hr.employee'].sudo().search_read(
             [('user_id', '=', uid)], limit=1)
         for month in month_list:
-            vals = {
-                'l_month': month,
-                'leave': 0
-            }
+            vals = {'l_month': month, 'leave': 0}
             graph_result.append(vals)
         sql = """
                 SELECT h.id, h.employee_id
@@ -415,22 +519,19 @@ class HrEmployee(models.Model):
                      , generate_series(date_trunc('month', date_from::timestamp)
                                      , date_trunc('month', date_to::timestamp)
                                      , interval '1 month') y
-                where date_trunc('month', GREATEST(y , h.date_from)) >= 
+                where date_trunc('month', GREATEST(y , h.date_from)) >=
                 date_trunc('month', now()) - interval '6 month' and
-                date_trunc('month', GREATEST(y , h.date_from)) <= 
+                date_trunc('month', GREATEST(y , h.date_from)) <=
                 date_trunc('month', now()) and h.employee_id = %s """
         self.env.cr.execute(sql, (employee[0]['id'],))
         results = self.env.cr.dictfetchall()
         for line in results:
-            employee = self.browse(line['employee_id'])
+            employee_rec = self.browse(line['employee_id'])
             from_dt = fields.Datetime.from_string(line['date_from'])
             to_dt = fields.Datetime.from_string(line['date_to'])
-            days = employee.get_work_days_dashboard(from_dt, to_dt)
+            days = employee_rec.get_work_days_dashboard(from_dt, to_dt)
             line['days'] = days
-            vals = {
-                'l_month': line['month_year'],
-                'days': days
-            }
+            vals = {'l_month': line['month_year'], 'days': days}
             leave_lines.append(vals)
         if leave_lines:
             df = pd.DataFrame(leave_lines)
@@ -438,15 +539,13 @@ class HrEmployee(models.Model):
             result_lines = rf.to_dict('index')
             for line in result_lines:
                 match = list(filter(
-                    lambda d: d['l_month'].replace(' ', '') == line.replace(' ',
-                                                                            ''),
+                    lambda d: d['l_month'].replace(' ', '') == line.replace(' ', ''),
                     graph_result))
                 if match:
                     match[0]['leave'] = result_lines[line]['days']
         for result in graph_result:
-            result['l_month'] = result['l_month'].split(' ')[:1][0].strip()[
-                                :3] + " " + \
-                                result['l_month'].split(' ')[1:2][0]
+            result['l_month'] = result['l_month'].split(' ')[:1][0].strip()[:3] + " " + \
+                                 result['l_month'].split(' ')[1:2][0]
         return graph_result
 
     @api.model
@@ -461,17 +560,9 @@ class HrEmployee(models.Model):
             text = format(last_month, '%B %Y')
             month_list.append(text)
         for month in month_list:
-            vals = {
-                'l_month': month,
-                'count': 0
-            }
-            join_trend.append(vals)
+            join_trend.append({'l_month': month, 'count': 0})
         for month in month_list:
-            vals = {
-                'l_month': month,
-                'count': 0
-            }
-            resign_trend.append(vals)
+            resign_trend.append({'l_month': month, 'count': 0})
         cr.execute('''select to_char(joining_date, 'Month YYYY') as l_month,
          count(id) from hr_employee
         WHERE joining_date BETWEEN CURRENT_DATE - INTERVAL '12 months'
@@ -484,18 +575,15 @@ class HrEmployee(models.Model):
         AND CURRENT_DATE + interval '1 month - 1 day'
         group by l_month;''')
         resign_data = cr.fetchall()
-
         for line in join_data:
             match = list(filter(
-                lambda d: d['l_month'].replace(' ', '') == line[0].replace(' ',
-                                                                           ''),
+                lambda d: d['l_month'].replace(' ', '') == line[0].replace(' ', ''),
                 join_trend))
             if match:
                 match[0]['count'] = line[1]
         for line in resign_data:
             match = list(filter(
-                lambda d: d['l_month'].replace(' ', '') == line[0].replace(' ',
-                                                                           ''),
+                lambda d: d['l_month'].replace(' ', '') == line[0].replace(' ', ''),
                 resign_trend))
             if match:
                 match[0]['count'] = line[1]
@@ -503,13 +591,10 @@ class HrEmployee(models.Model):
             join['l_month'] = join['l_month'].split(' ')[:1][0].strip()[:3]
         for resign in resign_trend:
             resign['l_month'] = resign['l_month'].split(' ')[:1][0].strip()[:3]
-        graph_result = [{
-            'name': 'Join',
-            'values': join_trend
-        }, {
-            'name': 'Resign',
-            'values': resign_trend
-        }]
+        graph_result = [
+            {'name': 'Join', 'values': join_trend},
+            {'name': 'Resign', 'values': resign_trend}
+        ]
         return graph_result
 
     @api.model
@@ -520,34 +605,26 @@ class HrEmployee(models.Model):
         month_join = monthly_join_resign[0]['values']
         month_resign = monthly_join_resign[1]['values']
         sql = """
-        SELECT (date_trunc('month', CURRENT_DATE))::date - interval '1' 
+        SELECT (date_trunc('month', CURRENT_DATE))::date - interval '1'
         month * s.a AS month_start
         FROM generate_series(0,11,1) AS s(a);"""
         self._cr.execute(sql)
         month_start_list = self._cr.fetchall()
         for month_date in month_start_list:
-            self._cr.execute("""select count(id), 
+            self._cr.execute("""select count(id),
             to_char(date '%s', 'Month YYYY') as l_month from hr_employee
-            where resign_date> date '%s' or resign_date is null and 
+            where resign_date> date '%s' or resign_date is null and
             joining_date < date '%s'
             """ % (month_date[0], month_date[0], month_date[0],))
             month_emp = self._cr.fetchone()
-            match_join = \
-                list(filter(
-                    lambda d: d['l_month'] == month_emp[1].split(' ')[:1][
-                                                  0].strip()[:3], month_join))[
-                    0][
-                    'count']
-            match_resign = \
-                list(filter(
-                    lambda d: d['l_month'] == month_emp[1].split(' ')[:1][
-                                                  0].strip()[:3],
-                    month_resign))[0][
-                    'count']
-            month_avg = (month_emp[0] + match_join - match_resign + month_emp[
-                0]) / 2
-            attrition_rate = (match_resign / month_avg) * 100 \
-                if month_avg != 0 else 0
+            match_join = list(filter(
+                lambda d: d['l_month'] == month_emp[1].split(' ')[:1][0].strip()[:3],
+                month_join))[0]['count']
+            match_resign = list(filter(
+                lambda d: d['l_month'] == month_emp[1].split(' ')[:1][0].strip()[:3],
+                month_resign))[0]['count']
+            month_avg = (month_emp[0] + match_join - match_resign + month_emp[0]) / 2
+            attrition_rate = (match_resign / month_avg) * 100 if month_avg != 0 else 0
             vals = {
                 'month': month_emp[1].split(' ')[:1][0].strip()[:3],
                 'attrition_rate': round(float(attrition_rate), 2)
@@ -557,7 +634,7 @@ class HrEmployee(models.Model):
 
     @api.model
     def get_employee_skill(self):
-        """ Retrieve employee skills and its progress"""
+        """Retrieve employee skills and its progress"""
         employee = self.env['hr.employee'].sudo().search(
             [('user_id', '=', request.session.uid)], limit=1)
         skills = self.env['hr.employee.skill'].sudo().search_read(
@@ -574,11 +651,6 @@ class HrEmployee(models.Model):
     @api.model
     def get_employee_project_tasks(self):
         """Get employee's project tasks"""
-        employee = self.env['hr.employee'].sudo().browse(self.env.uid)
-        if not employee:
-            return []
-
-        # Get tasks assigned to the current user
         tasks = self.env['project.task'].sudo().search([
             ('user_ids', 'in', self.env.uid),
             ('active', '=', True)
@@ -593,4 +665,3 @@ class HrEmployee(models.Model):
                 'stage_name': task.stage_id.name if task.stage_id else 'No Stage',
             })
         return task_data
-

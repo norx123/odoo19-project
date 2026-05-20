@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- ROOT MENU                                               -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_sign_root"
+        name="Sign"
+        sequence="55"
+        web_icon="hr_sign_work,static/description/icon.png"
+    />
+
+
+    <!-- ===================================================== -->
+    <!-- DOCUMENTS                                               -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_sign_documents"
+        name="Documents"
+        parent="menu_sign_root"
+        sequence="1"
+    />
+
+    <menuitem
+        id="menu_sign_my_documents"
+        name="My Documents"
+        parent="menu_sign_documents"
+        action="action_sign_request"
+        sequence="1"
+    />
+
+    <menuitem
+        id="menu_sign_all_documents"
+        name="All Documents"
+        parent="menu_sign_documents"
+        action="action_sign_request_all"
+        sequence="2"
+    />
+
+
+    <!-- ===================================================== -->
+    <!-- TEMPLATES                                               -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_sign_templates"
+        name="Templates"
+        parent="menu_sign_root"
+        action="action_sign_template"
+        sequence="2"
+    />
+
+
+    <!-- ===================================================== -->
+    <!-- REPORTS (placeholder - no action yet)                  -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_sign_reports"
+        name="Reports"
+        parent="menu_sign_root"
+        sequence="3"
+    />
+
+
+    <!-- ===================================================== -->
+    <!-- CONFIGURATION (parent - no direct action)              -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_sign_configuration"
+        name="Configuration"
+        parent="menu_sign_root"
+        sequence="4"
+    />
+
+
+    <!-- ===================================================== -->
+    <!-- CONFIGURATION > SETTINGS                               -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_sign_configuration_settings"
+        name="Settings"
+        parent="menu_sign_configuration"
+        action="action_sign_settings"
+        sequence="1"
+    />
+
+
+    <!-- ===================================================== -->
+    <!-- CONFIGURATION > FIELDS (Signature Fields)              -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_sign_configuration_fields"
+        name="Fields"
+        parent="menu_sign_configuration"
+        action="action_sign_item_type"
+        sequence="2"
+    />
+
+
+    <!-- ===================================================== -->
+    <!-- CONFIGURATION > TAGS                                   -->
+    <!-- ===================================================== -->
+
+    <record id="action_sign_tag" model="ir.actions.act_window">
+        <field name="name">Tags</field>
+        <field name="res_model">sign.tag</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="menu_sign_configuration_tags"
+        name="Tags"
+        parent="menu_sign_configuration"
+        action="action_sign_tag"
+        sequence="3"
+    />
+
+
+    <!-- ===================================================== -->
+    <!-- CONFIGURATION > DOC                                    -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_sign_configuration_doc"
+        name="Doc"
+        parent="menu_sign_configuration"
+        action="action_sign_doc"
+        sequence="4"
+    />
+
+
+    <!-- ===================================================== -->
+    <!-- ACTION: Sign Items (used internally)                   -->
+    <!-- ===================================================== -->
+
+    <record id="action_sign_item" model="ir.actions.act_window">
+        <field name="name">Sign Items</field>
+        <field name="res_model">sign.item</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         web.login_layout is the shared wrapper used by the login,
+         signup and reset-password pages. Inheriting it lets us:
+           - remove Odoo's "Powered by Odoo" link
+           - add our "Powered by Norx ERP" footer
+         These changes appear ONLY on those auth pages.
+         ============================================================ -->
+    <template id="login_layout_norx" inherit_id="web.login_layout" name="Norx Auth Footer">
+
+        <!-- Add "Powered by Norx ERP" at the end of the auth card -->
+        <xpath expr="//div[hasclass('o_database_list')]" position="inside">
+            <div class="text-center norx_powered">
+                Powered by <span style="font-weight:600;">Norx ERP</span>
+            </div>
+        </xpath>
+
+        <!-- Remove Odoo's default "Powered by Odoo" link if present -->
+        <xpath expr="//a[contains(@href, 'odoo.com')]" position="replace">
+            <t/>
+        </xpath>
+
+    </template>
+
+</odoo>

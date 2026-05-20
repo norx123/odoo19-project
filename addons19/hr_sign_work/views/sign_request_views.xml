@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- ACTIONS                                               -->
+    <!-- ===================================================== -->
+
+    <record id="action_sign_request" model="ir.actions.act_window">
+        <field name="name">My Documents</field>
+        <field name="res_model">sign.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('sent_by','=',uid)]</field>
+        <field name="context">{'search_default_my_documents': 1}</field>
+    </record>
+
+    <record id="action_sign_request_all" model="ir.actions.act_window">
+        <field name="name">All Documents</field>
+        <field name="res_model">sign.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- SEARCH VIEW                                           -->
+    <!-- ===================================================== -->
+
+    <record id="view_sign_request_search" model="ir.ui.view">
+        <field name="name">sign.request.search</field>
+        <field name="model">sign.request</field>
+        <field name="arch" type="xml">
+            <search string="Search Documents">
+
+                <field name="name"/>
+
+                <filter
+                    name="my_documents"
+                    string="My Documents"
+                    domain="[('sent_by','=',uid)]"/>
+
+                <filter
+                    name="my_requests"
+                    string="My Requests"
+                    domain="[('signer_ids.partner_id','in',[uid])]"/>
+
+                <separator/>
+
+                <filter
+                    name="to_sign"
+                    string="To Sign"
+                    domain="[('state','=','sent')]"/>
+
+                <filter
+                    name="signed"
+                    string="Signed"
+                    domain="[('state','=','signed')]"/>
+
+                <filter
+                    name="draft"
+                    string="Draft"
+                    domain="[('state','=','draft')]"/>
+
+            </search>
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- LIST VIEW                                             -->
+    <!-- ===================================================== -->
+
+    <record id="view_sign_request_list" model="ir.ui.view">
+        <field name="name">sign.request.list</field>
+        <field name="model">sign.request</field>
+        <field name="arch" type="xml">
+            <list
+                string="Documents"
+                decoration-success="state == 'signed'"
+                decoration-info="state == 'sent'">
+
+                <field name="date"    string="Date"    widget="date"/>
+                <field name="name"    string="Name"/>
+
+                <field
+                    name="sent_by"
+                    string="Sent by"
+                    widget="many2one_avatar_user"/>
+
+                <field
+                    name="template_id"
+                    string="Documents"
+                    widget="many2one"/>
+
+                <field
+                    name="signer_partner_ids"
+                    string="Signers"
+                    widget="many2many_avatar"/>
+
+                <field
+                    name="tag_ids"
+                    string="Tags"
+                    widget="many2many_tags"
+                    optional="show"/>
+
+                <field
+                    name="state"
+                    string="Status"
+                    widget="badge"
+                    decoration-success="state == 'signed'"
+                    decoration-warning="state == 'sent'"
+                    decoration-muted="state == 'draft'"/>
+
+                <button
+                    name="action_resend"
+                    type="object"
+                    string="Resend"
+                    icon="fa-refresh"
+                    invisible="state != 'sent'"
+                    class="btn-link"
+                />
+
+                <button
+                    name="action_download"
+                    type="object"
+                    string="Download"
+                    icon="fa-download"
+                    invisible="state != 'signed'"
+                    class="btn-link"
+                />
+
+            </list>
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- FORM VIEW                                             -->
+    <!-- ===================================================== -->
+
+    <record id="view_sign_request_form" model="ir.ui.view">
+        <field name="name">sign.request.form</field>
+        <field name="model">sign.request</field>
+        <field name="arch" type="xml">
+            <form string="Sign Request">
+
+                <header>
+
+                    <button
+                        name="action_sign"
+                        string="Sign Now"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state != 'sent'"
+                    />
+
+                    <button
+                        name="action_download"
+                        string="Download"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="state != 'signed'"
+                    />
+
+                    <button
+                        name="action_cancel"
+                        string="Cancel"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="state in ['signed', 'cancel']"
+                    />
+
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,sent,signed"
+                    />
+
+                </header>
+
+                <sheet>
+
+                    <group>
+                        <field name="template_id"/>
+                        <field name="sent_by" widget="many2one_avatar_user"/>
+                        <field name="date"/>
+                        <field name="tag_ids" widget="many2many_tags" optional="show"/>
+                    </group>
+
+                    <group string="Signers">
+                        <field name="signer_ids" nolabel="1">
+                            <list editable="bottom">
+                                <field name="partner_id"/>
+                                <field name="state" widget="badge"
+                                    decoration-success="state == 'signed'"
+                                    decoration-warning="state == 'sent'"
+                                    decoration-muted="state == 'draft'"/>
+                                <field name="signing_date"/>
+                            </list>
+                        </field>
+                    </group>
+
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+</odoo>
