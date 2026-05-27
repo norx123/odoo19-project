@@ -1,25 +1,24 @@
 {
     "name": "HR Sign Work",
-    "version": "19.0.1.0.0",
-    "summary": "Employee Document Signing Module",
+    "version": "19.0.2.0.0",
+    "summary": "Employee Document Signing Module (Sign Templates, Requests, Docs)",
     "description": """
-Custom PDF Sign Module
-- PDF Preview
-- Drag & Drop Sign Fields
-- Sign Requests
-- Dynamic Field Placement
-- Signature Fields Configuration (Settings / Fields / Tags)
-- Odoo 19 Compatible
-- No Enterprise Dependency
+HR Sign Work - Custom PDF Sign Module for Odoo 19 Community
+-----------------------------------------------------------
+* PDF Preview with drag-and-drop sign fields
+* Field types: Signature, Initials, Name, Email, Phone, Company,
+  Text, Multiline, Checkbox, Radio, Selection, Date, Stamp, Strikethrough
+* Sign Requests with multiple signers
+* Online signing UI - fill the placed fields, sign with mouse/touch
+* Signed PDF generation (fields are stamped onto the original PDF)
+* Download signed PDF
+* Document editor (sign.doc) - lightweight Google-Docs-like editor
+* No Enterprise dependency
 """,
     "category": "Human Resources",
     "author": "Custom Development",
     "website": "",
     "license": "LGPL-3",
-
-    # =====================================================
-    # DEPENDENCIES
-    # =====================================================
 
     "depends": [
         "base",
@@ -27,10 +26,6 @@ Custom PDF Sign Module
         "mail",
         "hr",
     ],
-
-    # =====================================================
-    # DATA FILES
-    # =====================================================
 
     "data": [
         "security/ir.model.access.csv",
@@ -47,10 +42,6 @@ Custom PDF Sign Module
         "data/sign_item_type_data.xml",
     ],
 
-    # =====================================================
-    # ASSETS
-    # =====================================================
-
     "assets": {
         "web.assets_backend": [
             "hr_sign_work/static/src/css/sign.css",
@@ -59,9 +50,9 @@ Custom PDF Sign Module
         ],
     },
 
-    # =====================================================
-    # MODULE FLAGS
-    # =====================================================
+    "external_dependencies": {
+        "python": ["PyPDF2", "reportlab"],
+    },
 
     "installable": True,
     "application": True,

@@ -465,6 +465,146 @@ export class HrDashboard extends Component {
         var today = new Date();
         this.action.doAction({ name: _t("Leave Request"), type: 'ir.actions.act_window', res_model: 'hr.leave', view_mode: 'tree,form,calendar', views: [[false, 'list'], [false, 'form']], domain: [['state', 'in', ['validate']], ['employee_id', '=', this.state.login_employee.id], ['date_to', '<=', today]], target: 'current', context: { 'order': 'duration_display' } });
     }
+
+    // ── Dashboard Card Click Handlers ──────────────────────────────────────────
+    _todayStr() {
+        return new Date().toJSON().slice(0, 10);
+    }
+    _monthRange() {
+        const d = new Date();
+        const first = new Date(d.getFullYear(), d.getMonth(), 1).toJSON().slice(0, 10);
+        const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).toJSON().slice(0, 10);
+        return { first, last };
+    }
+    _threeMonthsAgo() {
+        const d = new Date();
+        return new Date(d.getFullYear(), d.getMonth() - 3, d.getDate()).toJSON().slice(0, 10);
+    }
+
+    open_today_checkins() {
+        const today = this._todayStr();
+        this.action.doAction({
+            name: _t("Today's Check-Ins"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.attendance',
+            view_mode: 'tree,form',
+            views: [[false, 'list'], [false, 'form']],
+            domain: [['check_in', '>=', today + ' 00:00:00'], ['check_in', '<=', today + ' 23:59:59']],
+            target: 'current',
+        });
+    }
+
+    open_on_leave_today() {
+        const today = this._todayStr();
+        this.action.doAction({
+            name: _t("On Leave Today"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.leave',
+            view_mode: 'tree,form,calendar',
+            views: [[false, 'list'], [false, 'form'], [false, 'calendar']],
+            domain: [['date_from', '<=', today], ['date_to', '>=', today], ['state', '=', 'validate']],
+            target: 'current',
+        });
+    }
+
+    open_pending_leave_requests() {
+        this.action.doAction({
+            name: _t("Pending Leave Requests"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.leave',
+            view_mode: 'tree,form,calendar',
+            views: [[false, 'list'], [false, 'form'], [false, 'calendar']],
+            domain: [['state', 'in', ['confirm', 'validate1']]],
+            target: 'current',
+        });
+    }
+
+    open_resignations() {
+        const since = this._threeMonthsAgo();
+        this.action.doAction({
+            name: _t("Resignations (Last 3 Months)"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.employee',
+            view_mode: 'tree,form,kanban',
+            views: [[false, 'list'], [false, 'kanban'], [false, 'form']],
+            domain: [['active', '=', false], ['departure_date', '>=', since]],
+            context: { 'active_test': false },
+            target: 'current',
+        });
+    }
+
+    open_new_joiners() {
+        const { first, last } = this._monthRange();
+        this.action.doAction({
+            name: _t("New Joiners This Month"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.employee',
+            view_mode: 'tree,kanban,form',
+            views: [[false, 'list'], [false, 'kanban'], [false, 'form']],
+            domain: [['create_date', '>=', first], ['create_date', '<=', last + ' 23:59:59']],
+            target: 'current',
+        });
+    }
+
+    open_monthly_expenses() {
+        const { first, last } = this._monthRange();
+        this.action.doAction({
+            name: _t("This Month's Expenses"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.expense',
+            view_mode: 'tree,form,kanban',
+            views: [[false, 'list'], [false, 'kanban'], [false, 'form']],
+            domain: [['date', '>=', first], ['date', '<=', last]],
+            target: 'current',
+        });
+    }
+
+    open_departments() {
+        this.action.doAction({
+            name: _t("Departments"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.department',
+            view_mode: 'tree,kanban,form',
+            views: [[false, 'list'], [false, 'kanban'], [false, 'form']],
+            target: 'current',
+        });
+    }
+
+    open_birthdays() {
+        this.action.doAction({
+            name: _t("Employees"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.employee',
+            view_mode: 'kanban,tree,form',
+            views: [[false, 'kanban'], [false, 'list'], [false, 'form']],
+            target: 'current',
+        });
+    }
+
+    open_events() {
+        const today = this._todayStr();
+        this.action.doAction({
+            name: _t("Upcoming Events"),
+            type: 'ir.actions.act_window',
+            res_model: 'event.event',
+            view_mode: 'kanban,tree,form,calendar',
+            views: [[false, 'kanban'], [false, 'list'], [false, 'form'], [false, 'calendar']],
+            domain: [['date_begin', '>=', today]],
+            target: 'current',
+        });
+    }
+
+    open_announcements() {
+        this.action.doAction({
+            name: _t("Announcements"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.announcement',
+            view_mode: 'tree,form,kanban',
+            views: [[false, 'list'], [false, 'kanban'], [false, 'form']],
+            target: 'current',
+        });
+    }
+
     attendance_sign_in_out() {
         if (this.state.login_employee['attendance_state'] == 'checked_out') {
             this.state.login_employee['attendance_state'] = 'checked_in';

@@ -1584,3 +1584,43 @@ h4 .stat-count {
         height: 220px;
     }
 }
+
+/* ============================================================
+   Clickable dashboard cards - visual feedback
+   ============================================================ */
+
+.oh-clickable {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    user-select: none;
+}
+
+.oh-clickable:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+.oh-clickable:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10) !important;
+}
+
+/* Stat-cards already have a box-shadow — boost it on hover */
+.oh-mgr-stat-card.oh-clickable:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Notification cards (Birthdays, Events, Announcements) */
+.hr_notification.oh-clickable:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Make sure tap target area covers full card on touch devices */
+@media (hover: none) {
+    .oh-clickable:hover {
+        transform: none;
+    }
+    .oh-clickable:active {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+}

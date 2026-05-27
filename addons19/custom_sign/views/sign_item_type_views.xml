@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_sign_item_type" model="ir.actions.act_window">
+        <field name="name">Signature Fields</field>
+        <field name="res_model">custom.sign.item.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_sign_item_type_list" model="ir.ui.view">
+        <field name="name">sign.item.type.list</field>
+        <field name="model">custom.sign.item.type</field>
+        <field name="arch" type="xml">
+            <list string="Signature Fields">
+                <field name="sequence" widget="handle"/>
+                <field name="name" string="Field Name"/>
+                <field name="item_type" string="Type"/>
+                <field name="linked_model_id" string="Linked to" optional="show"/>
+                <field name="linked_field_id" string="Linked field" optional="show"/>
+                <field name="mandatory" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_sign_item_type_form" model="ir.ui.view">
+        <field name="name">sign.item.type.form</field>
+        <field name="model">custom.sign.item.type</field>
+        <field name="arch" type="xml">
+            <form string="Signature Field">
+                <sheet>
+
+                    <!-- Type tabs -->
+                    <div class="d-flex flex-wrap gap-1 mb-3">
+                        <button name="set_type_signature"     type="object" class="btn btn-sm"
+                                invisible="item_type == 'signature'">Signature</button>
+                        <button name="set_type_signature"     type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'signature'">Signature</button>
+
+                        <button name="set_type_initial"       type="object" class="btn btn-sm"
+                                invisible="item_type == 'initial'">Initial</button>
+                        <button name="set_type_initial"       type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'initial'">Initial</button>
+
+                        <button name="set_type_text"          type="object" class="btn btn-sm"
+                                invisible="item_type == 'text'">Text</button>
+                        <button name="set_type_text"          type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'text'">Text</button>
+
+                        <button name="set_type_multiline"     type="object" class="btn btn-sm"
+                                invisible="item_type == 'multiline'">Multiline Text</button>
+                        <button name="set_type_multiline"     type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'multiline'">Multiline Text</button>
+
+                        <button name="set_type_checkbox"      type="object" class="btn btn-sm"
+                                invisible="item_type == 'checkbox'">Checkbox</button>
+                        <button name="set_type_checkbox"      type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'checkbox'">Checkbox</button>
+
+                        <button name="set_type_radio"         type="object" class="btn btn-sm"
+                                invisible="item_type == 'radio'">Radio</button>
+                        <button name="set_type_radio"         type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'radio'">Radio</button>
+
+                        <button name="set_type_selection"     type="object" class="btn btn-sm"
+                                invisible="item_type == 'selection'">Selection</button>
+                        <button name="set_type_selection"     type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'selection'">Selection</button>
+
+                        <button name="set_type_strikethrough" type="object" class="btn btn-sm"
+                                invisible="item_type == 'strikethrough'">Strikethrough</button>
+                        <button name="set_type_strikethrough" type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'strikethrough'">Strikethrough</button>
+
+                        <button name="set_type_stamp"         type="object" class="btn btn-sm"
+                                invisible="item_type == 'stamp'">Stamp</button>
+                        <button name="set_type_stamp"         type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'stamp'">Stamp</button>
+
+                        <button name="set_type_date"          type="object" class="btn btn-sm"
+                                invisible="item_type == 'date'">Date</button>
+                        <button name="set_type_date"          type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'date'">Date</button>
+
+                        <button name="set_type_name"          type="object" class="btn btn-sm"
+                                invisible="item_type == 'name'">Name</button>
+                        <button name="set_type_name"          type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'name'">Name</button>
+
+                        <button name="set_type_email"         type="object" class="btn btn-sm"
+                                invisible="item_type == 'email'">Email</button>
+                        <button name="set_type_email"         type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'email'">Email</button>
+
+                        <button name="set_type_phone"         type="object" class="btn btn-sm"
+                                invisible="item_type == 'phone'">Phone</button>
+                        <button name="set_type_phone"         type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'phone'">Phone</button>
+
+                        <button name="set_type_company"       type="object" class="btn btn-sm"
+                                invisible="item_type == 'company'">Company</button>
+                        <button name="set_type_company"       type="object" class="btn btn-sm btn-primary"
+                                invisible="item_type != 'company'">Company</button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" string="Field Name"/>
+                        <h1><field name="name" placeholder="Field Name"/></h1>
+                    </div>
+
+                    <field name="item_type" invisible="1"/>
+
+                    <group string="Default Values">
+                        <field name="placeholder"
+                               invisible="item_type in ['checkbox','radio','stamp','strikethrough','signature','initial']"/>
+                        <field name="linked_model_id" string="Linked to"
+                               options="{'no_create': True}"
+                               invisible="item_type in ['signature','initial','checkbox','radio','stamp','strikethrough']"/>
+                        <field name="linked_field_id" string="Linked field"
+                               options="{'no_create': True}"
+                               invisible="item_type in ['signature','initial','checkbox','radio','stamp','strikethrough']"/>
+                        <field name="tip"/>
+                        <field name="mandatory"/>
+                        <field name="read_only"
+                               invisible="item_type not in ['text','multiline','name','email','phone','company']"/>
+                        <field name="alignment"
+                               invisible="item_type not in ['text','multiline','name','email','phone','company','date']"/>
+                        <field name="field_size"
+                               invisible="item_type not in ['text','multiline','name','email','phone','company']"/>
+                        <field name="default_width"/>
+                        <field name="default_height"/>
+                        <field name="sequence"/>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

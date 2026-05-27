@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_approvals_advance_salary_user,approvals.advance.salary user,model_approvals_advance_salary,base.group_user,1,1,1,0
+access_approvals_advance_salary_manager,approvals.advance.salary manager,model_approvals_advance_salary,hr.group_hr_manager,1,1,1,1
+access_approvals_loan_request_user,approvals.loan.request user,model_approvals_loan_request,base.group_user,1,1,1,0
+access_approvals_loan_request_manager,approvals.loan.request manager,model_approvals_loan_request,hr.group_hr_manager,1,1,1,1
+access_approvals_resignation_user,approvals.resignation user,model_approvals_resignation,base.group_user,1,1,1,0
+access_approvals_resignation_manager,approvals.resignation manager,model_approvals_resignation,hr.group_hr_manager,1,1,1,1
+access_approvals_travel_request_user,approvals.travel.request user,model_approvals_travel_request,base.group_user,1,1,1,0
+access_approvals_travel_request_manager,approvals.travel.request manager,model_approvals_travel_request,hr.group_hr_manager,1,1,1,1
+access_approvals_early_gate_pass_user,approvals.early.gate.pass user,model_approvals_early_gate_pass,base.group_user,1,1,1,0
+access_approvals_early_gate_pass_manager,approvals.early.gate.pass manager,model_approvals_early_gate_pass,hr.group_hr_manager,1,1,1,1
+access_approvals_approver_line_user,approvals.approver.line user,model_approvals_approver_line,base.group_user,1,1,1,1
+access_approvals_approver_line_manager,approvals.approver.line manager,model_approvals_approver_line,hr.group_hr_manager,1,1,1,1

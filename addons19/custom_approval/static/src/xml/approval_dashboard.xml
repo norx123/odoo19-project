@@ -91,6 +91,26 @@
                     </div>
                 </div>
 
+                <!-- Early Logout Gate Pass Card -->
+                <div class="o_approval_card">
+                    <div class="o_approval_card_icon" style="background-color: #dc2626;">
+                        <i class="fa fa-sign-out fa-2x text-white"/>
+                    </div>
+                    <div class="o_approval_card_body">
+                        <div class="o_approval_card_title">Early Logout Gate Pass</div>
+                        <div class="o_approval_card_subtitle">Request early logout with downloadable gate pass</div>
+                        <div class="o_approval_card_footer">
+                            <button class="btn btn-primary btn-sm o_approval_new_btn"
+                                    t-on-click="openNewEarlyGatePass">
+                                <i class="fa fa-plus me-1"/> New Request
+                            </button>
+                            <span class="o_approval_review_badge" t-on-click="openEarlyGatePassList">
+                                To Review: <t t-esc="state.earlyGatePassCount"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </t>

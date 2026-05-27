@@ -3,150 +3,98 @@ from odoo import models, fields, api
 
 class SignItem(models.Model):
     _name = "sign.item"
-    _description = "Sign Item (Field on PDF)"
-    _order = "id asc"
-
+    _description = "Sign Item (Field placed on a PDF)"
+    _order = "page, pos_y, pos_x"
 
     # =====================================================
-    # TEMPLATE LINK
+    # PARENT
     # =====================================================
 
     template_id = fields.Many2one(
         "sign.template",
         string="Template",
-        required=True,
-        ondelete="cascade"
+        ondelete="cascade",
+        index=True,
     )
 
+    request_id = fields.Many2one(
+        "sign.request",
+        string="Request",
+        ondelete="cascade",
+        index=True,
+    )
 
     # =====================================================
-    # FIELD TYPE
+    # TYPE - Many2one to sign.item.type so we can use ALL types
+    # defined in master data without enum mismatch
     # =====================================================
 
-    type_id = fields.Selection([
-        ("signature", "Signature"),
-        ("initial", "Initials"),
-        ("name", "Name"),
-        ("email", "Email"),
-        ("phone", "Phone"),
-        ("company", "Company"),
-        ("text", "Text"),
-        ("multiline", "Multiline"),
-        ("checkbox", "Checkbox"),
-        ("radio", "Radio"),
-        ("selection", "Selection"),
-        ("date", "Date"),
-        ("strikethrough", "Strikethrough"),
-        ("stamp", "Stamp"),
-    ],
+    type_id = fields.Many2one(
+        "sign.item.type",
         string="Field Type",
         required=True,
-        default="signature"
+        ondelete="restrict",
+    )
+
+    item_type = fields.Selection(
+        related="type_id.item_type", store=True, readonly=True,
     )
 
     name = fields.Char(
         string="Field Name",
         compute="_compute_name",
-        store=True
+        store=True,
     )
 
-
     # =====================================================
-    # FIELD CONFIGURATION
+    # CONFIGURATION
     # =====================================================
 
-    placeholder = fields.Char(
-        string="Placeholder"
-    )
-
+    placeholder = fields.Char(string="Placeholder")
     alignment = fields.Selection([
         ("left", "Left"),
         ("center", "Center"),
         ("right", "Right"),
-    ],
-        string="Alignment",
-        default="left"
-    )
+    ], string="Alignment", default="left")
 
-    read_only = fields.Boolean(
-        string="Read Only",
-        default=False
-    )
+    read_only = fields.Boolean(string="Read Only", default=False)
+    required = fields.Boolean(string="Required", default=True)
 
-    value = fields.Text(
-        string="Field Value"
-    )
+    # Filled value (when signer fills the field)
+    value = fields.Text(string="Field Value")
 
+    # For signature/initial/stamp fields - stores the drawn image (PNG base64)
+    signature_data = fields.Binary(string="Signature Image", attachment=True)
 
     # =====================================================
-    # PDF POSITION
+    # PDF POSITION (percentages of page width/height)
     # =====================================================
 
-    page = fields.Integer(
-        string="Page",
-        default=1
-    )
-
-    pos_x = fields.Float(
-        string="Position X (%)",
-        default=10.0
-    )
-
-    pos_y = fields.Float(
-        string="Position Y (%)",
-        default=10.0
-    )
-
-    width = fields.Float(
-        string="Width (%)",
-        default=18.0
-    )
-
-    height = fields.Float(
-        string="Height (%)",
-        default=5.0
-    )
-
+    page = fields.Integer(string="Page", default=1)
+    pos_x = fields.Float(string="Position X (%)", default=10.0)
+    pos_y = fields.Float(string="Position Y (%)", default=10.0)
+    width = fields.Float(string="Width (%)", default=18.0)
+    height = fields.Float(string="Height (%)", default=5.0)
 
     # =====================================================
-    # RESPONSIBLE SIGNER
+    # SIGNER ASSIGNMENT
     # =====================================================
 
-    responsible = fields.Char(
-        string="Responsible",
-        default="Signer 1"
-    )
-
-    required = fields.Boolean(
-        string="Required",
-        default=True
-    )
-
+    responsible_role = fields.Char(string="Responsible", default="Signer 1")
 
     # =====================================================
-    # AUTO FIELD NAME
+    # COMPUTES
     # =====================================================
 
-    @api.depends("type_id", "responsible")
+    @api.depends("type_id", "responsible_role", "type_id.name")
     def _compute_name(self):
         for rec in self:
-            field_type = dict(
-                self._fields["type_id"].selection
-            ).get(rec.type_id, "Field")
-
-            responsible = rec.responsible or "Signer"
-
-            rec.name = f"{field_type} - {responsible}"
-
-
-    # =====================================================
-    # COPY SAFE DEFAULTS
-    # =====================================================
+            type_name = rec.type_id.name or "Field"
+            role = rec.responsible_role or "Signer"
+            rec.name = "%s - %s" % (type_name, role)
 
     def copy(self, default=None):
         default = dict(default or {})
-
-        if "name" not in default:
-            default["name"] = f"{self.name} Copy"
-
+        if "name" not in default and self.name:
+            default["name"] = "%s Copy" % self.name
         return super().copy(default)

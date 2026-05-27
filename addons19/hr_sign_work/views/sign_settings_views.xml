@@ -1,123 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- ===================================================== -->
-    <!-- ACTION                                                -->
-    <!-- ===================================================== -->
-
     <record id="action_sign_settings" model="ir.actions.act_window">
-        <field name="name">Settings</field>
+        <field name="name">Sign Settings</field>
         <field name="res_model">sign.config.settings</field>
         <field name="view_mode">form</field>
-        <field name="target">current</field>
+        <field name="target">inline</field>
     </record>
 
-
-    <!-- ===================================================== -->
-    <!-- FORM VIEW                                             -->
-    <!-- ===================================================== -->
-
-    <record id="view_sign_config_settings_form" model="ir.ui.view">
+    <record id="view_sign_settings_form" model="ir.ui.view">
         <field name="name">sign.config.settings.form</field>
         <field name="model">sign.config.settings</field>
         <field name="arch" type="xml">
-
-            <form string="Sign Settings" class="o_base_settings">
-
-                <header>
-                    <button string="Save" class="btn-primary" type="object" name="action_save"/>
-                    <button string="Discard" class="btn-secondary" special="cancel"/>
-                </header>
-
+            <form string="Sign Settings">
                 <sheet>
-                    <h2>Sign Settings</h2>
-
-                    <div class="row mt16 o_settings_container">
-
-                        <!-- Sign Default Terms -->
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane">
-                                <field name="sign_default_terms"/>
-                            </div>
-                            <div class="o_setting_right_pane">
-                                <label for="sign_default_terms" class="o_form_label"/>
-                                <div class="text-muted">
-                                    Add terms &amp; conditions to the signature request email
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Identify with itsme -->
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane"/>
-                            <div class="o_setting_right_pane">
-                                <div class="o_form_label">Identify with itsme®</div>
-                                <div class="text-muted">
-                                    Allow signatories to provide their identity using itsme®
-                                </div>
-                                <div><a class="btn btn-link p-0">→ Available in supported countries</a></div>
-                                <div><a class="btn btn-link p-0">→ Manage Service &amp; Buy Credits</a></div>
-                            </div>
-                        </div>
-
-                        <!-- Manage template access -->
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane">
-                                <field name="sign_manage_template_access"/>
-                            </div>
-                            <div class="o_setting_right_pane">
-                                <label for="sign_manage_template_access" class="o_form_label"/>
-                                <div class="text-muted">
-                                    Allow users to define the users or groups which have access to the template
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Authenticate by SMS -->
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane"/>
-                            <div class="o_setting_right_pane">
-                                <div class="o_form_label">Authenticate by SMS</div>
-                                <div class="text-muted">
-                                    Deliver one-time codes by SMS to identify signatories when signing a document
-                                </div>
-                                <div><a class="btn btn-link p-0">→ Manage Service &amp; Buy Credits</a></div>
-                            </div>
-                        </div>
-
-                        <!-- Sign with Aadhaar -->
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane">
-                                <field name="sign_aadhaar"/>
-                            </div>
-                            <div class="o_setting_right_pane">
-                                <label for="sign_aadhaar" class="o_form_label"/>
-                                <div class="text-muted">
-                                    Sign your important documents using Aadhaar esign.
-                                </div>
-                                <div><a class="btn btn-link p-0">→ Manage Service &amp; Buy Credits</a></div>
-                            </div>
-                        </div>
-
-                        <!-- Cryptographic signature -->
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane"/>
-                            <div class="o_setting_right_pane">
-                                <div class="o_form_label">Cryptographic signature</div>
-                                <div class="text-muted">
-                                    Certify your documents using a provided .pfx or .p12 file.
-                                </div>
-                                <div>
-                                    <div class="o_form_label">Signing certificate</div>
-                                </div>
-                            </div>
-                        </div>
-
+                    <div class="oe_title">
+                        <h1>Sign Module Settings</h1>
                     </div>
+
+                    <group string="General">
+                        <field name="sign_default_terms"/>
+                        <field name="sign_manage_template_access"/>
+                    </group>
+
+                    <group string="Integrations">
+                        <field name="sign_aadhaar"/>
+                    </group>
                 </sheet>
 
+                <footer>
+                    <button name="action_save" string="Save"
+                            type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
             </form>
-
         </field>
     </record>
 

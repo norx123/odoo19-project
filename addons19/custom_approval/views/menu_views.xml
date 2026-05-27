@@ -96,6 +96,29 @@
         <field name="context">{'search_default_my_requests': 1}</field>
     </record>
 
+    <!-- Early Logout Gate Pass - All Records -->
+    <record id="action_early_gate_pass_all" model="ir.actions.act_window">
+        <field name="name">Early Logout Gate Pass</field>
+        <field name="res_model">custom.early.gate.pass</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_early_gate_pass_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new Early Logout Gate Pass request.
+            </p>
+        </field>
+    </record>
+
+    <!-- Early Logout Gate Pass - My Requests -->
+    <record id="action_early_gate_pass_my" model="ir.actions.act_window">
+        <field name="name">My Early Logout Gate Pass</field>
+        <field name="res_model">custom.early.gate.pass</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_early_gate_pass_search"/>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{'search_default_my_requests': 1}</field>
+    </record>
+
     <!-- ============================================================
          MENU STRUCTURE
          ============================================================ -->
@@ -150,6 +173,13 @@
               sequence="4"
               groups="base.group_user"/>
 
+    <menuitem id="menu_my_early_gate_pass"
+              name="Early Logout Gate Pass"
+              parent="menu_my_approvals"
+              action="action_early_gate_pass_my"
+              sequence="5"
+              groups="base.group_user"/>
+
     <!-- Manager Menu -->
     <menuitem id="menu_manager_approvals"
               name="Manager"
@@ -183,6 +213,13 @@
               parent="menu_manager_approvals"
               action="action_travel_request_all"
               sequence="4"
+              groups="hr.group_hr_manager,hr.group_hr_user"/>
+
+    <menuitem id="menu_all_early_gate_pass"
+              name="Early Logout Gate Pass"
+              parent="menu_manager_approvals"
+              action="action_early_gate_pass_all"
+              sequence="5"
               groups="hr.group_hr_manager,hr.group_hr_user"/>
 
 </odoo>

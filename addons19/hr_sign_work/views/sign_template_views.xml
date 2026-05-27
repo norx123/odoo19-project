@@ -9,6 +9,15 @@
         <field name="name">Templates</field>
         <field name="res_model">sign.template</field>
         <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Sign Template
+            </p>
+            <p>
+                Upload a PDF, drag field placeholders onto it,
+                and send it to people for signing.
+            </p>
+        </field>
     </record>
 
 
@@ -29,37 +38,32 @@
                     <button name="action_share"    string="Share"    type="object" class="btn-secondary"/>
                 </header>
 
-                <sheet style="padding:0; max-width:100%; overflow:hidden;">
+                <sheet>
 
-                    <!-- BREADCRUMB NAV BAR -->
+                    <!-- Breadcrumb -->
                     <div class="o_sign_breadcrumb_bar">
                         <a class="o_sign_breadcrumb_link" href="/odoo/sign">
                             <i class="fa fa-th-large"/> Sign
                         </a>
                         <span class="o_sign_breadcrumb_sep">/</span>
-                        <a class="o_sign_breadcrumb_link" href="/odoo/sign/templates">
+                        <a class="o_sign_breadcrumb_link" href="#" data-menu-xmlid="hr_sign_work.menu_sign_templates">
                             Templates
                         </a>
                         <span class="o_sign_breadcrumb_sep">/</span>
                         <span class="o_sign_breadcrumb_current">
                             <field name="name" placeholder="Document name" nolabel="1"/>
                         </span>
-                    </div>
-
-                    <div class="o_sign_title_bar" style="display:none;">
-                        <h2>
-                            <field name="name" placeholder="Document name"/>
-                        </h2>
+                        <field name="is_favorite" widget="boolean_favorite" nolabel="1" style="margin-left:auto;"/>
                     </div>
 
                     <field name="document_name" invisible="1"/>
+                    <field name="user_id" invisible="1"/>
 
                     <div class="o_sign_editor_wrap">
 
-                        <!-- SIDEBAR -->
+                        <!-- Sidebar -->
                         <div class="o_sign_sidebar">
 
-                            <!-- DOCUMENT -->
                             <div>
                                 <div class="o_sign_sidebar_label">Document</div>
                                 <div class="o_sign_upload_area">
@@ -70,24 +74,32 @@
                                 </div>
                             </div>
 
-                            <!-- FIELDS — JS fills this from database, no hardcoded buttons -->
+                            <div>
+                                <div class="o_sign_sidebar_label">Tags</div>
+                                <field name="tag_ids" widget="many2many_tags"
+                                       options="{'color_field': 'color', 'no_create_edit': False}"
+                                       placeholder="Add tags..."/>
+                            </div>
+
                             <div>
                                 <div class="o_sign_sidebar_label">Fields</div>
-                                <div class="o_sign_field_list"></div>
+                                <div class="o_sign_field_list">
+                                    <div style="color:#999;font-size:12px;padding:8px;">
+                                        Loading...
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
 
-                        <!-- PDF AREA -->
+                        <!-- PDF area -->
                         <div class="o_sign_pdf_area">
                             <div id="o_sign_pdf_canvas">
-
-                                <div id="o_sign_drop_overlay"></div>
 
                                 <div id="o_sign_pdf_placeholder" class="o_sign_placeholder">
                                     <div class="icon">PDF</div>
                                     <div class="title">No PDF uploaded yet</div>
-                                    <div class="sub">Upload a PDF from the sidebar to preview it instantly</div>
+                                    <div class="sub">Upload a PDF from the sidebar to preview it and place fields.</div>
                                 </div>
 
                             </div>
@@ -95,6 +107,7 @@
 
                     </div>
 
+                    <!-- Hidden list of sign items (for the framework) -->
                     <field name="sign_item_ids" invisible="1">
                         <list>
                             <field name="type_id"/>
@@ -107,6 +120,7 @@
                     </field>
 
                 </sheet>
+
             </form>
 
         </field>
@@ -126,14 +140,18 @@
                 <field name="sign_count"/>
                 <field name="in_progress_count"/>
                 <field name="is_favorite"/>
+                <field name="sign_item_count"/>
                 <templates>
                     <t t-name="card">
-                        <div>
-                            <field name="is_favorite" widget="boolean_favorite" nolabel="1"/>
-                            <strong><field name="name"/></strong>
-                            <div class="mt-2">
-                                <span class="badge bg-success me-1">Signed: <field name="sign_count"/></span>
+                        <div class="oe_kanban_global_click" style="padding:12px;">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                                <strong style="font-size:14px;"><field name="name"/></strong>
+                                <field name="is_favorite" widget="boolean_favorite" nolabel="1"/>
+                            </div>
+                            <div class="mt-2" style="display:flex;gap:4px;flex-wrap:wrap;">
+                                <span class="badge bg-success">Signed: <field name="sign_count"/></span>
                                 <span class="badge bg-warning">In Progress: <field name="in_progress_count"/></span>
+                                <span class="badge bg-info">Fields: <field name="sign_item_count"/></span>
                             </div>
                             <div class="mt-2">
                                 <button name="action_send"     type="object" class="btn btn-sm btn-primary">Send</button>
@@ -157,25 +175,23 @@
         <field name="arch" type="xml">
             <list string="Sign Templates">
 
-                <field name="is_favorite"
-                       widget="boolean_favorite"
-                       nolabel="1"/>
-
-                <field name="name"        string="Name"/>
-                <field name="tag_ids"     string="Tags"       widget="many2many_tags" optional="show"/>
-                <field name="user_id"     string="Owner"      widget="many2one_avatar_user"/>
-                <field name="create_date" string="Created on" widget="datetime"/>
-                <field name="signee_count"      string="Signees"/>
+                <field name="is_favorite" widget="boolean_favorite" nolabel="1"/>
+                <field name="name"/>
+                <field name="tag_ids" widget="many2many_tags" optional="show"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="create_date" widget="datetime" optional="show"/>
+                <field name="signee_count" string="Signees"/>
                 <field name="sign_request_count" string="Documents"/>
-                <field name="sign_item_count"   string="Signature fields"/>
-                <field name="sign_count"        string="Signed documents"/>
-
-                <button name="action_send"     string="Send"     type="object" class="btn-link"/>
-                <button name="action_sign_now" string="Sign Now" type="object" class="btn-link"/>
-                <button name="action_share"    string="Share"    type="object" class="btn-link"/>
+                <field name="sign_item_count" string="Fields"/>
+                <field name="sign_count" string="Signed"/>
 
             </list>
         </field>
     </record>
+
+
+    <!-- ===================================================== -->
+    <!-- (Search view: using Odoo's auto-generated default)   -->
+    <!-- ===================================================== -->
 
 </odoo>

@@ -39,3 +39,7 @@ class ApprovalApproverLine(models.Model):
         'custom.travel.request', string='Travel Request',
         ondelete='cascade'
     )
+    early_gate_pass_id = fields.Many2one(
+        'custom.early.gate.pass', string='Early Gate Pass',
+        ondelete='cascade'
+    )

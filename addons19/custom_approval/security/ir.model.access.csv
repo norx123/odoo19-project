@@ -9,3 +9,5 @@ access_custom_resignation_user,custom.resignation user,model_custom_resignation,
 access_custom_resignation_manager,custom.resignation manager,model_custom_resignation,hr.group_hr_manager,1,1,1,1
 access_custom_travel_request_user,custom.travel.request user,model_custom_travel_request,base.group_user,1,1,1,0
 access_custom_travel_request_manager,custom.travel.request manager,model_custom_travel_request,hr.group_hr_manager,1,1,1,1
+access_custom_early_gate_pass_user,custom.early.gate.pass user,model_custom_early_gate_pass,base.group_user,1,1,1,0
+access_custom_early_gate_pass_manager,custom.early.gate.pass manager,model_custom_early_gate_pass,hr.group_hr_manager,1,1,1,1

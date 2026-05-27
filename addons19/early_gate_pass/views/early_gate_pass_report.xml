@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ============================================================
+         GATE PASS - REPORT ACTION
+         ============================================================ -->
+    <record id="action_report_early_gate_pass" model="ir.actions.report">
+        <field name="name">Early Logout Gate Pass</field>
+        <field name="model">early.gate.pass</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">early_gate_pass.report_early_gate_pass_document</field>
+        <field name="report_file">early_gate_pass.report_early_gate_pass_document</field>
+        <field name="print_report_name">'Gate-Pass-%s' % (object.name or '').replace('/', '-')</field>
+        <field name="binding_model_id" ref="model_early_gate_pass"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- ============================================================
+         GATE PASS - QWEB TEMPLATE
+         ============================================================ -->
+    <template id="report_early_gate_pass_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" style="padding: 20px;">
+
+                        <!-- Title -->
+                        <div style="text-align:center; border-bottom:3px double #333; padding-bottom:10px; margin-bottom:25px;">
+                            <h1 style="margin:0; font-size:28px; letter-spacing:2px;">EARLY LOGOUT GATE PASS</h1>
+                            <div style="font-size:13px; color:#555; margin-top:6px;">
+                                Ref: <strong><t t-esc="o.name"/></strong>
+                                &amp;nbsp;|&amp;nbsp;
+                                Date: <strong><span t-field="o.request_date"/></strong>
+                            </div>
+                        </div>
+
+                        <!-- Employee Info Table -->
+                        <table class="table table-bordered"
+                               style="width:100%; border-collapse:collapse; margin-bottom:25px; font-size:14px;">
+                            <tr>
+                                <td style="width:30%; background:#f5f5f5; padding:10px; font-weight:bold; border:1px solid #ccc;">
+                                    Employee Name
+                                </td>
+                                <td style="padding:10px; border:1px solid #ccc;">
+                                    <span t-field="o.employee_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f5f5f5; padding:10px; font-weight:bold; border:1px solid #ccc;">
+                                    Employee Code
+                                </td>
+                                <td style="padding:10px; border:1px solid #ccc;">
+                                    <t t-esc="o.employee_code or '-'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f5f5f5; padding:10px; font-weight:bold; border:1px solid #ccc;">
+                                    Department
+                                </td>
+                                <td style="padding:10px; border:1px solid #ccc;">
+                                    <t t-esc="o.department_id.name or '-'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f5f5f5; padding:10px; font-weight:bold; border:1px solid #ccc;">
+                                    Designation
+                                </td>
+                                <td style="padding:10px; border:1px solid #ccc;">
+                                    <t t-esc="o.job_id.name or '-'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f5f5f5; padding:10px; font-weight:bold; border:1px solid #ccc;">
+                                    Manager
+                                </td>
+                                <td style="padding:10px; border:1px solid #ccc;">
+                                    <t t-esc="o.manager_id.name or '-'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f5f5f5; padding:10px; font-weight:bold; border:1px solid #ccc;">
+                                    Date
+                                </td>
+                                <td style="padding:10px; border:1px solid #ccc;">
+                                    <span t-field="o.request_date"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f5f5f5; padding:10px; font-weight:bold; border:1px solid #ccc;">
+                                    Check-In Time
+                                </td>
+                                <td style="padding:10px; border:1px solid #ccc;">
+                                    <t t-esc="o.get_login_time_str()"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f5f5f5; padding:10px; font-weight:bold; border:1px solid #ccc;">
+                                    Check-Out Time
+                                </td>
+                                <td style="padding:10px; border:1px solid #ccc;">
+                                    <t t-esc="o.get_logout_time_str()"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f5f5f5; padding:10px; font-weight:bold; border:1px solid #ccc;">
+                                    Reason
+                                </td>
+                                <td style="padding:10px; border:1px solid #ccc;">
+                                    <t t-esc="o.reason or '-'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f5f5f5; padding:10px; font-weight:bold; border:1px solid #ccc;">
+                                    Status
+                                </td>
+                                <td style="padding:10px; border:1px solid #ccc;">
+                                    <span style="background:#28a745; color:#fff; padding:3px 12px; border-radius:4px; font-weight:bold;">
+                                        APPROVED
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Signature Section -->
+                        <div style="margin-top:60px;">
+                            <table style="width:100%; border-collapse:collapse;">
+                                <tr>
+                                    <td style="width:33%; text-align:center; vertical-align:top; padding:0 10px;">
+                                        <div style="border-top:1px solid #333; padding-top:6px; margin-top:50px; font-size:13px;">
+                                            <strong>Employee Signature</strong><br/>
+                                            <span style="font-size:11px; color:#666;">
+                                                <t t-esc="o.employee_id.name"/>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td style="width:33%; text-align:center; vertical-align:top; padding:0 10px;">
+                                        <div style="border-top:1px solid #333; padding-top:6px; margin-top:50px; font-size:13px;">
+                                            <strong>Manager Signature</strong><br/>
+                                            <span style="font-size:11px; color:#666;">
+                                                <t t-esc="o.manager_id.name or '________________'"/>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td style="width:33%; text-align:center; vertical-align:top; padding:0 10px;">
+                                        <div style="border-top:1px solid #333; padding-top:6px; margin-top:50px; font-size:13px;">
+                                            <strong>Security / HR</strong><br/>
+                                            <span style="font-size:11px; color:#666;">
+                                                Gate Authorisation
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Footer note -->
+                        <div style="margin-top:50px; text-align:center; font-size:11px; color:#888; border-top:1px dashed #aaa; padding-top:10px;">
+                            This is a system generated gate pass. Please show this document at the gate while leaving the premises.
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

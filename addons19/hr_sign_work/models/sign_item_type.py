@@ -7,22 +7,11 @@ class SignItemType(models.Model):
     _order = "sequence, id"
 
     # =====================================================
-    # BASIC INFO
+    # BASIC
     # =====================================================
 
-    name = fields.Char(
-        string="Field Name",
-        required=True
-    )
-
-    sequence = fields.Integer(
-        string="Sequence",
-        default=10
-    )
-
-    # =====================================================
-    # FIELD TYPE
-    # =====================================================
+    name = fields.Char(string="Field Name", required=True)
+    sequence = fields.Integer(string="Sequence", default=10)
 
     item_type = fields.Selection([
         ("signature", "Signature"),
@@ -35,8 +24,6 @@ class SignItemType(models.Model):
         ("strikethrough", "Strikethrough"),
         ("stamp", "Stamp"),
         ("date", "Date"),
-
-        # EXTRA TYPES
         ("name", "Name"),
         ("email", "Email"),
         ("phone", "Phone"),
@@ -45,30 +32,18 @@ class SignItemType(models.Model):
     ],
         string="Type",
         required=True,
-        default="text"
+        default="text",
     )
 
     # =====================================================
-    # DEFAULT VALUES
+    # DEFAULTS USED WHEN PLACING THIS FIELD ON A PDF
     # =====================================================
 
-    placeholder = fields.Char(
-        string="Placeholder"
-    )
+    placeholder = fields.Char(string="Placeholder")
+    tip = fields.Char(string="Tip")
 
-    tip = fields.Char(
-        string="Tip"
-    )
-
-    mandatory = fields.Boolean(
-        string="Mandatory",
-        default=True
-    )
-
-    read_only = fields.Boolean(
-        string="Read Only",
-        default=False
-    )
+    mandatory = fields.Boolean(string="Mandatory", default=True)
+    read_only = fields.Boolean(string="Read Only", default=False)
 
     alignment = fields.Selection([
         ("left", "Left"),
@@ -76,93 +51,76 @@ class SignItemType(models.Model):
         ("right", "Right"),
     ],
         string="Alignment",
-        default="left"
+        default="left",
     )
 
     field_size = fields.Selection([
+        ("small", "Small Text"),
         ("regular", "Regular Text"),
         ("large", "Large Text"),
-        ("small", "Small Text"),
     ],
         string="Field Size",
-        default="regular"
+        default="regular",
     )
 
+    default_width = fields.Float(string="Default Width (%)", default=18.0)
+    default_height = fields.Float(string="Default Height (%)", default=5.0)
+
     # =====================================================
-    # LINKED TO
+    # LINKED MODEL (auto-fill from a partner field, etc.)
     # =====================================================
 
     linked_model_id = fields.Many2one(
-        "ir.model",
-        string="Linked To",
-        ondelete="set null"
+        "ir.model", string="Linked To", ondelete="set null",
     )
-
     linked_field_id = fields.Many2one(
-        "ir.model.fields",
-        string="Linked Field",
+        "ir.model.fields", string="Linked Field",
         domain="[('model_id', '=', linked_model_id)]",
-        ondelete="set null"
+        ondelete="set null",
     )
 
     # =====================================================
-    # AUTO DEFAULTS
+    # AUTO-FILL DEFAULTS WHEN ITEM TYPE CHANGES
     # =====================================================
 
     @api.onchange("item_type")
     def _onchange_item_type(self):
+        partner_model = self.env.ref(
+            "base.model_res_partner", raise_if_not_found=False,
+        )
+        defaults_map = {
+            "name": ("Name", "name"),
+            "email": ("Email", "email"),
+            "phone": ("Phone", "phone"),
+            "company": ("Company", "company_name"),
+            "date": ("Date", None),
+            "signature": ("Signature", None),
+            "initial": ("Initial", None),
+        }
         for rec in self:
-            partner_model = self.env.ref(
-                "base.model_res_partner",
-                raise_if_not_found=False
-            )
-
-            if rec.item_type == "name":
-                rec.placeholder = "Name"
+            info = defaults_map.get(rec.item_type)
+            if not info:
+                continue
+            label, partner_field = info
+            if not rec.placeholder:
+                rec.placeholder = label
+            if partner_field and partner_model:
                 rec.linked_model_id = partner_model
-                rec.linked_field_id = self._get_partner_field("name")
-
-            elif rec.item_type == "email":
-                rec.placeholder = "Email"
-                rec.linked_model_id = partner_model
-                rec.linked_field_id = self._get_partner_field("email")
-
-            elif rec.item_type == "phone":
-                rec.placeholder = "Phone"
-                rec.linked_model_id = partner_model
-                rec.linked_field_id = self._get_partner_field("phone")
-
-            elif rec.item_type == "company":
-                rec.placeholder = "Company"
-                rec.linked_model_id = partner_model
-                rec.linked_field_id = self._get_partner_field("company_type")
-
-            elif rec.item_type == "date":
-                rec.placeholder = "Date"
-
-            elif rec.item_type == "signature":
-                rec.placeholder = "Signature"
-
-            elif rec.item_type == "initial":
-                rec.placeholder = "Initial"
+                rec.linked_field_id = self._get_partner_field(partner_field)
 
     def _get_partner_field(self, field_name):
         return self.env["ir.model.fields"].search([
             ("model", "=", "res.partner"),
-            ("name", "=", field_name)
+            ("name", "=", field_name),
         ], limit=1)
 
     # =====================================================
-    # TYPE SWITCHER
+    # TYPE SWITCHER (used by the form-view tab buttons)
     # =====================================================
 
     def _set_type(self, type_value):
         self.ensure_one()
-
-        self.write({
-            "item_type": type_value
-        })
-
+        self.write({"item_type": type_value})
         return {
             "type": "ir.actions.act_window",
             "res_model": "sign.item.type",
@@ -171,47 +129,18 @@ class SignItemType(models.Model):
             "target": "current",
         }
 
-    def set_type_signature(self):
-        return self._set_type("signature")
-
-    def set_type_initial(self):
-        return self._set_type("initial")
-
-    def set_type_text(self):
-        return self._set_type("text")
-
-    def set_type_multiline(self):
-        return self._set_type("multiline")
-
-    def set_type_checkbox(self):
-        return self._set_type("checkbox")
-
-    def set_type_radio(self):
-        return self._set_type("radio")
-
-    def set_type_selection(self):
-        return self._set_type("selection")
-
-    def set_type_strikethrough(self):
-        return self._set_type("strikethrough")
-
-    def set_type_stamp(self):
-        return self._set_type("stamp")
-
-    def set_type_date(self):
-        return self._set_type("date")
-
-    def set_type_name(self):
-        return self._set_type("name")
-
-    def set_type_email(self):
-        return self._set_type("email")
-
-    def set_type_phone(self):
-        return self._set_type("phone")
-
-    def set_type_company(self):
-        return self._set_type("company")
-
-    def set_type_upload(self):
-        return self._set_type("upload")
+    def set_type_signature(self):     return self._set_type("signature")
+    def set_type_initial(self):       return self._set_type("initial")
+    def set_type_text(self):          return self._set_type("text")
+    def set_type_multiline(self):     return self._set_type("multiline")
+    def set_type_checkbox(self):      return self._set_type("checkbox")
+    def set_type_radio(self):         return self._set_type("radio")
+    def set_type_selection(self):     return self._set_type("selection")
+    def set_type_strikethrough(self): return self._set_type("strikethrough")
+    def set_type_stamp(self):         return self._set_type("stamp")
+    def set_type_date(self):          return self._set_type("date")
+    def set_type_name(self):          return self._set_type("name")
+    def set_type_email(self):         return self._set_type("email")
+    def set_type_phone(self):         return self._set_type("phone")
+    def set_type_company(self):       return self._set_type("company")
+    def set_type_upload(self):        return self._set_type("upload")

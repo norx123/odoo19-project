@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="sign_item_type_signature" model="custom.sign.item.type">
+        <field name="name">Signature</field>
+        <field name="item_type">signature</field>
+        <field name="placeholder">Signature</field>
+        <field name="tip">Sign here</field>
+        <field name="mandatory" eval="True"/>
+        <field name="default_width">22.0</field>
+        <field name="default_height">6.0</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="sign_item_type_initial" model="custom.sign.item.type">
+        <field name="name">Initials</field>
+        <field name="item_type">initial</field>
+        <field name="placeholder">Initials</field>
+        <field name="tip">Initial here</field>
+        <field name="mandatory" eval="True"/>
+        <field name="default_width">10.0</field>
+        <field name="default_height">5.0</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="sign_item_type_name" model="custom.sign.item.type">
+        <field name="name">Name</field>
+        <field name="item_type">name</field>
+        <field name="placeholder">Name</field>
+        <field name="tip">Fill in your name</field>
+        <field name="mandatory" eval="True"/>
+        <field name="alignment">left</field>
+        <field name="field_size">regular</field>
+        <field name="default_width">18.0</field>
+        <field name="default_height">4.5</field>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="sign_item_type_email" model="custom.sign.item.type">
+        <field name="name">Email</field>
+        <field name="item_type">email</field>
+        <field name="placeholder">Email</field>
+        <field name="tip">Fill in your email</field>
+        <field name="mandatory" eval="True"/>
+        <field name="alignment">left</field>
+        <field name="field_size">regular</field>
+        <field name="default_width">20.0</field>
+        <field name="default_height">4.5</field>
+        <field name="sequence">4</field>
+    </record>
+
+    <record id="sign_item_type_phone" model="custom.sign.item.type">
+        <field name="name">Phone</field>
+        <field name="item_type">phone</field>
+        <field name="placeholder">Phone</field>
+        <field name="tip">Fill in your phone</field>
+        <field name="mandatory" eval="False"/>
+        <field name="alignment">left</field>
+        <field name="field_size">regular</field>
+        <field name="default_width">15.0</field>
+        <field name="default_height">4.5</field>
+        <field name="sequence">5</field>
+    </record>
+
+    <record id="sign_item_type_company" model="custom.sign.item.type">
+        <field name="name">Company</field>
+        <field name="item_type">company</field>
+        <field name="placeholder">Company</field>
+        <field name="tip">Fill in your company</field>
+        <field name="mandatory" eval="False"/>
+        <field name="alignment">left</field>
+        <field name="field_size">regular</field>
+        <field name="default_width">20.0</field>
+        <field name="default_height">4.5</field>
+        <field name="sequence">6</field>
+    </record>
+
+    <record id="sign_item_type_text" model="custom.sign.item.type">
+        <field name="name">Text</field>
+        <field name="item_type">text</field>
+        <field name="placeholder">Text</field>
+        <field name="tip">Fill in</field>
+        <field name="mandatory" eval="False"/>
+        <field name="alignment">left</field>
+        <field name="field_size">regular</field>
+        <field name="default_width">18.0</field>
+        <field name="default_height">4.5</field>
+        <field name="sequence">7</field>
+    </record>
+
+    <record id="sign_item_type_multiline" model="custom.sign.item.type">
+        <field name="name">Multiline Text</field>
+        <field name="item_type">multiline</field>
+        <field name="placeholder">Multiline text</field>
+        <field name="tip">Fill in</field>
+        <field name="mandatory" eval="False"/>
+        <field name="alignment">left</field>
+        <field name="field_size">regular</field>
+        <field name="default_width">25.0</field>
+        <field name="default_height">10.0</field>
+        <field name="sequence">8</field>
+    </record>
+
+    <record id="sign_item_type_checkbox" model="custom.sign.item.type">
+        <field name="name">Checkbox</field>
+        <field name="item_type">checkbox</field>
+        <field name="tip">Check it</field>
+        <field name="mandatory" eval="False"/>
+        <field name="default_width">3.0</field>
+        <field name="default_height">3.0</field>
+        <field name="sequence">9</field>
+    </record>
+
+    <record id="sign_item_type_radio" model="custom.sign.item.type">
+        <field name="name">Radio</field>
+        <field name="item_type">radio</field>
+        <field name="tip">Select one</field>
+        <field name="mandatory" eval="False"/>
+        <field name="default_width">3.0</field>
+        <field name="default_height">3.0</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="sign_item_type_selection" model="custom.sign.item.type">
+        <field name="name">Selection</field>
+        <field name="item_type">selection</field>
+        <field name="placeholder">Select</field>
+        <field name="tip">Select</field>
+        <field name="mandatory" eval="False"/>
+        <field name="default_width">18.0</field>
+        <field name="default_height">4.5</field>
+        <field name="sequence">11</field>
+    </record>
+
+    <record id="sign_item_type_date" model="custom.sign.item.type">
+        <field name="name">Date</field>
+        <field name="item_type">date</field>
+        <field name="placeholder">Date</field>
+        <field name="tip">Fill in date</field>
+        <field name="mandatory" eval="False"/>
+        <field name="default_width">12.0</field>
+        <field name="default_height">4.5</field>
+        <field name="sequence">12</field>
+    </record>
+
+    <record id="sign_item_type_strikethrough" model="custom.sign.item.type">
+        <field name="name">Strikethrough</field>
+        <field name="item_type">strikethrough</field>
+        <field name="tip">Strike it</field>
+        <field name="mandatory" eval="False"/>
+        <field name="default_width">15.0</field>
+        <field name="default_height">3.0</field>
+        <field name="sequence">13</field>
+    </record>
+
+    <record id="sign_item_type_stamp" model="custom.sign.item.type">
+        <field name="name">Stamp</field>
+        <field name="item_type">stamp</field>
+        <field name="tip">Stamp it</field>
+        <field name="mandatory" eval="False"/>
+        <field name="default_width">12.0</field>
+        <field name="default_height">6.0</field>
+        <field name="sequence">14</field>
+    </record>
+
+</odoo>

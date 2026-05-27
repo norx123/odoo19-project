@@ -15,6 +15,7 @@ class ApprovalDashboard extends Component {
             loanRequestCount: 0,
             resignationCount: 0,
             travelRequestCount: 0,
+            earlyGatePassCount: 0,
         });
 
         onMounted(async () => {
@@ -23,16 +24,18 @@ class ApprovalDashboard extends Component {
     }
 
     async _loadCounts() {
-        const [advCount, loanCount, resCount, trvCount] = await Promise.all([
+        const [advCount, loanCount, resCount, trvCount, gpCount] = await Promise.all([
             this.orm.searchCount("custom.advance.salary", [["state", "in", ["draft", "submitted"]]]),
             this.orm.searchCount("custom.loan.request", [["state", "in", ["draft", "submitted"]]]),
             this.orm.searchCount("custom.resignation", [["state", "in", ["draft", "confirmed"]]]),
             this.orm.searchCount("custom.travel.request", [["state", "in", ["draft", "submitted"]]]),
+            this.orm.searchCount("custom.early.gate.pass", [["state", "in", ["draft", "submitted"]]]),
         ]);
         this.state.advanceSalaryCount = advCount;
         this.state.loanRequestCount = loanCount;
         this.state.resignationCount = resCount;
         this.state.travelRequestCount = trvCount;
+        this.state.earlyGatePassCount = gpCount;
     }
 
     openNewAdvanceSalary() {
@@ -120,6 +123,29 @@ class ApprovalDashboard extends Component {
             type: "ir.actions.act_window",
             name: "Travel Request",
             res_model: "custom.travel.request",
+            view_mode: "list,form",
+            views: [[false, "list"], [false, "form"]],
+            target: "current",
+            domain: [["state", "in", ["draft", "submitted"]]],
+        });
+    }
+
+    openNewEarlyGatePass() {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: "Early Logout Gate Pass",
+            res_model: "custom.early.gate.pass",
+            view_mode: "form",
+            views: [[false, "form"]],
+            target: "current",
+        });
+    }
+
+    openEarlyGatePassList() {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: "Early Logout Gate Pass",
+            res_model: "custom.early.gate.pass",
             view_mode: "list,form",
             views: [[false, "list"], [false, "form"]],
             target: "current",

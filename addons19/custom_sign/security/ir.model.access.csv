@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_custom_sign_template_user,custom.sign.template.user,model_custom_sign_template,base.group_user,1,1,1,1
+access_custom_sign_tag_user,custom.sign.tag.user,model_custom_sign_tag,base.group_user,1,1,1,1
+access_custom_sign_item_user,custom.sign.item.user,model_custom_sign_item,base.group_user,1,1,1,1
+access_custom_sign_item_type_user,custom.sign.item.type.user,model_custom_sign_item_type,base.group_user,1,1,1,1
+access_custom_sign_request_user,custom.sign.request.user,model_custom_sign_request,base.group_user,1,1,1,1
+access_custom_sign_request_signer_user,custom.sign.request.signer.user,model_custom_sign_request_signer,base.group_user,1,1,1,1
+access_custom_sign_send_wizard_user,custom.sign.send.wizard.user,model_custom_sign_send_wizard,base.group_user,1,1,1,1
+access_custom_sign_share_wizard_user,custom.sign.share.wizard.user,model_custom_sign_share_wizard,base.group_user,1,1,1,1
+access_custom_sign_config_settings_user,custom.sign.config.settings.user,model_custom_sign_config_settings,base.group_system,1,1,1,1
+access_custom_sign_doc_user,custom.sign.doc.user,model_custom_sign_doc,base.group_user,1,1,1,1
+access_custom_sign_doc_share_wizard_user,custom.sign.doc.share.wizard.user,model_custom_sign_doc_share_wizard,base.group_user,1,1,1,1

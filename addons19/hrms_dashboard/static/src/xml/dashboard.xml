@@ -38,42 +38,42 @@
             <div class="row main-section oh-mgr-stat-row">
                 <div class="col-sm-12 col-lg-12">
                     <div class="oh-mgr-stat-cards">
-                        <div class="oh-mgr-stat-card oh-stat-blue">
+                        <div class="oh-mgr-stat-card oh-stat-blue oh-clickable" t-on-click="open_today_checkins">
                             <div class="oh-mgr-stat-icon"><i class="fa fa-users"/></div>
                             <div class="oh-mgr-stat-info">
                                 <span class="oh-mgr-stat-num"><t t-esc="this.state.mgr_data.stats and this.state.mgr_data.stats.checkin_count or 0"/></span>
                                 <span class="oh-mgr-stat-label">Today's Check-In</span>
                             </div>
                         </div>
-                        <div class="oh-mgr-stat-card oh-stat-orange">
+                        <div class="oh-mgr-stat-card oh-stat-orange oh-clickable" t-on-click="open_on_leave_today">
                             <div class="oh-mgr-stat-icon"><i class="fa fa-plane"/></div>
                             <div class="oh-mgr-stat-info">
                                 <span class="oh-mgr-stat-num"><t t-esc="this.state.mgr_data.stats and this.state.mgr_data.stats.on_leave_count or 0"/></span>
                                 <span class="oh-mgr-stat-label">On Leave Today</span>
                             </div>
                         </div>
-                        <div class="oh-mgr-stat-card oh-stat-yellow">
+                        <div class="oh-mgr-stat-card oh-stat-yellow oh-clickable" t-on-click="open_pending_leave_requests">
                             <div class="oh-mgr-stat-icon"><i class="fa fa-clock-o"/></div>
                             <div class="oh-mgr-stat-info">
                                 <span class="oh-mgr-stat-num"><t t-esc="this.state.mgr_data.stats and this.state.mgr_data.stats.pending_leave_count or 0"/></span>
                                 <span class="oh-mgr-stat-label">Pending Leave Requests</span>
                             </div>
                         </div>
-                        <div class="oh-mgr-stat-card oh-stat-red">
+                        <div class="oh-mgr-stat-card oh-stat-red oh-clickable" t-on-click="open_resignations">
                             <div class="oh-mgr-stat-icon"><i class="fa fa-sign-out"/></div>
                             <div class="oh-mgr-stat-info">
                                 <span class="oh-mgr-stat-num"><t t-esc="this.state.mgr_data.stats and this.state.mgr_data.stats.resignation_count or 0"/></span>
                                 <span class="oh-mgr-stat-label">Resignations</span>
                             </div>
                         </div>
-                        <div class="oh-mgr-stat-card oh-stat-green">
+                        <div class="oh-mgr-stat-card oh-stat-green oh-clickable" t-on-click="open_new_joiners">
                             <div class="oh-mgr-stat-icon"><i class="fa fa-user-plus"/></div>
                             <div class="oh-mgr-stat-info">
                                 <span class="oh-mgr-stat-num"><t t-esc="this.state.mgr_data.stats and this.state.mgr_data.stats.new_joiner_count or 0"/></span>
                                 <span class="oh-mgr-stat-label">New Joiners (Month)</span>
                             </div>
                         </div>
-                        <div class="oh-mgr-stat-card oh-stat-purple">
+                        <div class="oh-mgr-stat-card oh-stat-purple oh-clickable" t-on-click="open_monthly_expenses">
                             <div class="oh-mgr-stat-icon"><i class="fa fa-inr"/></div>
                             <div class="oh-mgr-stat-info">
                                 <span class="oh-mgr-stat-num">
@@ -91,7 +91,7 @@
 
                 <!-- Today's Check-In table -->
                 <div class="col-sm-12 col-lg-6">
-                    <div class="oh-card text-color">
+                    <div class="oh-card text-color oh-clickable" t-on-click="open_today_checkins">
                         <div class="oh-card-body pb-0">
                             <p class="stat_head" style="padding:0;">
                                 <i class="fa fa-sign-in" style="color:#208cc2;margin-right:6px;"/>
@@ -134,7 +134,7 @@
 
                 <!-- Currently On Leave -->
                 <div class="col-sm-12 col-lg-6">
-                    <div class="oh-card text-color">
+                    <div class="oh-card text-color oh-clickable" t-on-click="open_on_leave_today">
                         <div class="oh-card-body pb-0">
                             <p class="stat_head" style="padding:0;">
                                 <i class="fa fa-plane" style="color:#f65337;margin-right:6px;"/>
@@ -181,7 +181,7 @@
 
                 <!-- Monthly Expenses -->
                 <div class="col-sm-12 col-lg-6">
-                    <div class="oh-card text-color">
+                    <div class="oh-card text-color oh-clickable" t-on-click="open_monthly_expenses">
                         <div class="oh-card-body pb-0">
                             <p class="stat_head" style="padding:0;">
                                 <i class="fa fa-inr" style="color:#8e559e;margin-right:6px;"/>
@@ -228,7 +228,7 @@
 
                 <!-- Pending Leave Requests -->
                 <div class="col-sm-12 col-lg-6">
-                    <div class="oh-card text-color">
+                    <div class="oh-card text-color oh-clickable" t-on-click="open_pending_leave_requests">
                         <div class="oh-card-body pb-0">
                             <p class="stat_head" style="padding:0;">
                                 <i class="fa fa-list-alt" style="color:#ffa433;margin-right:6px;"/>
@@ -281,7 +281,7 @@
 
                 <!-- Resignations -->
                 <div class="col-sm-12 col-lg-6">
-                    <div class="oh-card text-color">
+                    <div class="oh-card text-color oh-clickable" t-on-click="open_resignations">
                         <div class="oh-card-body pb-0">
                             <p class="stat_head" style="padding:0;">
                                 <i class="fa fa-sign-out" style="color:#cf3650;margin-right:6px;"/>
@@ -322,7 +322,7 @@
 
                 <!-- New Joiners This Month -->
                 <div class="col-sm-12 col-lg-6">
-                    <div class="oh-card text-color">
+                    <div class="oh-card text-color oh-clickable" t-on-click="open_new_joiners">
                         <div class="oh-card-body pb-0">
                             <p class="stat_head" style="padding:0;">
                                 <i class="fa fa-user-plus" style="color:#659d4e;margin-right:6px;"/>
@@ -365,7 +365,7 @@
             <!-- ── ROW 4: DEPARTMENT ANALYSIS BAR CHART ── -->
             <div class="row main-section">
                 <div class="col-sm-12 col-lg-12">
-                    <div class="oh-card text-color">
+                    <div class="oh-card text-color oh-clickable" t-on-click="open_departments">
                         <div class="oh-card-body pb-0">
                             <p class="stat-head" style="padding:0;">
                                 <i class="fa fa-building" style="color:#4d6cb1;margin-right:6px;"/>
@@ -414,7 +414,7 @@
     <t t-name="EmployeeDashboard">
         <div class="row main-section">
             <div class="col-md-6 col-lg-4">
-                <div class="hr_notification">
+                <div class="hr_notification oh-clickable" t-on-click="open_birthdays">
                     <div class="hr_notification-head">Upcoming Birthdays</div>
                     <div class="col-xs-12 text-align">
                         <t t-if="this.state.employee_birthday and this.state.employee_birthday.length > 0">
@@ -457,7 +457,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="col-xs-12 hr_notification" style="padding: 0;">
+                <div class="col-xs-12 hr_notification oh-clickable" style="padding: 0;" t-on-click="open_events">
                     <div class="col-xs-12" style="padding:0;">
                         <div class="hr_notification-head">Upcoming Events</div>
                     </div>
@@ -489,7 +489,7 @@
                 </div>
             </div>
             <div class="col-md-12 col-lg-4">
-                <div class="col-xs-12 hr_notification" style="padding: 0;">
+                <div class="col-xs-12 hr_notification oh-clickable" style="padding: 0;" t-on-click="open_announcements">
                     <div class="col-xs-12" style="padding:0;">
                         <div class="hr_notification-head">Announcements</div>
                     </div>

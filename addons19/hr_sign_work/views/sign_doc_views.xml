@@ -12,12 +12,12 @@
         <field name="model">sign.doc</field>
         <field name="arch" type="xml">
             <list string="Documents">
-                <field name="name"            string="Document Name"/>
-                <field name="user_id"         string="Created By" widget="many2one_avatar_user"/>
-                <field name="tag_ids"         string="Tags" widget="many2many_tags" optional="show"/>
-                <field name="last_shared"     string="Last Shared" optional="show"/>
-                <field name="shared_with_ids" string="Shared With" widget="many2many_tags" optional="show"/>
-                <button name="action_share" string="Share" type="object" icon="fa-share-alt" class="btn-link"/>
+                <field name="name" string="Document Name"/>
+                <field name="user_id" string="Created By" widget="many2one_avatar_user"/>
+                <field name="tag_ids" widget="many2many_tags" optional="show"/>
+                <field name="write_date" widget="datetime" optional="show"/>
+                <field name="last_shared" optional="show"/>
+                <field name="shared_with_ids" widget="many2many_tags" optional="show"/>
             </list>
         </field>
     </record>
@@ -28,12 +28,12 @@
         <field name="arch" type="xml">
             <form string="Document" class="o_sign_doc_form">
                 <header>
-                    <button name="action_share" string="Share" type="object" class="btn-primary"/>
+                    <button name="action_share" string="Share"
+                            type="object" class="btn-primary"/>
                     <field name="last_shared" readonly="1" invisible="not last_shared"/>
                 </header>
                 <sheet class="o_sign_doc_sheet">
 
-                    <!-- TITLE — Google Docs jaisi badi title -->
                     <div class="o_sign_doc_title_wrap">
                         <field name="name"
                                placeholder="Untitled document"
@@ -41,20 +41,19 @@
                                nolabel="1"/>
                     </div>
 
-                    <!-- META — avatar + tags -->
                     <div class="o_sign_doc_meta">
                         <field name="user_id" widget="many2one_avatar_user" readonly="1" nolabel="1"/>
                         <field name="tag_ids" widget="many2many_tags" nolabel="1" placeholder="Add tags..."/>
                     </div>
 
-                    <!-- WHITE PAPER PAGE — Google Docs jaisa -->
                     <div class="o_sign_doc_page_wrap">
                         <div class="o_sign_doc_page">
                             <field name="content"
                                    widget="html"
                                    nolabel="1"
                                    class="o_sign_doc_editor"
-                                   placeholder="Start typing..."/>
+                                   placeholder="Start typing..."
+                                   options="{'collaborative': false}"/>
                         </div>
                     </div>
 
@@ -74,13 +73,14 @@
                         <field name="share_link" readonly="1" class="o_sign_share_link_input"/>
                     </div>
                     <group>
-                        <field name="doc_id"      readonly="1"/>
+                        <field name="doc_id" readonly="1"/>
                         <field name="partner_ids" widget="many2many_tags" string="Share With"/>
-                        <field name="note"        string="Message"/>
+                        <field name="note" string="Message"/>
                     </group>
                 </sheet>
                 <footer>
-                    <button name="action_done" string="Done" type="object" class="btn-primary"/>
+                    <button name="action_done" string="Done"
+                            type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

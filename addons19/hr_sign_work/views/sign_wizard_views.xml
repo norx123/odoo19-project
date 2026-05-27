@@ -2,28 +2,24 @@
 <odoo>
 
     <!-- ===================================================== -->
-    <!-- SEND WIZARD VIEW                                      -->
+    <!-- SEND WIZARD -->
     <!-- ===================================================== -->
 
     <record id="view_sign_send_wizard_form" model="ir.ui.view">
         <field name="name">sign.send.wizard.form</field>
         <field name="model">sign.send.wizard</field>
         <field name="arch" type="xml">
-
             <form string="New Signature Request">
                 <sheet>
                     <field name="template_id" invisible="1"/>
 
-                    <!-- ROW 1: Signer (left) | Valid Until + options (right) -->
                     <div style="display:flex; gap:24px; align-items:flex-start; margin-bottom:12px;">
 
-                        <!-- LEFT: Signer 1 -->
                         <div style="flex:1;">
-                            <label for="signer_id" class="o_form_label">Signer 1</label>
+                            <label for="signer_id" class="o_form_label">Signer</label>
                             <field name="signer_id" widget="many2one" style="width:100%;"/>
                         </div>
 
-                        <!-- RIGHT: Valid Until + Reminders + Hide certificate -->
                         <div style="min-width:220px;">
                             <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
                                 <label for="valid_until" class="o_form_label" style="white-space:nowrap;">Valid Until</label>
@@ -41,88 +37,68 @@
 
                     </div>
 
-                    <!-- ROW 2: Subject -->
                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; border-top:1px solid #dee2e6; padding-top:10px;">
                         <label for="subject" class="o_form_label" style="min-width:60px;">Subject</label>
                         <field name="subject" style="flex:1;"/>
                     </div>
 
-                    <!-- ROW 3: CC -->
                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
                         <label for="cc_partner_ids" class="o_form_label" style="min-width:60px;">CC</label>
-                        <field name="cc_partner_ids" widget="many2many_tags" placeholder="Write email or search contact..." style="flex:1;"/>
+                        <field name="cc_partner_ids" widget="many2many_tags"
+                               placeholder="Write email or search contact..." style="flex:1;"/>
                     </div>
 
-                    <!-- ROW 4: Message -->
                     <div>
-                        <field name="message" placeholder="Enter your message" nolabel="1" style="width:100%; min-height:80px;"/>
+                        <field name="message" placeholder="Enter your message"
+                               nolabel="1" style="width:100%; min-height:80px;"/>
                     </div>
-
                 </sheet>
 
                 <footer>
-                    <button name="action_sign_now" string="Sign Now" type="object" class="btn-primary"/>
-                    <button name="action_send"     string="Send"     type="object" class="btn-primary"/>
+                    <button name="action_sign_now" string="Sign Now"
+                            type="object" class="btn-primary"/>
+                    <button name="action_send" string="Send"
+                            type="object" class="btn-primary"/>
                     <button string="Discard" class="btn-secondary" special="cancel"/>
                 </footer>
-
             </form>
-
         </field>
     </record>
 
 
     <!-- ===================================================== -->
-    <!-- SHARE WIZARD VIEW                                     -->
+    <!-- SHARE WIZARD -->
     <!-- ===================================================== -->
 
     <record id="view_sign_share_wizard_form" model="ir.ui.view">
         <field name="name">sign.share.wizard.form</field>
         <field name="model">sign.share.wizard</field>
         <field name="arch" type="xml">
-
             <form string="Share Document">
-
                 <sheet>
-
                     <field name="template_id" invisible="1"/>
 
+                    <div class="o_sign_share_link_box">
+                        <p style="margin:0 0 8px;color:#666;font-size:12px;">
+                            Share this link with anyone you want to sign this document.
+                        </p>
+                        <field name="share_link" class="o_sign_share_link_input" readonly="1"/>
+                    </div>
+
                     <group>
-
-                        <field
-                            name="share_link"
-                            string="Share Link"
-                            readonly="1"
-                        />
-
-                        <field name="valid_until" string="Valid Until"/>
-
+                        <field name="valid_until"/>
                     </group>
-
                 </sheet>
 
                 <footer>
-                    <button
-                        name="action_stop_sharing"
-                        string="Stop sharing"
-                        type="object"
-                        class="btn-danger"
-                    />
-                    <button
-                        string="Copy link"
-                        class="btn-secondary"
-                        onclick="navigator.clipboard.writeText(document.querySelector('[name=share_link] input, [name=share_link] span').textContent || ''); return false;"
-                    />
-                    <button
-                        name="action_close"
-                        string="Close"
-                        type="object"
-                        class="btn-secondary"
-                    />
+                    <button name="action_stop_sharing" string="Stop sharing"
+                            type="object" class="btn-danger"/>
+                    <button string="Copy link" class="btn-secondary"
+                            onclick="(function(){var i=document.querySelector('[name=share_link] input, [name=share_link] textarea, [name=share_link] span');if(i){navigator.clipboard.writeText(i.value||i.textContent||'');}})()"/>
+                    <button name="action_close" string="Close"
+                            type="object" class="btn-secondary"/>
                 </footer>
-
             </form>
-
         </field>
     </record>
 
