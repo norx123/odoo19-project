@@ -40,13 +40,89 @@ class ApprovalsEarlyGatePass(models.Model):
         string='Date', required=True,
         default=fields.Date.today
     )
-    login_time = fields.Float(string='Login Time', required=True)
-    logout_time = fields.Float(string='Logout Time', required=True)
-    duration_hours = fields.Float(
-        string='Working Hours',
-        compute='_compute_duration_hours', store=True
+    location = fields.Char(
+        string='Location', required=True,
+        help='Place the employee is going to'
     )
-    reason = fields.Text(string='Reason', required=True)
+
+    # ---- Out Time (Hour / Minute / AM-PM) ----
+    out_hour = fields.Selection(
+        selection=[(str(h), '%02d' % h) for h in range(1, 13)],
+        string='Out Hour', default='9', required=True)
+    out_minute = fields.Selection(
+        selection=[('%02d' % m, '%02d' % m) for m in range(0, 60, 5)],
+        string='Out Minute', default='00', required=True)
+    out_ampm = fields.Selection(
+        [('AM', 'AM'), ('PM', 'PM')],
+        string='Out AM/PM', default='AM', required=True)
+
+    # ---- In Time (Hour / Minute / AM-PM) ----
+    in_hour = fields.Selection(
+        selection=[(str(h), '%02d' % h) for h in range(1, 13)],
+        string='In Hour', default='6', required=True)
+    in_minute = fields.Selection(
+        selection=[('%02d' % m, '%02d' % m) for m in range(0, 60, 5)],
+        string='In Minute', default='00', required=True)
+    in_ampm = fields.Selection(
+        [('AM', 'AM'), ('PM', 'PM')],
+        string='In AM/PM', default='PM', required=True)
+
+    # ---- Logout Timing (Hour / Minute / AM-PM) - optional ----
+    logout_hour = fields.Selection(
+        selection=[('', '--')] + [(str(h), '%02d' % h) for h in range(1, 13)],
+        string='Logout Hour', default='')
+    logout_minute = fields.Selection(
+        selection=[('', '--')] + [('%02d' % m, '%02d' % m) for m in range(0, 60, 5)],
+        string='Logout Minute', default='')
+    logout_ampm = fields.Selection(
+        [('', '--'), ('AM', 'AM'), ('PM', 'PM')],
+        string='Logout AM/PM', default='')
+
+    # ---- Computed float values (for duration + PDF) ----
+    login_time = fields.Float(
+        string='Out Time', compute='_compute_time_floats', store=True,
+        help='Time the employee leaves the office')
+    logout_time = fields.Float(
+        string='In Time', compute='_compute_time_floats', store=True,
+        help='Time the employee returns to the office')
+    final_logout_time = fields.Float(
+        string='Logout Timing', compute='_compute_time_floats', store=True,
+        help='Final logout / office leaving time for the day')
+    duration_hours = fields.Float(
+        string='Office Out Duration',
+        compute='_compute_duration_hours', store=True,
+        help='Duration the employee stays out of office (In Time - Out Time)'
+    )
+    reason = fields.Text(string='Purpose of Going Outside', required=True)
+
+    gate_pass_type = fields.Selection([
+        ('official', 'Official'),
+        ('personal', 'Personal'),
+    ], string='Gate Pass Type', default='official', required=True,
+        help='Official = company work, Personal = private work')
+    pay_status = fields.Selection([
+        ('paid', 'Paid'),
+        ('unpaid', 'Unpaid'),
+    ], string='Paid / Unpaid',
+        compute='_compute_pay_status', store=True, readonly=False,
+        help='Whether the time outside is paid or deducted')
+    contact_number = fields.Char(
+        string='Contact Number',
+        compute='_compute_contact_number', store=True, readonly=False,
+        help='Mobile number to reach the employee while outside'
+    )
+    vehicle_number = fields.Char(
+        string='Vehicle Number',
+        help='Vehicle registration number (if any)'
+    )
+    travel_mode = fields.Selection([
+        ('walk', 'Walk-in'),
+        ('bike', 'Bike'),
+        ('car', 'Car'),
+        ('cab', 'Cab'),
+    ], string='Mode of Travel', default='walk',
+        help='How the employee is travelling')
+
     company_id = fields.Many2one(
         'res.company', string='Company',
         default=lambda self: self.env.company
@@ -85,6 +161,52 @@ class ApprovalsEarlyGatePass(models.Model):
         for rec in self:
             rec.manager_id = rec.employee_id.parent_id.id if rec.employee_id else False
 
+    @api.depends('gate_pass_type')
+    def _compute_pay_status(self):
+        """Official -> Paid, Personal -> Unpaid (manager can override)."""
+        for rec in self:
+            rec.pay_status = 'paid' if rec.gate_pass_type == 'official' else 'unpaid'
+
+    @api.depends('employee_id')
+    def _compute_contact_number(self):
+        """Auto-fill mobile from employee record (multiple fallbacks)."""
+        for rec in self:
+            emp = rec.employee_id
+            number = False
+            if emp:
+                for fname in ('mobile_phone', 'work_phone', 'private_phone'):
+                    if hasattr(emp, fname):
+                        val = getattr(emp, fname)
+                        if val:
+                            number = val
+                            break
+            rec.contact_number = number or ''
+
+    @staticmethod
+    def _hms_to_float(hour, minute, ampm):
+        """Convert 12-hour (hour, minute, AM/PM) selection into float hours."""
+        if not hour or not ampm:
+            return 0.0
+        h = int(hour)
+        m = int(minute) if minute else 0
+        if ampm == 'AM':
+            if h == 12:
+                h = 0
+        else:  # PM
+            if h != 12:
+                h += 12
+        return h + (m / 60.0)
+
+    @api.depends('out_hour', 'out_minute', 'out_ampm',
+                 'in_hour', 'in_minute', 'in_ampm',
+                 'logout_hour', 'logout_minute', 'logout_ampm')
+    def _compute_time_floats(self):
+        for rec in self:
+            rec.login_time = rec._hms_to_float(rec.out_hour, rec.out_minute, rec.out_ampm)
+            rec.logout_time = rec._hms_to_float(rec.in_hour, rec.in_minute, rec.in_ampm)
+            rec.final_logout_time = rec._hms_to_float(
+                rec.logout_hour, rec.logout_minute, rec.logout_ampm)
+
     @api.depends('login_time', 'logout_time')
     def _compute_duration_hours(self):
         for rec in self:
@@ -99,12 +221,8 @@ class ApprovalsEarlyGatePass(models.Model):
     @api.constrains('login_time', 'logout_time')
     def _check_times(self):
         for rec in self:
-            if rec.login_time < 0 or rec.login_time >= 24:
-                raise ValidationError(_('Login Time must be between 00:00 and 23:59.'))
-            if rec.logout_time < 0 or rec.logout_time >= 24:
-                raise ValidationError(_('Logout Time must be between 00:00 and 23:59.'))
-            if rec.logout_time <= rec.login_time:
-                raise ValidationError(_('Logout Time must be later than Login Time.'))
+            if rec.login_time and rec.logout_time and rec.logout_time <= rec.login_time:
+                raise ValidationError(_('In Time must be later than Out Time.'))
 
     # -----------------------------------------------------------------
     # Overrides
@@ -166,6 +284,7 @@ class ApprovalsEarlyGatePass(models.Model):
     # Helpers for the report
     # -----------------------------------------------------------------
     def _format_float_time(self, value):
+        """Format float hours to 12-hour 'HH:MM AM/PM' string."""
         if not value:
             return '--:--'
         hours = int(value)
@@ -173,7 +292,11 @@ class ApprovalsEarlyGatePass(models.Model):
         if minutes == 60:
             hours += 1
             minutes = 0
-        return '%02d:%02d' % (hours, minutes)
+        suffix = 'AM' if hours < 12 else 'PM'
+        display_hour = hours % 12
+        if display_hour == 0:
+            display_hour = 12
+        return '%02d:%02d %s' % (display_hour, minutes, suffix)
 
     def get_login_time_str(self):
         self.ensure_one()
@@ -182,3 +305,7 @@ class ApprovalsEarlyGatePass(models.Model):
     def get_logout_time_str(self):
         self.ensure_one()
         return self._format_float_time(self.logout_time)
+
+    def get_final_logout_time_str(self):
+        self.ensure_one()
+        return self._format_float_time(self.final_logout_time)

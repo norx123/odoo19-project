@@ -51,23 +51,69 @@
                             <field name="job_id" readonly="1"/>
                             <field name="manager_id"
                                    readonly="state in ('approved', 'refused', 'cancel')"/>
+                            <field name="contact_number"
+                                   readonly="state in ('approved', 'refused', 'cancel')"/>
                             <field name="company_id"
                                    readonly="state in ('approved', 'refused', 'cancel')"
                                    groups="base.group_multi_company"/>
                         </group>
-                        <group string="Logout Details">
+                        <group string="Gate Pass Details">
                             <field name="request_date"
                                    readonly="state in ('approved', 'refused', 'cancel')"/>
-                            <field name="login_time" widget="float_time"
+                            <field name="gate_pass_type"
                                    readonly="state in ('approved', 'refused', 'cancel')"/>
-                            <field name="logout_time" widget="float_time"
+                            <field name="pay_status"
                                    readonly="state in ('approved', 'refused', 'cancel')"/>
+                            <field name="location"
+                                   placeholder="e.g. Bank, Client site, Home..."
+                                   readonly="state in ('approved', 'refused', 'cancel')"/>
+                            <field name="travel_mode"
+                                   readonly="state in ('approved', 'refused', 'cancel')"/>
+                            <field name="vehicle_number"
+                                   placeholder="e.g. UP65 AB 1234"
+                                   invisible="travel_mode == 'walk'"
+                                   readonly="state in ('approved', 'refused', 'cancel')"/>
+
+                            <label for="out_hour" string="Out Time"/>
+                            <div class="d-flex align-items-center" style="gap:2px;">
+                                <field name="out_hour" nolabel="1" style="width:55px;"
+                                       readonly="state in ('approved', 'refused', 'cancel')"/>
+                                <span>:</span>
+                                <field name="out_minute" nolabel="1" style="width:55px;"
+                                       readonly="state in ('approved', 'refused', 'cancel')"/>
+                                <field name="out_ampm" nolabel="1" style="width:60px;"
+                                       readonly="state in ('approved', 'refused', 'cancel')"/>
+                            </div>
+
+                            <label for="in_hour" string="In Time"/>
+                            <div class="d-flex align-items-center" style="gap:2px;">
+                                <field name="in_hour" nolabel="1" style="width:55px;"
+                                       readonly="state in ('approved', 'refused', 'cancel')"/>
+                                <span>:</span>
+                                <field name="in_minute" nolabel="1" style="width:55px;"
+                                       readonly="state in ('approved', 'refused', 'cancel')"/>
+                                <field name="in_ampm" nolabel="1" style="width:60px;"
+                                       readonly="state in ('approved', 'refused', 'cancel')"/>
+                            </div>
+
+                            <label for="logout_hour" string="Logout Timing"/>
+                            <div class="d-flex align-items-center" style="gap:2px;">
+                                <field name="logout_hour" nolabel="1" style="width:55px;"
+                                       readonly="state in ('approved', 'refused', 'cancel')"/>
+                                <span>:</span>
+                                <field name="logout_minute" nolabel="1" style="width:55px;"
+                                       readonly="state in ('approved', 'refused', 'cancel')"/>
+                                <field name="logout_ampm" nolabel="1" style="width:60px;"
+                                       readonly="state in ('approved', 'refused', 'cancel')"/>
+                            </div>
+
                             <field name="duration_hours" widget="float_time" readonly="1"/>
                         </group>
                     </group>
-                    <group string="Reason">
+
+                    <group string="Purpose of Going Outside">
                         <field name="reason" nolabel="1"
-                               placeholder="Provide the reason for early logout..."
+                               placeholder="Describe the purpose of going outside..."
                                readonly="state in ('approved', 'refused', 'cancel')"/>
                     </group>
                     <notebook>
@@ -103,8 +149,11 @@
                 <field name="department_id"/>
                 <field name="manager_id"/>
                 <field name="request_date"/>
+                <field name="gate_pass_type"/>
+                <field name="location"/>
                 <field name="login_time" widget="float_time"/>
                 <field name="logout_time" widget="float_time"/>
+                <field name="final_logout_time" widget="float_time" optional="hide"/>
                 <field name="state" widget="badge"
                        decoration-success="state == 'approved'"
                        decoration-warning="state == 'submitted'"

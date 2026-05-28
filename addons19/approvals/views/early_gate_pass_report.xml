@@ -44,8 +44,14 @@
                 <t t-call="web.basic_layout">
                     <div class="page" style="font-family: Arial, sans-serif; font-size: 9px; color: #222; padding: 4px;">
 
-                        <!-- Title -->
+                        <!-- Company Logo + Title -->
                         <div style="text-align:center; border-bottom:2px solid #333; padding-bottom:4px; margin-bottom:6px;">
+                            <img t-if="o.company_id.logo"
+                                 t-att-src="image_data_uri(o.company_id.logo)"
+                                 style="max-height:32px; max-width:120px; margin-bottom:3px;"/>
+                            <div style="font-size:10px; font-weight:bold;">
+                                <t t-esc="o.company_id.name"/>
+                            </div>
                             <div style="font-size:13px; font-weight:bold; letter-spacing:1px;">EARLY LOGOUT GATE PASS</div>
                             <div style="font-size:8px; color:#555;">
                                 <strong t-esc="o.name"/>
@@ -90,6 +96,14 @@
                             </tr>
                             <tr>
                                 <td style="background:#f0f0f0; padding:3px 4px; font-weight:bold; border:1px solid #bbb;">
+                                    Contact No.
+                                </td>
+                                <td style="padding:3px 4px; border:1px solid #bbb;">
+                                    <t t-esc="o.contact_number or '-'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f0f0f0; padding:3px 4px; font-weight:bold; border:1px solid #bbb;">
                                     Date
                                 </td>
                                 <td style="padding:3px 4px; border:1px solid #bbb;">
@@ -98,7 +112,37 @@
                             </tr>
                             <tr>
                                 <td style="background:#f0f0f0; padding:3px 4px; font-weight:bold; border:1px solid #bbb;">
-                                    Check-In
+                                    Location
+                                </td>
+                                <td style="padding:3px 4px; border:1px solid #bbb;">
+                                    <t t-esc="o.location or '-'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f0f0f0; padding:3px 4px; font-weight:bold; border:1px solid #bbb;">
+                                    Type
+                                </td>
+                                <td style="padding:3px 4px; border:1px solid #bbb;">
+                                    <t t-esc="dict(o._fields['gate_pass_type'].selection).get(o.gate_pass_type, '-')"/>
+                                    <t t-if="o.pay_status">
+                                        (<t t-esc="dict(o._fields['pay_status'].selection).get(o.pay_status, '')"/>)
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f0f0f0; padding:3px 4px; font-weight:bold; border:1px solid #bbb;">
+                                    Travel Mode
+                                </td>
+                                <td style="padding:3px 4px; border:1px solid #bbb;">
+                                    <t t-esc="dict(o._fields['travel_mode'].selection).get(o.travel_mode, '-')"/>
+                                    <t t-if="o.vehicle_number">
+                                        - <t t-esc="o.vehicle_number"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background:#f0f0f0; padding:3px 4px; font-weight:bold; border:1px solid #bbb;">
+                                    Out Time
                                 </td>
                                 <td style="padding:3px 4px; border:1px solid #bbb;">
                                     <t t-esc="o.get_login_time_str()"/>
@@ -106,15 +150,23 @@
                             </tr>
                             <tr>
                                 <td style="background:#f0f0f0; padding:3px 4px; font-weight:bold; border:1px solid #bbb;">
-                                    Check-Out
+                                    In Time
                                 </td>
                                 <td style="padding:3px 4px; border:1px solid #bbb;">
                                     <t t-esc="o.get_logout_time_str()"/>
                                 </td>
                             </tr>
                             <tr>
+                                <td style="background:#f0f0f0; padding:3px 4px; font-weight:bold; border:1px solid #bbb;">
+                                    Logout Timing
+                                </td>
+                                <td style="padding:3px 4px; border:1px solid #bbb;">
+                                    <t t-esc="o.get_final_logout_time_str()"/>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td style="background:#f0f0f0; padding:3px 4px; font-weight:bold; border:1px solid #bbb; vertical-align:top;">
-                                    Reason
+                                    Purpose
                                 </td>
                                 <td style="padding:3px 4px; border:1px solid #bbb;">
                                     <t t-esc="o.reason or '-'"/>
