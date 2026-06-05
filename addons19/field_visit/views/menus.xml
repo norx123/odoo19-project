@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_fv_root" name="Field Visits" sequence="90"/>
+
+    <menuitem id="menu_fv_today"
+              name="My Today Visits"
+              parent="menu_fv_root"
+              action="action_fv_dashboard"
+              sequence="1"/>
+
+    <menuitem id="menu_fv_my"
+              name="My Visits"
+              parent="menu_fv_root"
+              action="action_fv_my"
+              sequence="2"/>
+
+    <menuitem id="menu_fv_all"
+              name="All Visits"
+              parent="menu_fv_root"
+              action="action_fv_all"
+              sequence="10"/>
+</odoo>

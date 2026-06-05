@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- LIST VIEW -->
+    <record id="fv_visit_list" model="ir.ui.view">
+        <field name="name">fv.visit.list</field>
+        <field name="model">fv.visit</field>
+        <field name="arch" type="xml">
+            <list string="Field Visits">
+                <field name="name"/>
+                <field name="visit_date"/>
+                <field name="employee_id"/>
+                <field name="dept_id" optional="hide"/>
+                <field name="visit_type"/>
+                <field name="place_name"/>
+                <field name="city" optional="show"/>
+                <field name="title" optional="show"/>
+                <field name="priority" widget="priority"/>
+                <field name="status"/>
+                <field name="check_in"    string="In"       optional="show"/>
+                <field name="check_out"   string="Out"      optional="show"/>
+                <field name="duration_str" string="Duration" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="fv_visit_form" model="ir.ui.view">
+        <field name="name">fv.visit.form</field>
+        <field name="model">fv.visit</field>
+        <field name="arch" type="xml">
+            <form string="Field Visit">
+                <header>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="status in ['cancelled','completed']"/>
+                    <button name="action_reopen" type="object" string="Reopen"
+                            invisible="status != 'cancelled'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="planned,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee">
+                            <field name="employee_id"/>
+                            <field name="dept_id"    readonly="1"/>
+                            <field name="manager_id" readonly="1"/>
+                            <field name="assigned_by" readonly="1"/>
+                            <field name="is_self_added" readonly="1"/>
+                        </group>
+                        <group string="Schedule">
+                            <field name="visit_date"/>
+                            <field name="visit_time" widget="float_time" string="Start Time"/>
+                            <field name="end_time"   widget="float_time" string="End Time"/>
+                            <field name="priority"   widget="priority"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Visit Details">
+                            <field name="visit_type"/>
+                            <field name="place_name"/>
+                            <field name="address"/>
+                            <field name="city"/>
+                            <field name="contact_name"/>
+                            <field name="contact_phone"/>
+                        </group>
+                        <group string="Purpose">
+                            <field name="title" placeholder="Short title / subject"/>
+                            <field name="purpose" nolabel="1" placeholder="What needs to be done..."/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Check IN" invisible="not check_in">
+                            <group>
+                                <group string="Time and Location">
+                                    <field name="check_in"   readonly="1"/>
+                                    <field name="in_lat"     readonly="1"/>
+                                    <field name="in_lng"     readonly="1"/>
+                                    <field name="in_map_url" widget="url" string="Map Link" readonly="1"/>
+                                    <field name="in_device"  readonly="1"/>
+                                </group>
+                                <group string="Check In Photo">
+                                    <field name="in_photo" widget="image" nolabel="1" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Check OUT" invisible="not check_out">
+                            <group>
+                                <group string="Time and Location">
+                                    <field name="check_out"   readonly="1"/>
+                                    <field name="out_lat"     readonly="1"/>
+                                    <field name="out_lng"     readonly="1"/>
+                                    <field name="out_map_url" widget="url" string="Map Link" readonly="1"/>
+                                    <field name="out_device"  readonly="1"/>
+                                </group>
+                                <group string="Check Out Photo">
+                                    <field name="out_photo" widget="image" nolabel="1" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Outcome">
+                            <group>
+                                <field name="duration_str" string="Total Duration" readonly="1"/>
+                                <field name="outcome" nolabel="1" placeholder="What was accomplished..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- CALENDAR VIEW -->
+    <record id="fv_visit_calendar" model="ir.ui.view">
+        <field name="name">fv.visit.calendar</field>
+        <field name="model">fv.visit</field>
+        <field name="arch" type="xml">
+            <calendar date_start="visit_date" color="employee_id" mode="month">
+                <field name="employee_id"/>
+                <field name="place_name"/>
+                <field name="visit_type"/>
+                <field name="status"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- SEARCH VIEW -->
+    <record id="fv_visit_search" model="ir.ui.view">
+        <field name="name">fv.visit.search</field>
+        <field name="model">fv.visit</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="place_name"/>
+                <field name="city"/>
+                <field name="visit_date"/>
+                <separator/>
+                <filter string="Today"      name="today" domain="[('visit_date','=',context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week"  name="week"  domain="[('visit_date','&gt;=', (context_today()-datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="month" domain="[('visit_date','&gt;=',context_today().strftime('%Y-%m-01'))]"/>
+                <separator/>
+                <filter string="Planned"     name="planned"   domain="[('status','=','planned')]"/>
+                <filter string="In Progress" name="inprog"    domain="[('status','=','in_progress')]"/>
+                <filter string="Completed"   name="completed" domain="[('status','=','completed')]"/>
+                <separator/>
+                <filter string="Client Meeting"  name="client"   domain="[('visit_type','=','client_meeting')]"/>
+                <filter string="Project Site"    name="project"  domain="[('visit_type','=','project_site')]"/>
+                <filter string="Shop / Purchase" name="shop"     domain="[('visit_type','=','shop_purchase')]"/>
+                <filter string="Self Added"      name="self"     domain="[('is_self_added','=',True)]"/>
+                <separator/>
+                <filter string="My Visits"  name="mine" domain="[('employee_id.user_id','=',uid)]"/>
+                <separator/>
+                <filter string="Group by Employee"   name="g_emp"  context="{'group_by':'employee_id'}"/>
+                <filter string="Group by Visit Type" name="g_type" context="{'group_by':'visit_type'}"/>
+                <filter string="Group by Date"       name="g_date" context="{'group_by':'visit_date'}"/>
+                <filter string="Group by Status"     name="g_stat" context="{'group_by':'status'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTIONS -->
+    <record id="action_fv_all" model="ir.actions.act_window">
+        <field name="name">All Visits</field>
+        <field name="res_model">fv.visit</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="fv_visit_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No visits yet!</p>
+            <p>Employees can add their own visits or manager can assign visits here.</p>
+        </field>
+    </record>
+
+    <record id="action_fv_my" model="ir.actions.act_window">
+        <field name="name">My Visits</field>
+        <field name="res_model">fv.visit</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="domain">[('employee_id.user_id','=',uid)]</field>
+        <field name="search_view_id" ref="fv_visit_search"/>
+        <field name="context">{'search_default_month': 1, 'default_is_self_added': True}</field>
+    </record>
+
+    <record id="action_fv_new" model="ir.actions.act_window">
+        <field name="name">Add New Visit</field>
+        <field name="res_model">fv.visit</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'default_is_self_added': True}</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

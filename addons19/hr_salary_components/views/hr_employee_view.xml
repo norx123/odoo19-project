@@ -16,17 +16,18 @@
                             <field name="monthly_ctc" readonly="1"/>
                         </group>
                         <group>
-                            <field name="annual_gross"/>
+                            <field name="annual_gross" readonly="1"/>
                             <field name="monthly_gross"/>
                         </group>
                     </group>
 
-                    <!-- ══ MANUAL BASIC TOGGLE ════════════ -->
+                    <!-- ══ TOGGLES ════════════════════════ -->
                     <group>
                         <field name="manual_basic"/>
+                        <field name="esi_enable"/>
                     </group>
 
-                    <!-- ══ EARNINGS ═════════════════════ -->
+                    <!-- ══ EARNINGS ══════════════════════ -->
                     <group string="Earnings" col="5">
 
                         <!-- BASIC + DA:
@@ -37,15 +38,19 @@
                                readonly="not manual_basic"/>
                         <span>/ month</span>
                         <field name="basic_percent" nolabel="1"
-
                                readonly="manual_basic"/>
                         <span readonly="manual_basic">%</span>
 
-                        <!-- HRA (always computed, amount readonly) -->
-                        <field name="hra" colspan="2" readonly="1"/>
+                        <!-- HRA:
+                             - Manual Basic ON  → amount editable, % hidden
+                             - Manual Basic OFF → amount readonly (computed), % shown
+                        -->
+                        <field name="hra" colspan="2"
+                               readonly="not manual_basic"/>
                         <span>/ month</span>
-                        <field name="hra_percent" nolabel="1"/>
-                        <span>%</span>
+                        <field name="hra_percent" nolabel="1"
+                               readonly="manual_basic"/>
+                        <span readonly="manual_basic">%</span>
 
                         <!-- Uniform -->
                         <field name="uniform_allowance" colspan="2" readonly="1"/>

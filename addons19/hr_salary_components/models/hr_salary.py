@@ -41,11 +41,24 @@ class HrVersion(models.Model):
         store=True,
     )
 
-    annual_gross = fields.Monetary(string="Annual Gross", currency_field='currency_id')
+    annual_gross = fields.Monetary(
+        string="Annual Gross",
+        currency_field='currency_id',
+        compute="_compute_annual_gross",
+        store=True,
+        readonly=True,
+    )
     monthly_gross = fields.Monetary(string="Monthly Gross", currency_field='currency_id')
 
     # ── Manual Toggle ────────────────────────────────────────
     manual_basic = fields.Boolean(string="Manual Basic")
+
+    # ── ESI Enable Toggle ────────────────────────────────────
+    esi_enable = fields.Boolean(
+        string="ESI Enable",
+        default=False,
+        help="Enable to calculate ESI regardless of the ₹21,000 gross ceiling.",
+    )
 
     # ── Earnings ─────────────────────────────────────────────
     basic = fields.Monetary(
@@ -62,6 +75,7 @@ class HrVersion(models.Model):
         currency_field='currency_id',
         compute="_compute_hra",
         store=True,
+        readonly=False,          # Allow manual override when manual_basic=True
     )
     hra_percent = fields.Float(string="HRA %", digits=(5, 2))
 
@@ -255,9 +269,12 @@ class HrVersion(models.Model):
                 rec.basic = gross
 
     # ── Allowances (all depend on `basic`) ───────────────────
-    @api.depends('hra_percent', 'basic')
+    @api.depends('hra_percent', 'basic', 'manual_basic')
     def _compute_hra(self):
         for rec in self:
+            if rec.manual_basic:
+                # Do NOT overwrite the manually entered HRA value.
+                continue
             rec.hra = (rec.basic or 0.0) * (rec.hra_percent or 0.0) / 100.0
 
     @api.depends('uniform_allowance_percent', 'basic')
@@ -320,16 +337,18 @@ class HrVersion(models.Model):
             rate = PF_RATE_EMPLOYER if rec.pf_employer_percent is False else rec.pf_employer_percent
             rec.pf_employer = pf_basic * rate / 100.0
 
-    @api.depends('monthly_gross', 'esi_employer_percent')
+    @api.depends('monthly_gross', 'esi_employer_percent', 'esi_enable')
     def _compute_esi_employer(self):
         """
-        ESI Employer applicable only if monthly gross <= ₹21,000.
+        ESI Employer:
+        - esi_enable OFF → applicable only if monthly gross <= ₹21,000 (statutory default).
+        - esi_enable ON  → always calculate regardless of gross (ceiling ignored).
         If percent is explicitly set to 0, result is 0.
         If percent is not set (False), default rate is used.
         """
         for rec in self:
             gross = rec.monthly_gross or 0.0
-            if gross <= ESI_WAGE_CEILING:
+            if rec.esi_enable or gross <= ESI_WAGE_CEILING:
                 rate = ESI_RATE_EMPLOYER if rec.esi_employer_percent is False else rec.esi_employer_percent
                 rec.esi_employer = gross * rate / 100.0
             else:
@@ -358,16 +377,18 @@ class HrVersion(models.Model):
             rate = PF_RATE_EMPLOYEE if rec.pf_employee_percent is False else rec.pf_employee_percent
             rec.pf_employee = pf_basic * rate / 100.0
 
-    @api.depends('monthly_gross', 'esi_employee_percent')
+    @api.depends('monthly_gross', 'esi_employee_percent', 'esi_enable')
     def _compute_esi_employee(self):
         """
-        ESI Employee applicable only if monthly gross <= ₹21,000.
+        ESI Employee:
+        - esi_enable OFF → applicable only if monthly gross <= ₹21,000 (statutory default).
+        - esi_enable ON  → always calculate regardless of gross (ceiling ignored).
         If percent is explicitly set to 0, result is 0.
         If percent is not set (False), default rate is used.
         """
         for rec in self:
             gross = rec.monthly_gross or 0.0
-            if gross <= ESI_WAGE_CEILING:
+            if rec.esi_enable or gross <= ESI_WAGE_CEILING:
                 rate = ESI_RATE_EMPLOYEE if rec.esi_employee_percent is False else rec.esi_employee_percent
                 rec.esi_employee = gross * rate / 100.0
             else:
@@ -405,10 +426,11 @@ class HrEmployee(models.Model):
     version_id = fields.Many2one('hr.version', string="Contract Version")
 
     manual_basic = fields.Boolean(related='version_id.manual_basic', store=True, readonly=False)
+    esi_enable = fields.Boolean(related='version_id.esi_enable', store=True, readonly=False)
 
     annual_ctc   = fields.Monetary(related='version_id.annual_ctc',   store=True, readonly=True)
     monthly_ctc  = fields.Monetary(related='version_id.monthly_ctc',  store=True, readonly=True)
-    annual_gross = fields.Monetary(related='version_id.annual_gross', store=True, readonly=False)
+    annual_gross = fields.Monetary(related='version_id.annual_gross', store=True, readonly=True)
     monthly_gross = fields.Monetary(related='version_id.monthly_gross', store=True, readonly=False)
 
     basic         = fields.Monetary(related='version_id.basic',         store=True, readonly=False)

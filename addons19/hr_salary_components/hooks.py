@@ -11,26 +11,29 @@ SALARY_ARCH = """<data>
             <field name="monthly_ctc" readonly="1"/>
         </group>
         <group>
-            <field name="annual_gross"/>
+            <field name="annual_gross" readonly="1"/>
             <field name="monthly_gross"/>
         </group>
     </group>
 
     <group>
         <field name="manual_basic"/>
+        <field name="esi_enable"/>
     </group>
 
     <group string="Earnings" col="6">
+        <!-- BASIC + DA: Manual ON → editable; Manual OFF → computed readonly -->
         <field name="basic" colspan="2" readonly="not manual_basic"/>
         <span>/ month</span>
         <field name="manual_basic" nolabel="1" invisible="1"/>
         <field name="basic_percent" nolabel="1" invisible="manual_basic" readonly="manual_basic"/>
         <span invisible="manual_basic">%</span>
 
-        <field name="hra" colspan="2" readonly="1"/>
+        <!-- HRA: Manual ON → editable; Manual OFF → computed readonly -->
+        <field name="hra" colspan="2" readonly="not manual_basic"/>
         <span>/ month</span>
-        <field name="hra_percent" nolabel="1"/>
-        <span>%</span>
+        <field name="hra_percent" nolabel="1" invisible="manual_basic" readonly="manual_basic"/>
+        <span invisible="manual_basic">%</span>
 
         <field name="uniform_allowance" colspan="2" readonly="1"/>
         <span>/ month</span>

@@ -15,14 +15,15 @@
                             <field name="monthly_ctc" readonly="1"/>
                         </group>
                         <group>
-                            <field name="annual_gross"/>
+                            <field name="annual_gross" readonly="1"/>
                             <field name="monthly_gross"/>
                         </group>
                     </group>
 
-                    <!-- Manual Toggle -->
+                    <!-- Toggles -->
                     <group>
                         <field name="manual_basic"/>
+                        <field name="esi_enable"/>
                     </group>
 
                     <!-- EARNINGS -->
@@ -41,11 +42,17 @@
                                readonly="manual_basic"/>
                         <span invisible="manual_basic">%</span>
 
-                        <!-- HRA -->
-                        <field name="hra" colspan="2" readonly="1"/>
+                        <!-- HRA:
+                             - Manual ON  → editable, % hidden
+                             - Manual OFF → readonly (computed), % shown
+                        -->
+                        <field name="hra" colspan="2"
+                               readonly="not manual_basic"/>
                         <span>/ month</span>
-                        <field name="hra_percent" nolabel="1"/>
-                        <span>%</span>
+                        <field name="hra_percent" nolabel="1"
+                               invisible="manual_basic"
+                               readonly="manual_basic"/>
+                        <span invisible="manual_basic">%</span>
 
                         <!-- Uniform -->
                         <field name="uniform_allowance" colspan="2" readonly="1"/>
