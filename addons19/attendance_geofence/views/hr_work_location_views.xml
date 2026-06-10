@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Work Location Form: Geofence Settings -->
+    <record id="hr_work_location_form_geofence" model="ir.ui.view">
+        <field name="name">hr.work.location.form.geofence</field>
+        <field name="model">hr.work.location</field>
+        <field name="inherit_id" ref="hr.hr_work_location_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="📍 Geofence Settings" name="geofence_settings">
+                    <field name="geofence_enabled" widget="boolean_toggle"
+                           string="Enable Geofence Restriction"/>
+
+                    <!-- Hidden raw coordinate and name fields -->
+                    <field name="geofence_latitude"      invisible="1"/>
+                    <field name="geofence_longitude"     invisible="1"/>
+                    <field name="geofence_radius"        invisible="1"/>
+                    <field name="geofence_location_name" invisible="1"/>
+
+                    <!-- Interactive map widget (visible only when geofence is enabled) -->
+                    <field
+                        name="geofence_latitude"
+                        widget="geofence_map"
+                        nolabel="1"
+                        colspan="2"
+                        invisible="not geofence_enabled"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Employee Form: Assigned Check-In Locations -->
+    <record id="hr_employee_form_assigned_locations" model="ir.ui.view">
+        <field name="name">hr.employee.form.assigned.locations</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='work_location_id']" position="after">
+                <field name="assigned_work_location_ids"
+                       string="Assigned Locations"
+                       widget="many2many_tags"
+                       placeholder="Locations from which this employee may check in..."/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Work Location List: Geofence columns -->
+    <record id="hr_work_location_list_geofence" model="ir.ui.view">
+        <field name="name">hr.work.location.list.geofence</field>
+        <field name="model">hr.work.location</field>
+        <field name="inherit_id" ref="hr.hr_work_location_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="geofence_enabled" string="Geofence" widget="boolean"/>
+                <field name="geofence_radius"  string="Radius (m)"
+                       invisible="not geofence_enabled"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Attendance Form: GPS Movement Path tab -->
+    <record id="hr_attendance_form_path_map" model="ir.ui.view">
+        <field name="name">hr.attendance.form.path.map</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="📍 Movement Path" name="movement_path">
+                        <group>
+                            <div colspan="2" style="
+                                padding: 4px 0 10px 0;
+                                font-size: 12px;
+                                color: #714B67;
+                            ">
+                                GPS movement path recorded from check-in to check-out.
+                                A location point is saved every 2 minutes automatically.
+                            </div>
+                        </group>
+                        <field
+                            name="id"
+                            widget="attendance_path_map"
+                            nolabel="1"
+                            colspan="2"
+                        />
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

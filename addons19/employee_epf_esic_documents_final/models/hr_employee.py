@@ -1,4 +1,3 @@
-
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 import re
@@ -33,6 +32,12 @@ class HrEmployee(models.Model):
 
     address_proof_file = fields.Binary("Upload Address Proof")
 
+    reference_contact_ids = fields.One2many(
+        'hr.employee.reference',
+        'employee_id',
+        string="Reference Contacts"
+    )
+
     emergency_contact_ids = fields.One2many(
         'hr.employee.emergency',
         'employee_id',
@@ -50,6 +55,18 @@ class HrEmployee(models.Model):
         for rec in self:
             if rec.pan_number and not re.match(r'^[A-Z]{5}[0-9]{4}[A-Z]$', rec.pan_number):
                 raise ValidationError("Invalid PAN format (ABCDE1234F).")
+
+
+class HrEmployeeReference(models.Model):
+    _name = 'hr.employee.reference'
+    _description = 'Employee Reference Contacts'
+
+    employee_id = fields.Many2one('hr.employee', string="Employee", ondelete='cascade')
+
+    ref_name = fields.Char("Name")
+    ref_relation = fields.Char("Relation")
+    ref_mobile = fields.Char("Mobile Number")
+    ref_email = fields.Char("Email ID")
 
 
 class HrEmployeeEmergency(models.Model):

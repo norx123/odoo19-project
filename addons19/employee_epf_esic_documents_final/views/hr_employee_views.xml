@@ -1,4 +1,3 @@
-
 <odoo>
     <record id="view_employee_form_epf_documents" model="ir.ui.view">
         <field name="name">hr.employee.form.epf.documents</field>
@@ -12,6 +11,17 @@
             </xpath>
 
             <xpath expr="//page[@name='personal_information']" position="inside">
+
+                <group string="Reference Details">
+                    <field name="reference_contact_ids">
+                        <list editable="bottom">
+                            <field name="ref_name" string="Name"/>
+                            <field name="ref_relation" string="Relation"/>
+                            <field name="ref_mobile" string="Mobile Number"/>
+                            <field name="ref_email" string="Email ID"/>
+                        </list>
+                    </field>
+                </group>
 
                 <group string="Emergency Contact Details">
                     <field name="emergency_contact_ids">
