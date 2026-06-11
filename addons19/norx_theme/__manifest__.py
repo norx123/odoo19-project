@@ -2,7 +2,7 @@
     'name': 'Norx ERP Theme',
     'version': '19.0.1.0.1',
     'category': 'Theme',
-    'summary': 'Custom UI Theme for Odoo 19 Community',
+    'summary': 'Custom UI Theme for Odoo 18 Community',
     'author': 'Norx ERP',
     'license': 'LGPL-3',
 

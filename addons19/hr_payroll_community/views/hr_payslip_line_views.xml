@@ -114,6 +114,13 @@
                     <button string="Set to Draft" name="action_payslip_draft"
                             type="object"
                             invisible="state != 'cancel'"/>
+                    <!-- Print Payslip PDF -->
+                    <button string="Print Payslip"
+                            name="%(hr_payroll_community.hr_payslip_print_action)d"
+                            type="action"
+                            invisible="state not in ('verify','done','paid')"
+                            class="btn-secondary"
+                            icon="fa-print"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,verify,done,paid"/>
                 </header>

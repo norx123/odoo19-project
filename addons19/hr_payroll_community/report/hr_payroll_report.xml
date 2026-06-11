@@ -8,7 +8,8 @@
         <field name="report_name">hr_payroll_community.report_contributionregister</field>
         <field name="report_file">hr_payroll_community.report_contributionregister</field>
     </record>
-    <!--Report action for Payslip Details Report-->
+
+    <!--Report action for Payslip Details Report (Action menu)-->
     <record id="hr_payslip_report_action" model="ir.actions.report">
         <field name="name">Payslip Details</field>
         <field name="model">hr.payslip</field>
@@ -16,6 +17,17 @@
         <field name="binding_model_id" ref="model_hr_payslip"/>
         <field name="report_name">hr_payroll_community.report_payslipdetails</field>
         <field name="report_file">hr_payroll_community.report_payslipdetails</field>
-        <field name="print_report_name">('Payslip Details - %s' % (object.employee_id.name))</field>
+        <field name="print_report_name">('Payslip - %s' % (object.employee_id.name))</field>
+    </record>
+
+    <!--Dedicated Print Payslip button action-->
+    <record id="hr_payslip_print_action" model="ir.actions.report">
+        <field name="name">Print Payslip</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_payroll_community.report_payslipdetails</field>
+        <field name="report_file">hr_payroll_community.report_payslipdetails</field>
+        <field name="print_report_name">('Payslip - %s - %s' % (object.employee_id.name, object.date_from.strftime('%B %Y') if object.date_from else ''))</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
     </record>
 </odoo>
