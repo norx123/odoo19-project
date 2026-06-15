@@ -39,6 +39,7 @@ GPS Path Tracking (New):
             'attendance_geofence/static/src/js/attendance_geofence.js',
             'attendance_geofence/static/src/js/geofence_map_widget.js',
             'attendance_geofence/static/src/js/attendance_path_map.js',
+            'attendance_geofence/static/src/js/attendance_device_info.js',
         ],
     },
     'installable': True,

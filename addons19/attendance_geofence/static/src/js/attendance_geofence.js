@@ -2,6 +2,118 @@
 
 import { rpc } from "@web/core/network/rpc";
 
+// ── Reverse Geocode Helper ────────────────────────────────────────────────────
+
+async function reverseGeocode(lat, lng) {
+    try {
+        const r = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+            { headers: { 'Accept-Language': 'en' } }
+        );
+        const j = await r.json();
+        return j.display_name || '';
+    } catch(_) { return ''; }
+}
+
+// ── Device Information Collector ─────────────────────────────────────────────
+
+async function collectDeviceInfo() {
+    const ua = navigator.userAgent || '';
+    const info = { user_agent: ua.substring(0, 512) };
+
+    // ── Browser ───────────────────────────────────────────────────────────────
+    const browsers = [
+        [/SamsungBrowser\/([\d.]+)/, 'Samsung Browser'],
+        [/Edg\/([\d.]+)/,            'Microsoft Edge'],
+        [/OPR\/([\d.]+)/,            'Opera'],
+        [/Chrome\/([\d.]+)/,         'Google Chrome'],
+        [/Firefox\/([\d.]+)/,        'Mozilla Firefox'],
+        [/Safari\/([\d.]+)/,         'Apple Safari'],
+    ];
+    info.browser = 'Unknown'; info.browser_ver = '';
+    for (const [re, name] of browsers) {
+        const m = ua.match(re);
+        if (m) { info.browser = name; info.browser_ver = m[1]; break; }
+    }
+
+    // ── OS ────────────────────────────────────────────────────────────────────
+    const ntMap = {'10.0':'10/11','6.3':'8.1','6.2':'8','6.1':'7'};
+    const osList = [
+        [/Android ([\d.]+)/,      'Android',  m => m[1]],
+        [/iPhone OS ([\d_]+)/,    'iOS',      m => m[1].replace(/_/g,'.')],
+        [/iPad.*OS ([\d_]+)/,     'iPadOS',   m => m[1].replace(/_/g,'.')],
+        [/Windows NT ([\d.]+)/,   'Windows',  m => ntMap[m[1]] || m[1]],
+        [/Mac OS X ([\d_]+)/,     'macOS',    m => m[1].replace(/_/g,'.')],
+        [/CrOS/,                   'ChromeOS', () => ''],
+        [/Linux/,                  'Linux',    () => ''],
+    ];
+    info.os_name = 'Unknown'; info.os_version = '';
+    for (const [re, name, ver] of osList) {
+        const m = ua.match(re);
+        if (m) { info.os_name = name; info.os_version = ver(m); break; }
+    }
+
+    // ── Device type ───────────────────────────────────────────────────────────
+    if (/Mobile|Android.*Mobile|iPhone|iPod/.test(ua))    info.device_type = 'Phone';
+    else if (/Tablet|iPad|Android(?!.*Mobile)/.test(ua))  info.device_type = 'Tablet';
+    else                                                   info.device_type = 'Desktop/Laptop';
+
+    // ── Device model (Android UA extraction) ──────────────────────────────────
+    info.device_model = '';
+    const androidM = ua.match(/\(Linux;\s*Android[^;]*;\s*([^)]+?)\s*(?:Build\/|\))/);
+    if (androidM) info.device_model = androidM[1].trim();
+
+    // userAgentData for Chrome on Android (with timeout guard)
+    if (!info.device_model && navigator.userAgentData) {
+        try {
+            const hi = await Promise.race([
+                navigator.userAgentData.getHighEntropyValues(['model','mobile']),
+                new Promise((_, r) => setTimeout(() => r({}), 1500))
+            ]);
+            if (hi && hi.model) info.device_model = hi.model;
+        } catch(_) {}
+    }
+
+    // Device name = model if phone, else OS + type
+    if (info.device_model) {
+        info.device_name = info.device_model;
+    } else if (info.device_type === 'Desktop/Laptop') {
+        // For laptop/desktop: use OS + browser combo as device name
+        info.device_name = (info.os_name !== 'Unknown' ? info.os_name + ' ' : '') + 'Computer';
+    } else {
+        info.device_name = info.os_name + ' ' + info.device_type;
+    }
+
+    // ── Battery ───────────────────────────────────────────────────────────────
+    info.battery_level = 0; info.battery_charging = false;
+    try {
+        if (typeof navigator.getBattery === 'function') {
+            const bat = await navigator.getBattery();
+            info.battery_level    = Math.round(bat.level * 100);
+            info.battery_charging = bat.charging;
+        }
+    } catch(_) {}
+
+    // ── Network ───────────────────────────────────────────────────────────────
+    info.wifi_ssid = ''; info.carrier = '';
+    try {
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (conn) {
+            const typeLabels = {'slow-2g':'2G Slow','2g':'2G','3g':'3G','4g':'4G/LTE'};
+            if (conn.type === 'wifi')     info.wifi_ssid = 'WiFi (SSID not accessible from browser)';
+            if (conn.type === 'cellular') info.carrier   = typeLabels[conn.effectiveType] || conn.effectiveType || 'Cellular';
+            else if (conn.effectiveType)  info.carrier   = typeLabels[conn.effectiveType] || conn.effectiveType;
+        }
+    } catch(_) {}
+
+    // ip_address will be captured server-side (more reliable than browser)
+    info.ip_address = '';
+    return info;
+}
+
+
+
+
 console.log("Attendance Geofence + Path Tracker loaded.");
 
 let _processing = false;
@@ -340,6 +452,16 @@ async function doCheckin(selectedLocation) {
         payload.latitude = capturedPosition.coords.latitude;
         payload.longitude = capturedPosition.coords.longitude;
         payload.accuracy = capturedPosition.coords.accuracy;
+        payload.location_name = await reverseGeocode(capturedPosition.coords.latitude, capturedPosition.coords.longitude);
+    }
+    // Collect and attach device info
+    // Collect device info — log any errors to console for debugging
+    try {
+        const devInfo = await collectDeviceInfo();
+        Object.assign(payload, devInfo);
+        console.log("[Attendance] Device info collected:", devInfo);
+    } catch(e) {
+        console.error("[Attendance] collectDeviceInfo failed:", e);
     }
 
     try {
@@ -392,6 +514,16 @@ async function doCheckout(selectedLocation, originalBtn) {
         payload.latitude = position.coords.latitude;
         payload.longitude = position.coords.longitude;
         payload.accuracy = position.coords.accuracy;
+        payload.location_name = await reverseGeocode(position.coords.latitude, position.coords.longitude);
+    }
+    // Collect and attach device info
+    // Collect device info
+    try {
+        const devInfo = await collectDeviceInfo();
+        Object.assign(payload, devInfo);
+        console.log("[Attendance] Device info collected:", devInfo);
+    } catch(e) {
+        console.error("[Attendance] collectDeviceInfo failed:", e);
     }
 
     try {

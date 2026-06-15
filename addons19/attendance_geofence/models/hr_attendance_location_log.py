@@ -64,3 +64,9 @@ class HrAttendanceLocationLog(models.Model):
         digits=(8, 2),
         help='GPS accuracy radius in meters reported by the device.',
     )
+
+    location_name = fields.Char(
+        string='Location Name',
+        size=512,
+        help='Human-readable address obtained by reverse geocoding at the time of logging.',
+    )

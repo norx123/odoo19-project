@@ -86,6 +86,25 @@
                             colspan="2"
                         />
                     </page>
+
+                    <page string="📱 Device Information" name="device_information">
+                        <group>
+                            <div colspan="2" style="
+                                padding: 4px 0 10px 0;
+                                font-size: 12px;
+                                color: #714B67;
+                            ">
+                                Device details captured automatically at check-in and check-out:
+                                device model, operating system, browser, IP address, and battery status.
+                            </div>
+                        </group>
+                        <field
+                            name="id"
+                            widget="attendance_device_info"
+                            nolabel="1"
+                            colspan="2"
+                        />
+                    </page>
                 </notebook>
             </xpath>
         </field>

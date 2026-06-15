@@ -5,6 +5,20 @@ from odoo.http import request
 from math import radians, sin, cos, sqrt, atan2
 
 
+def _fmt_dt(dt, tz_name='UTC'):
+    """Convert UTC datetime to user timezone and format nicely."""
+    if not dt:
+        return ''
+    try:
+        import pytz
+        utc = pytz.utc.localize(dt) if dt.tzinfo is None else dt
+        user_tz = pytz.timezone(tz_name)
+        local_dt = utc.astimezone(user_tz)
+        return local_dt.strftime('%d %b %Y, %I:%M %p')
+    except Exception:
+        return dt.strftime('%d %b %Y, %I:%M %p')
+
+
 class GeoFenceController(http.Controller):
 
     def _calculate_distance(self, lat1, lon1, lat2, lon2):
@@ -28,7 +42,7 @@ class GeoFenceController(http.Controller):
     # Locations
     # -------------------------------------------------------------------------
 
-    @http.route('/attendance/geofence/locations', type='json', auth='user')
+    @http.route('/attendance/geofence/locations', type='jsonrpc', auth='user')
     def get_employee_locations(self):
         """Return the list of work locations assigned to the currently logged-in employee."""
         employee = request.env['hr.employee'].sudo().search(
@@ -59,8 +73,13 @@ class GeoFenceController(http.Controller):
     # Check-In
     # -------------------------------------------------------------------------
 
-    @http.route('/attendance/geofence/checkin', type='json', auth='user')
-    def do_checkin(self, work_location_id=None, latitude=None, longitude=None, accuracy=None):
+    @http.route('/attendance/geofence/checkin', type='jsonrpc', auth='user')
+    def do_checkin(self, work_location_id=None, latitude=None, longitude=None, accuracy=None, location_name=None,
+                   ip_address=None, wifi_ssid=None, carrier=None,
+                   browser=None, browser_ver=None, user_agent=None,
+                   device_name=None, device_model=None, device_type=None,
+                   os_name=None, os_version=None,
+                   battery_level=None, battery_charging=None):
         """
         Create an attendance check-in record for the current employee.
         If GPS coordinates are provided, save them as the check-in location point.
@@ -92,28 +111,62 @@ class GeoFenceController(http.Controller):
 
         try:
             attendance = request.env['hr.attendance'].sudo().create(vals)
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
 
-            # Save the check-in GPS point
-            if latitude is not None and longitude is not None:
+        # Save GPS point (independent — don't block checkin if this fails)
+        if latitude is not None and longitude is not None:
+            try:
                 request.env['hr.attendance.location.log'].sudo().create({
                     'attendance_id': attendance.id,
                     'latitude': float(latitude),
                     'longitude': float(longitude),
                     'point_type': 'checkin',
                     'accuracy': float(accuracy) if accuracy else 0.0,
+                    'location_name': location_name or '',
                     'logged_at': fields.Datetime.now(),
                 })
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning("GPS log save failed: %s", e)
 
-            return {'success': True, 'attendance_id': attendance.id}
+        # Save device information (independent — always attempt)
+        try:
+            request.env['hr.attendance.device.log'].sudo().create({
+                'attendance_id': attendance.id,
+                'event_type': 'checkin',
+                'logged_at': fields.Datetime.now(),
+                'ip_address': ip_address or request.httprequest.remote_addr or '',
+                'wifi_ssid': wifi_ssid or '',
+                'carrier': carrier or '',
+                'browser': browser or '',
+                'browser_ver': browser_ver or '',
+                'user_agent': user_agent or '',
+                'device_name': device_name or '',
+                'device_model': device_model or '',
+                'device_type': device_type or '',
+                'os_name': os_name or '',
+                'os_version': os_version or '',
+                'battery_level': float(battery_level) if battery_level is not None else 0.0,
+                'battery_charging': bool(battery_charging),
+            })
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            import logging
+            logging.getLogger(__name__).error("Device log save failed on checkin: %s", e)
+
+        return {'success': True, 'attendance_id': attendance.id}
 
     # -------------------------------------------------------------------------
     # Check-Out
     # -------------------------------------------------------------------------
 
-    @http.route('/attendance/geofence/checkout', type='json', auth='user')
-    def do_checkout(self, work_location_id=None, latitude=None, longitude=None, accuracy=None):
+    @http.route('/attendance/geofence/checkout', type='jsonrpc', auth='user')
+    def do_checkout(self, work_location_id=None, latitude=None, longitude=None, accuracy=None, location_name=None,
+                    ip_address=None, wifi_ssid=None, carrier=None,
+                    browser=None, browser_ver=None, user_agent=None,
+                    device_name=None, device_model=None, device_type=None,
+                    os_name=None, os_version=None,
+                    battery_level=None, battery_charging=None):
         """
         Close the open attendance record for the current employee.
         If GPS coordinates are provided, save them as the check-out location point.
@@ -132,28 +185,59 @@ class GeoFenceController(http.Controller):
         if not open_attendance:
             return {'success': False, 'error': 'No open attendance record found.'}
 
-        # Save the check-out GPS point
+        # Save GPS point (independent)
         if latitude is not None and longitude is not None:
-            request.env['hr.attendance.location.log'].sudo().create({
-                'attendance_id': open_attendance.id,
-                'latitude': float(latitude),
-                'longitude': float(longitude),
-                'point_type': 'checkout',
-                'accuracy': float(accuracy) if accuracy else 0.0,
-                'logged_at': fields.Datetime.now(),
-            })
+            try:
+                request.env['hr.attendance.location.log'].sudo().create({
+                    'attendance_id': open_attendance.id,
+                    'latitude': float(latitude),
+                    'longitude': float(longitude),
+                    'point_type': 'checkout',
+                    'accuracy': float(accuracy) if accuracy else 0.0,
+                    'location_name': location_name or '',
+                    'logged_at': fields.Datetime.now(),
+                })
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning("GPS checkout log failed: %s", e)
 
+        # Write checkout time
         try:
             open_attendance.sudo().write({'check_out': fields.Datetime.now()})
-            return {'success': True}
         except Exception as e:
             return {'success': False, 'error': str(e)}
+
+        # Save device information (independent)
+        try:
+            request.env['hr.attendance.device.log'].sudo().create({
+                'attendance_id': open_attendance.id,
+                'event_type': 'checkout',
+                'logged_at': fields.Datetime.now(),
+                'ip_address': ip_address or request.httprequest.remote_addr or '',
+                'wifi_ssid': wifi_ssid or '',
+                'carrier': carrier or '',
+                'browser': browser or '',
+                'browser_ver': browser_ver or '',
+                'user_agent': user_agent or '',
+                'device_name': device_name or '',
+                'device_model': device_model or '',
+                'device_type': device_type or '',
+                'os_name': os_name or '',
+                'os_version': os_version or '',
+                'battery_level': float(battery_level) if battery_level is not None else 0.0,
+                'battery_charging': bool(battery_charging),
+            })
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).error("Device log save failed on checkout: %s", e)
+
+        return {'success': True}
 
     # -------------------------------------------------------------------------
     # Status
     # -------------------------------------------------------------------------
 
-    @http.route('/attendance/geofence/status', type='json', auth='user')
+    @http.route('/attendance/geofence/status', type='jsonrpc', auth='user')
     def get_checkin_status(self):
         """Return whether the current employee has an open (not checked-out) attendance record."""
         employee = request.env['hr.employee'].sudo().search(
@@ -176,7 +260,7 @@ class GeoFenceController(http.Controller):
     # Geofence Validation
     # -------------------------------------------------------------------------
 
-    @http.route('/attendance/geofence/check', type='json', auth='user')
+    @http.route('/attendance/geofence/check', type='jsonrpc', auth='user')
     def check_geofence(self, latitude, longitude, work_location_id=None):
         """Verify whether the employee's current coordinates are within the allowed radius."""
         WorkLocation = request.env['hr.work.location'].sudo()
@@ -219,7 +303,7 @@ class GeoFenceController(http.Controller):
     # GPS Path Tracking
     # -------------------------------------------------------------------------
 
-    @http.route('/attendance/geofence/track', type='json', auth='user')
+    @http.route('/attendance/geofence/track', type='jsonrpc', auth='user')
     def save_track_point(self, latitude, longitude, accuracy=None):
         """
         Called periodically by the browser (every 2 minutes) after check-in.
@@ -253,7 +337,7 @@ class GeoFenceController(http.Controller):
         except Exception as e:
             return {'success': False, 'error': str(e)}
 
-    @http.route('/attendance/geofence/path', type='json', auth='user')
+    @http.route('/attendance/geofence/path', type='jsonrpc', auth='user')
     def get_attendance_path(self, attendance_id):
         """
         Return all GPS points recorded for a given attendance record.
@@ -276,19 +360,96 @@ class GeoFenceController(http.Controller):
             order='logged_at asc',
         )
 
+        # Get user's timezone
+        try:
+            user_tz = request.env.user.tz or 'UTC'
+        except Exception:
+            user_tz = 'UTC'
+
         points = []
         for log in logs:
             points.append({
                 'lat': log.latitude,
                 'lng': log.longitude,
                 'type': log.point_type,
-                'time': log.logged_at.strftime('%H:%M:%S') if log.logged_at else '',
+                'time': _fmt_dt(log.logged_at, user_tz),
                 'accuracy': log.accuracy,
+                'location_name': log.location_name or '',
             })
 
         return {
             'points': points,
             'employee_name': attendance.employee_id.name,
-            'check_in': attendance.check_in.strftime('%d %b %Y, %H:%M') if attendance.check_in else '',
-            'check_out': attendance.check_out.strftime('%d %b %Y, %H:%M') if attendance.check_out else 'Still Checked In',
+            'check_in': _fmt_dt(attendance.check_in, user_tz),
+            'check_out': _fmt_dt(attendance.check_out, user_tz) if attendance.check_out else 'Still Checked In',
         }
+
+    # -------------------------------------------------------------------------
+    # Device Information
+    # -------------------------------------------------------------------------
+
+    @http.route('/attendance/geofence/device_info', type='jsonrpc', auth='user')
+    def get_device_info(self, attendance_id):
+        """Return device logs for a given attendance record."""
+        attendance = request.env['hr.attendance'].sudo().browse(int(attendance_id))
+        if not attendance.exists():
+            return {'logs': []}
+
+        employee = request.env['hr.employee'].sudo().search(
+            [('user_id', '=', request.env.uid)], limit=1)
+        is_manager = request.env.user.has_group('hr_attendance.group_hr_attendance_manager')
+        if not is_manager and (not employee or attendance.employee_id.id != employee.id):
+            return {'logs': [], 'error': 'Access denied.'}
+
+        logs = request.env['hr.attendance.device.log'].sudo().search(
+            [('attendance_id', '=', attendance.id)], order='logged_at asc')
+
+        try:
+            user_tz = request.env.user.tz or 'UTC'
+        except Exception:
+            user_tz = 'UTC'
+
+        result = []
+        for log in logs:
+            result.append({
+                'event_type':      log.event_type,
+                'logged_at':       _fmt_dt(log.logged_at, user_tz),
+                'ip_address':      log.ip_address or '',
+                'wifi_ssid':       log.wifi_ssid or '',
+                'carrier':         log.carrier or '',
+                'browser':         log.browser or '',
+                'browser_ver':     log.browser_ver or '',
+                'user_agent':      log.user_agent or '',
+                'device_name':     log.device_name or '',
+                'device_model':    log.device_model or '',
+                'device_type':     log.device_type or '',
+                'os_name':         log.os_name or '',
+                'os_version':      log.os_version or '',
+                'battery_level':   log.battery_level,
+                'battery_charging':log.battery_charging,
+            })
+        return {'logs': result}
+
+    # -------------------------------------------------------------------------
+    # Debug — verify device log table (remove in production)
+    # -------------------------------------------------------------------------
+
+    @http.route('/attendance/geofence/debug_device', type='jsonrpc', auth='user')
+    def debug_device_log(self, attendance_id=None):
+        """Quick check: how many device logs exist for a given attendance."""
+        if attendance_id:
+            logs = request.env['hr.attendance.device.log'].sudo().search_count(
+                [('attendance_id', '=', int(attendance_id))]
+            )
+            all_logs = request.env['hr.attendance.device.log'].sudo().search(
+                [('attendance_id', '=', int(attendance_id))]
+            )
+            return {
+                'count': logs,
+                'records': [{'event': l.event_type, 'browser': l.browser,
+                             'os': l.os_name, 'device': l.device_name,
+                             'ip': l.ip_address, 'bat': l.battery_level} for l in all_logs]
+            }
+        total = request.env['hr.attendance.device.log'].sudo().search_count([])
+        return {'total_records': total}
+
