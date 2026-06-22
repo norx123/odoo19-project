@@ -50,6 +50,15 @@ class HrVersion(models.Model):
     )
     monthly_gross = fields.Monetary(string="Monthly Gross", currency_field='currency_id')
 
+    monthly_net_salary = fields.Monetary(
+        string="Monthly Net Salary",
+        currency_field='currency_id',
+        compute="_compute_monthly_net_salary",
+        store=True,
+        readonly=True,
+        help="Monthly Gross minus Total Deductions (PF Employee + ESI Employee + TDS).",
+    )
+
     # ── Manual Toggle ────────────────────────────────────────
     manual_basic = fields.Boolean(string="Manual Basic")
 
@@ -57,7 +66,8 @@ class HrVersion(models.Model):
     esi_enable = fields.Boolean(
         string="ESI Enable",
         default=False,
-        help="Enable to calculate ESI regardless of the ₹21,000 gross ceiling.",
+        help="Enable to calculate ESI even if monthly gross exceeds ₹21,000. "
+             "ESI will always be calculated on a maximum wage of ₹21,000 (statutory cap).",
     )
 
     # ── Earnings ─────────────────────────────────────────────
@@ -242,6 +252,20 @@ class HrVersion(models.Model):
         for rec in self:
             rec.annual_gross = (rec.monthly_gross or 0.0) * 12.0
 
+    @api.depends('monthly_gross', 'pf_employee', 'esi_employee', 'tds')
+    def _compute_monthly_net_salary(self):
+        """
+        Monthly Net Salary = Monthly Gross - Total Deductions
+        Total Deductions = PF Employee + ESI Employee + TDS
+        """
+        for rec in self:
+            total_deductions = (
+                (rec.pf_employee or 0.0)
+                + (rec.esi_employee or 0.0)
+                + (rec.tds or 0.0)
+            )
+            rec.monthly_net_salary = (rec.monthly_gross or 0.0) - total_deductions
+
 
     # ── Basic + DA ───────────────────────────────────────────
     @api.depends('basic_percent', 'monthly_gross', 'manual_basic')
@@ -342,15 +366,17 @@ class HrVersion(models.Model):
         """
         ESI Employer:
         - esi_enable OFF → applicable only if monthly gross <= ₹21,000 (statutory default).
-        - esi_enable ON  → always calculate regardless of gross (ceiling ignored).
+        - esi_enable ON  → always calculate, but ESI wage is capped at ₹21,000.
+                           i.e. if gross > 21,000, ESI is calculated on 21,000 only.
         If percent is explicitly set to 0, result is 0.
         If percent is not set (False), default rate is used.
         """
         for rec in self:
             gross = rec.monthly_gross or 0.0
             if rec.esi_enable or gross <= ESI_WAGE_CEILING:
+                esi_wage = min(gross, ESI_WAGE_CEILING)
                 rate = ESI_RATE_EMPLOYER if rec.esi_employer_percent is False else rec.esi_employer_percent
-                rec.esi_employer = gross * rate / 100.0
+                rec.esi_employer = esi_wage * rate / 100.0
             else:
                 rec.esi_employer = 0.0
 
@@ -382,15 +408,17 @@ class HrVersion(models.Model):
         """
         ESI Employee:
         - esi_enable OFF → applicable only if monthly gross <= ₹21,000 (statutory default).
-        - esi_enable ON  → always calculate regardless of gross (ceiling ignored).
+        - esi_enable ON  → always calculate, but ESI wage is capped at ₹21,000.
+                           i.e. if gross > 21,000, ESI is calculated on 21,000 only.
         If percent is explicitly set to 0, result is 0.
         If percent is not set (False), default rate is used.
         """
         for rec in self:
             gross = rec.monthly_gross or 0.0
             if rec.esi_enable or gross <= ESI_WAGE_CEILING:
+                esi_wage = min(gross, ESI_WAGE_CEILING)
                 rate = ESI_RATE_EMPLOYEE if rec.esi_employee_percent is False else rec.esi_employee_percent
-                rec.esi_employee = gross * rate / 100.0
+                rec.esi_employee = esi_wage * rate / 100.0
             else:
                 rec.esi_employee = 0.0
 
@@ -432,6 +460,7 @@ class HrEmployee(models.Model):
     monthly_ctc  = fields.Monetary(related='version_id.monthly_ctc',  store=True, readonly=True)
     annual_gross = fields.Monetary(related='version_id.annual_gross', store=True, readonly=True)
     monthly_gross = fields.Monetary(related='version_id.monthly_gross', store=True, readonly=False)
+    monthly_net_salary = fields.Monetary(related='version_id.monthly_net_salary', store=True, readonly=True)
 
     basic         = fields.Monetary(related='version_id.basic',         store=True, readonly=False)
     basic_percent = fields.Float(   related='version_id.basic_percent', store=True, readonly=False)

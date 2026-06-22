@@ -79,7 +79,7 @@
         <field name="arch" type="xml">
             <form string="Payslip Batch">
                 <header>
-                    <!-- Draft: Generate + Confirm to Waiting -->
+                    <!-- Draft: Generate Payslips + Confirm -->
                     <button name="%(hr_payslip_by_employees_action)d"
                             type="action"
                             string="Generate Payslips"
@@ -91,31 +91,45 @@
                             class="btn-secondary"
                             invisible="state != 'draft'"/>
 
-                    <!-- Waiting → Done (Validate + compute all) -->
+                    <!-- Waiting: Validate + Cancel Payslip -->
                     <button name="action_payslip_done"
                             type="object"
                             string="Validate"
                             class="btn-primary"
                             invisible="state != 'verify'"/>
+                    <button name="action_payslip_cancel"
+                            type="object"
+                            string="Cancel Payslip"
+                            class="btn-danger"
+                            invisible="state != 'verify'"/>
 
-                    <!-- Done → Paid -->
+                    <!-- Done: Pay + Refund + Cancel Payslip -->
                     <button name="action_payslip_paid"
                             type="object"
                             string="Pay"
                             class="btn-primary"
                             invisible="state != 'done'"/>
+                    <button name="action_refund_batch"
+                            type="object"
+                            string="Refund"
+                            invisible="state != 'done'"/>
+                    <button name="action_payslip_cancel"
+                            type="object"
+                            string="Cancel Payslip"
+                            class="btn-danger"
+                            invisible="state != 'done'"/>
 
-                    <!-- Reset to Draft (from Close) -->
+                    <!-- Paid: Refund only -->
+                    <button name="action_refund_batch"
+                            type="object"
+                            string="Refund"
+                            invisible="state != 'paid'"/>
+
+                    <!-- Cancelled: Set to Draft -->
                     <button name="action_payslip_run"
                             type="object"
                             string="Set to Draft"
-                            invisible="state not in ('close','paid','done')"/>
-
-                    <!-- Close (from Paid) -->
-                    <button name="close_payslip_run"
-                            type="object"
-                            string="Close"
-                            invisible="state != 'paid'"/>
+                            invisible="state != 'cancel'"/>
 
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,verify,done,paid"/>
@@ -149,8 +163,7 @@
                                    decoration-warning="state == 'verify'"
                                    decoration-success="state in ('done','paid')"
                                    decoration-danger="state == 'cancel'"/>
-                            <field name="payslip_run_id" string="Payslip Batches"
-                                   invisible="1"/>
+                            <field name="payslip_run_id" string="Payslip Batches"/>
                         </list>
                     </field>
                 </sheet>

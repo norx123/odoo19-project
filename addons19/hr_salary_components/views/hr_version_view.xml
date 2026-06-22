@@ -17,6 +17,7 @@
                         <group>
                             <field name="annual_gross" readonly="1"/>
                             <field name="monthly_gross"/>
+                            <field name="monthly_net_salary" readonly="1"/>
                         </group>
                     </group>
 

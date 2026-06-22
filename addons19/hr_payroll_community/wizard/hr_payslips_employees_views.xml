@@ -21,6 +21,9 @@
                     <newline/>
                     <field name="employee_ids" nolabel="1"/>
                 </sheet>
+                <footer>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
             </form>
         </field>
     </record>

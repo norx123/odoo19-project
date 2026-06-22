@@ -20,6 +20,7 @@ class HrPayslipRun(models.Model):
         ('verify', 'Waiting'),
         ('done',   'Done'),
         ('paid',   'Paid'),
+        ('cancel', 'Cancelled'),
         ('close',  'Close'),
     ], string='Status', index=True, readonly=True,
        copy=False, default='draft',
@@ -37,10 +38,6 @@ class HrPayslipRun(models.Model):
         help="If checked, all payslips generated are refund payslips.")
 
     # ── Workflow actions ────────────────────────────────────────────────────
-
-    def action_payslip_run(self):
-        """Reset batch to Draft"""
-        return self.write({'state': 'draft'})
 
     def action_payslip_verify(self):
         """Move batch to Waiting — also move all draft payslips to verify"""
@@ -67,6 +64,31 @@ class HrPayslipRun(models.Model):
                 lambda s: s.state == 'done'
             ).write({'state': 'paid', 'paid': True})
         return self.write({'state': 'paid'})
+
+    def action_payslip_cancel(self):
+        """Cancel the batch from Waiting/Done/Paid — cancel all active payslips"""
+        for run in self:
+            run.slip_ids.filtered(
+                lambda s: s.state in ('verify', 'done', 'paid')
+            ).write({'state': 'cancel', 'paid': False})
+        return self.write({'state': 'cancel'})
+
+    def action_refund_batch(self):
+        """Refund all payslips in the batch"""
+        for run in self:
+            slips = run.slip_ids.filtered(
+                lambda s: s.state in ('done', 'paid')
+            )
+            for slip in slips:
+                slip.action_refund_sheet()
+
+    def action_payslip_run(self):
+        """Reset batch to Draft — also reset cancelled payslips"""
+        for run in self:
+            run.slip_ids.filtered(
+                lambda s: s.state == 'cancel'
+            ).write({'state': 'draft'})
+        return self.write({'state': 'draft'})
 
     def close_payslip_run(self):
         """Close the batch"""

@@ -83,44 +83,58 @@
         <field name="arch" type="xml">
             <form string="Payslip">
                 <header>
-                    <!-- Draft → Waiting -->
+                    <!-- Draft: Confirm + Compute Sheet -->
                     <button string="Confirm" name="action_payslip_verify"
                             type="object"
                             invisible="state != 'draft'"
                             class="btn-primary"/>
-                    <!-- Waiting → compute + Done -->
                     <button string="Compute Sheet" name="action_compute_sheet"
                             type="object"
                             invisible="state != 'draft'"
                             class="btn-secondary"/>
+
+                    <!-- Waiting: Validate + Cancel -->
                     <button string="Validate" name="action_payslip_done"
                             type="object"
                             invisible="state != 'verify'"
                             class="btn-primary"/>
-                    <!-- Done → Paid -->
+                    <button string="Cancel Payslip" name="action_payslip_cancel"
+                            type="object"
+                            invisible="state != 'verify'"
+                            class="btn-danger"/>
+
+                    <!-- Done: Pay + Refund + Cancel -->
                     <button string="Pay" name="action_payslip_paid"
                             type="object"
                             invisible="state != 'done'"
                             class="btn-primary"/>
-                    <!-- Refund (from Done or Paid) -->
                     <button string="Refund" name="action_refund_sheet"
                             type="object"
-                            invisible="state not in ('done', 'paid')"/>
-                    <!-- Cancel (from Waiting or Done) -->
+                            invisible="state != 'done'"/>
                     <button string="Cancel Payslip" name="action_payslip_cancel"
                             type="object"
-                            invisible="state not in ('verify', 'done')"/>
-                    <!-- Reset to Draft (from Rejected) -->
+                            invisible="state != 'done'"
+                            class="btn-danger"/>
+
+                    <!-- Paid: Refund only -->
+                    <button string="Refund" name="action_refund_sheet"
+                            type="object"
+                            invisible="state != 'paid'"/>
+
+                    <!-- Cancelled: Set to Draft -->
                     <button string="Set to Draft" name="action_payslip_draft"
                             type="object"
-                            invisible="state != 'cancel'"/>
-                    <!-- Print Payslip PDF -->
+                            invisible="state != 'cancel'"
+                            class="btn-secondary"/>
+
+                    <!-- Print: Waiting, Done, Paid -->
                     <button string="Print Payslip"
                             name="%(hr_payroll_community.hr_payslip_print_action)d"
                             type="action"
                             invisible="state not in ('verify','done','paid')"
                             class="btn-secondary"
                             icon="fa-print"/>
+
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,verify,done,paid"/>
                 </header>
@@ -244,20 +258,7 @@
                                 </form>
                             </field>
                         </page>
-                        <page string="Details By Salary Rule Category">
 
-                            <field name="details_by_salary_rule_category_ids"
-                                   context="{'search_default_category_id':1}"
-                                   domain="[('appears_on_payslip', '=', True)]">
-                                <list string="Payslip Lines"
-                                      decoration-info="total == 0">
-                                    <field name="category_id"/>
-                                    <field name="name"/>
-                                    <field name="code"/>
-                                    <field name="total"/>
-                                </list>
-                            </field>
-                        </page>
                         <page string="Accounting Information">
                             <group>
                                 <group string="Miscellaneous">

@@ -3,56 +3,58 @@
         <field name="name">hr.employee.form.documents</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="priority">99</field>
         <field name="arch" type="xml">
-
             <xpath expr="//notebook" position="inside">
                 <page string="Mandatory Documents">
 
-                    <!-- OnBoarding -->
+                    <!-- OnBoarding Documents -->
                     <group>
                         <separator string="OnBoarding Documents"/>
                         <field name="onboarding_document_ids">
                             <list editable="bottom">
-                                <field name="name"/>
-                                <field name="description"/>
-                                <field name="file" filename="file_name"/>
-                                <field name="file_name" invisible="1"/>
-                                <field name="document_type" invisible="1"/>
+                                <field name="name" string="Document Name"/>
+                                <field name="description" string="Description"/>
+                                <field name="file" string="Attachment" widget="binary" filename="file_name"/>
+                                <field name="file_name" string="File Name"/>
+                                <field name="file_type" string="Document Type" readonly="1"/>
+                                <field name="document_type" column_invisible="1"/>
                             </list>
                         </field>
                     </group>
 
-                    <!-- Exit -->
+                    <!-- Exit Documents -->
                     <group>
                         <separator string="Exit Documents"/>
                         <field name="exit_document_ids">
                             <list editable="bottom">
-                                <field name="name"/>
-                                <field name="description"/>
-                                <field name="file" filename="file_name"/>
-                                <field name="file_name" invisible="1"/>
-                                <field name="document_type" invisible="1"/>
+                                <field name="name" string="Document Name"/>
+                                <field name="description" string="Description"/>
+                                <field name="file" string="Attachment" widget="binary" filename="file_name"/>
+                                <field name="file_name" string="File Name"/>
+                                <field name="file_type" string="Document Type" readonly="1"/>
+                                <field name="document_type" column_invisible="1"/>
                             </list>
                         </field>
                     </group>
 
-                    <!-- Others -->
+                    <!-- Other Documents -->
                     <group>
                         <separator string="Other Documents"/>
                         <field name="other_document_ids">
                             <list editable="bottom">
-                                <field name="name"/>
-                                <field name="description"/>
-                                <field name="file" filename="file_name"/>
-                                <field name="file_name" invisible="1"/>
-                                <field name="document_type" invisible="1"/>
+                                <field name="name" string="Document Name"/>
+                                <field name="description" string="Description"/>
+                                <field name="file" string="Attachment" widget="binary" filename="file_name"/>
+                                <field name="file_name" string="File Name"/>
+                                <field name="file_type" string="Document Type" readonly="1"/>
+                                <field name="document_type" column_invisible="1"/>
                             </list>
                         </field>
                     </group>
 
                 </page>
             </xpath>
-
         </field>
     </record>
 </odoo>
