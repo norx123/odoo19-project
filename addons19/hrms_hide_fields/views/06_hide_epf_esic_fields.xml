@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Inherits: employee_epf_esic_documents_final.view_employee_form_epf_documents
+        
+        employee_code and pan_number are already commented in original view.
+        Reference Details, Emergency Contact Details, EPF & ESIC, Documents
+        should remain visible (as shown in image 3).
+        
+        No fields to hide from this view.
+    -->
+</odoo>

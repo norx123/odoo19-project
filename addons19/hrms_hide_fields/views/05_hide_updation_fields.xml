@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Inherits: hr_employee_updation.view_employee_form
+        From image 4:
+        - Line 13-15: joining_date added before contract_type_id in payroll tab -> hide
+        - Line 16-17: identification_id + passport_id position="replace" (already replaced, no DOM element)
+        - Line 18-29: identification_id group + passport_id group both invisible="1" -> enforce
+    -->
+    <record id="hr_hide_updation_fields" model="ir.ui.view">
+        <field name="name">hr.hide.updation.fields</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr_employee_updation.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Hide joining_date field (added before contract_type_id in Payroll tab) -->
+            <xpath expr="//page[@name='payroll_information']//field[@name='joining_date']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- Hide identification_id group (invisible="1" enforce) -->
+            <xpath expr="//group[@name='identification_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- Hide passport_id group (invisible="1" enforce) -->
+            <xpath expr="//group[@name='passport_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

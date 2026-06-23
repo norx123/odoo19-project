@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Inherits: hr_payroll_community.view_employee_form
+        Hides:
+          - UAN Number field (added after ssnid in citizenship group)
+          - Note: 'string' attribute cannot be used as xpath selector in Odoo 19
+                  so we select by field name only
+    -->
+    <record id="hr_hide_payroll_community_fields" model="ir.ui.view">
+        <field name="name">hr.hide.payroll.community.fields</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr_payroll_community.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Hide UAN Number field (added after ssnid field) -->
+            <xpath expr="//field[@name='uan_number']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

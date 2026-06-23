@@ -116,10 +116,14 @@
                             invisible="state != 'done'"
                             class="btn-danger"/>
 
-                    <!-- Paid: Refund only -->
+                    <!-- Paid: Refund + Unpaid -->
                     <button string="Refund" name="action_refund_sheet"
                             type="object"
                             invisible="state != 'paid'"/>
+                    <button string="Unpaid" name="action_payslip_unpaid"
+                            type="object"
+                            invisible="state != 'paid'"
+                            class="btn-secondary"/>
 
                     <!-- Cancelled: Set to Draft -->
                     <button string="Set to Draft" name="action_payslip_draft"

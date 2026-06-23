@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Inherits: ohrms_core.view_employee_tree
+        Hides: company_id, department_id, job_id, parent_id, coach_id
+    -->
+    <record id="hr_hide_ohrms_list_view" model="ir.ui.view">
+        <field name="name">hr.hide.ohrms.list.view</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="ohrms_core.view_employee_tree"/>
+        <field name="arch" type="xml">
+
+            <!-- work_phone -->
+            <xpath expr="//field[@name='work_phone']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- work_email -->
+            <xpath expr="//field[@name='work_email']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- company_id -->
+            <xpath expr="//field[@name='company_id']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- department_id -->
+            <xpath expr="//field[@name='department_id']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- job_id -->
+<!--            <xpath expr="//field[@name='job_id']" position="attributes">-->
+<!--                <attribute name="column_invisible">True</attribute>-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+            <!-- parent_id -->
+<!--            <xpath expr="//field[@name='parent_id']" position="attributes">-->
+<!--                <attribute name="column_invisible">True</attribute>-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+            <!-- coach_id (already invisible="1", enforce) -->
+<!--            <xpath expr="//field[@name='coach_id']" position="attributes">-->
+<!--                <attribute name="column_invisible">True</attribute>-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+        </field>
+    </record>
+</odoo>

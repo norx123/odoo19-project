@@ -30,4 +30,36 @@
         <field name="print_report_name">('Payslip - %s - %s' % (object.employee_id.name, object.date_from.strftime('%B %Y') if object.date_from else ''))</field>
         <field name="paperformat_id" ref="base.paperformat_euro"/>
     </record>
+    <!-- ══ BULK ACTION BUTTONS IN LIST VIEW ══ -->
+
+    <!-- Cancel selected payslips (Waiting/Done/Paid → Cancel) -->
+    <record id="action_bulk_cancel_payslips" model="ir.actions.server">
+        <field name="name">Cancel</field>
+        <field name="model_id" ref="model_hr_payslip"/>
+        <field name="binding_model_id" ref="model_hr_payslip"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_cancel()</field>
+    </record>
+
+    <!-- Set to Draft selected payslips (Cancel → Draft) -->
+    <record id="action_bulk_draft_payslips" model="ir.actions.server">
+        <field name="name">Set to Draft</field>
+        <field name="model_id" ref="model_hr_payslip"/>
+        <field name="binding_model_id" ref="model_hr_payslip"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_set_to_draft()</field>
+    </record>
+
+    <!-- Confirm selected payslips (Draft/Waiting → Done) -->
+    <record id="action_bulk_confirm_payslips" model="ir.actions.server">
+        <field name="name">Confirm</field>
+        <field name="model_id" ref="model_hr_payslip"/>
+        <field name="binding_model_id" ref="model_hr_payslip"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_bulk_confirm()</field>
+    </record>
+
 </odoo>

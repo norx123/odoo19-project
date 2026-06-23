@@ -153,9 +153,32 @@ class HrPayslip(models.Model):
         """Mark payslip as Paid"""
         return self.write({'state': 'paid', 'paid': True})
 
+    def action_payslip_unpaid(self):
+        """Move payslip from Paid back to Done"""
+        return self.write({'state': 'done', 'paid': False})
+
     def action_payslip_cancel(self):
         """Cancel/Reject payslip"""
         return self.write({'state': 'cancel'})
+
+    def action_bulk_cancel(self):
+        """Bulk Cancel — any state (verify/done/paid) → cancel"""
+        records = self.filtered(lambda p: p.state in ('verify', 'done', 'paid'))
+        if records:
+            records.write({'state': 'cancel', 'paid': False})
+
+    def action_bulk_set_to_draft(self):
+        """Bulk Set to Draft — cancel → draft"""
+        records = self.filtered(lambda p: p.state == 'cancel')
+        if records:
+            records.write({'state': 'draft'})
+
+    def action_bulk_confirm(self):
+        """Bulk Confirm — draft/verify → done"""
+        records = self.filtered(lambda p: p.state in ('draft', 'verify'))
+        if records:
+            records.action_compute_sheet()
+            records.write({'state': 'done'})
 
     def action_refund_sheet(self):
         """Function for refund the Payslip sheet"""

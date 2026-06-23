@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Inherits: om_emp_dashboard.view_employee_form_inherit_holiday_group
+        From image 5: 
+          - holiday_group_id has invisible="1" - enforce it
+          - joining_date has NO invisible - it renders! hide it
+        Both are inside xpath position="after" on parent_id field
+    -->
+    <record id="hr_hide_om_dashboard_fields" model="ir.ui.view">
+        <field name="name">hr.hide.om.dashboard.fields</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="om_emp_dashboard.view_employee_form_inherit_holiday_group"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='holiday_group_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='joining_date']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

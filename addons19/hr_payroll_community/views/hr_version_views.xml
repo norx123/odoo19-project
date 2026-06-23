@@ -4,6 +4,38 @@
     <menuitem id="menu_hr_payroll_community_root" name="Payroll" sequence="5"
               web_icon="hr_payroll_community,static/description/icon.png"/>
 
+    <!-- Time Off action (all leaves for managers) -->
+    <record id="action_payroll_time_off" model="ir.actions.act_window">
+        <field name="name">Time Off</field>
+        <field name="res_model">hr.leave</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+
+    <!-- Work Entries Parent Menu -->
+    <menuitem id="menu_work_entries_parent"
+              name="Work Entries"
+              parent="menu_hr_payroll_community_root"
+              sequence="3"
+              groups="hr_payroll_community.group_hr_payroll_community_user"/>
+
+    <!-- Submenu 1: Work Entries -->
+    <menuitem id="menu_work_entries_child"
+              name="Work Entries"
+              parent="menu_work_entries_parent"
+              sequence="1"
+              action="hr_work_entry.hr_work_entry_action"
+              groups="hr_payroll_community.group_hr_payroll_community_user"/>
+
+    <!-- Submenu 2: Time Off -->
+    <menuitem id="menu_time_off_child"
+              name="Time Off"
+              parent="menu_work_entries_parent"
+              sequence="2"
+              action="action_payroll_time_off"
+              groups="hr_payroll_community.group_hr_payroll_community_user"/>
+
     <menuitem id="menu_hr_payroll_community_configuration" name="Configuration"
               parent="menu_hr_payroll_community_root"
               sequence="100"

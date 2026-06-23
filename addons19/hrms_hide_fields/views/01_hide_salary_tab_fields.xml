@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_hide_salary_tab_fields" model="ir.ui.view">
+        <field name="name">hr.hide.salary.tab.fields</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr_salary_components.view_employee_salary_tab"/>
+        <field name="arch" type="xml">
+
+              <!-- ============================================================ -->
+            <!-- HIDE: Uniform Allowance fields                                -->
+            <!-- ============================================================ -->
+            <xpath expr="//field[@name='uniform_allowance']" position="attributes">
+                <attribute name="invisible">True</attribute>
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//field[@name='uniform_allowance_percent']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <!-- Hide the /month span and % span next to uniform_allowance -->
+            <xpath expr="//field[@name='uniform_allowance']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='uniform_allowance_percent']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- ============================================================ -->
+            <!-- HIDE: Children Education Allowance fields                     -->
+            <!-- ============================================================ -->
+            <xpath expr="//field[@name='children_edu_allowance']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='children_edu_allowance_percent']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='children_edu_allowance']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='children_edu_allowance_percent']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- ============================================================ -->
+            <!-- HIDE: Helper Allowance fields                                 -->
+            <!-- ============================================================ -->
+            <xpath expr="//field[@name='helper_allowance']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='helper_allowance_percent']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='helper_allowance']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='helper_allowance_percent']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- ============================================================ -->
+            <!-- HIDE: Medical Reimbursement fields                            -->
+            <!-- ============================================================ -->
+            <xpath expr="//field[@name='medical_reimbursement']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='medical_reimbursement_percent']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='medical_reimbursement']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='medical_reimbursement_percent']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- ============================================================ -->
+            <!-- HIDE: Transport Allowance fields                              -->
+            <!-- ============================================================ -->
+            <xpath expr="//field[@name='transport_allowance']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='transport_allowance_percent']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='transport_allowance']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='transport_allowance_percent']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- ============================================================ -->
+            <!-- HIDE: Bonus fields                                            -->
+            <!-- ============================================================ -->
+            <xpath expr="//field[@name='bonus']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='bonus_percent']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='bonus']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='bonus_percent']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- ============================================================ -->
+            <!-- HIDE: Gratuity fields                                         -->
+            <!-- ============================================================ -->
+<!--            <xpath expr="//field[@name='gratuity']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+            <xpath expr="//field[@name='gratuity_percent']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+<!--            <xpath expr="//field[@name='gratuity']/following-sibling::span[1]" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+            <xpath expr="//field[@name='gratuity_percent']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- ============================================================ -->
+            <!-- HIDE: TDS Percent field                                       -->
+            <!-- ============================================================ -->
+            <xpath expr="//field[@name='tds_percent']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tds_percent']/following-sibling::span[1]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+
+
+
+<!--            &lt;!&ndash; Uniform Allowance &ndash;&gt;-->
+<!--            <xpath expr="//field[@name='uniform_allowance']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='uniform_allowance_percent']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+<!--            &lt;!&ndash; Children Education Allowance &ndash;&gt;-->
+<!--            <xpath expr="//field[@name='children_edu_allowance']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='children_edu_allowance_percent']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+<!--            &lt;!&ndash; Helper Allowance &ndash;&gt;-->
+<!--            <xpath expr="//field[@name='helper_allowance']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='helper_allowance_percent']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+<!--            &lt;!&ndash; Medical Reimbursement &ndash;&gt;-->
+<!--            <xpath expr="//field[@name='medical_reimbursement']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='medical_reimbursement_percent']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+<!--            &lt;!&ndash; Transport Allowance &ndash;&gt;-->
+<!--            <xpath expr="//field[@name='transport_allowance']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='transport_allowance_percent']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+<!--            &lt;!&ndash; Bonus &ndash;&gt;-->
+<!--            <xpath expr="//field[@name='bonus']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='bonus_percent']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+<!--            &lt;!&ndash; Gratuity &ndash;&gt;-->
+<!--            <xpath expr="//field[@name='gratuity']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='gratuity_percent']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+<!--            &lt;!&ndash; TDS Percent &ndash;&gt;-->
+<!--            <xpath expr="//field[@name='tds_percent']" position="attributes">-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+        </field>
+    </record>
+</odoo>

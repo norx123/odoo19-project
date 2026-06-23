@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Inherits: hr.view_employee_tree (Employee List View)
+        Hides fields that were commented out in UI:
+        - hr_presence_state
+        - currency_id
+        - employee_type
+        - contract_type_id
+        - structure_type_id
+        - activity_ids
+        - company_id (both occurrences)
+        - department_id
+        - job_id
+        - parent_id
+        - coach_id
+        - country_id
+        Fields that are already invisible="1" in other inherited views:
+        - leave_manager_id (hr_holidays)
+        - attendance_manager_id (hr_attendance)
+        - work_location_name, work_location_id (hr_homeworking)
+    -->
+    <record id="hr_hide_employee_list_view" model="ir.ui.view">
+        <field name="name">hr.hide.employee.list.view</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+
+            <!-- hr_presence_state -->
+            <xpath expr="//field[@name='hr_presence_state']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- currency_id -->
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+            </xpath>
+
+            <!-- employee_type -->
+            <xpath expr="//field[@name='employee_type']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- contract_type_id -->
+            <xpath expr="//field[@name='contract_type_id']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- structure_type_id -->
+            <xpath expr="//field[@name='structure_type_id']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- activity_ids -->
+            <xpath expr="//field[@name='activity_ids']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- department_id -->
+            <xpath expr="//field[@name='department_id']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- job_id -->
+            <xpath expr="//field[@name='job_id']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- parent_id -->
+            <xpath expr="//field[@name='parent_id']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- coach_id -->
+<!--            <xpath expr="//field[@name='coach_id']" position="attributes">-->
+<!--                <attribute name="column_invisible">True</attribute>-->
+<!--                <attribute name="invisible">True</attribute>-->
+<!--            </xpath>-->
+
+            <!-- country_id -->
+            <xpath expr="//field[@name='country_id']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

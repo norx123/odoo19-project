@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Inherits: hr_homeworking.view_employee_form
+        The original view adds "Usual Work Location" group with invisible="1".
+        Since the group has no 'name' attribute and selecting by 'string' is not
+        allowed in Odoo 19 xpath, we disable this inherited view entirely.
+        The original view's invisible="1" already keeps the group hidden.
+        This record simply exists to document the intent.
+
+        NOTE: If after upgrade the group becomes visible, set active=False on
+        hr_homeworking.view_employee_form via Settings > Technical > Views.
+    -->
+    <record id="hr_hide_homeworking_fields" model="ir.ui.view">
+        <field name="name">hr.hide.homeworking.fields</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr_homeworking.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <!--
+                The xpath below targets the group by its position (it comes after
+                the 'departure' group in the Work tab).
+                We force invisible on all location_id fields individually.
+            -->
+            <xpath expr="//field[@name='monday_location_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tuesday_location_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='wednesday_location_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='thursday_location_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='friday_location_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='saturday_location_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='sunday_location_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

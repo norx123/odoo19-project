@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_hide_base_employee_form_fields" model="ir.ui.view">
+        <field name="name">hr.hide.base.employee.form.fields</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Citizenship group - has name attr in base view -->
+            <xpath expr="//group[@name='citizenship']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- Application Settings group in Settings tab -->
+            <xpath expr="//group[@name='application_group']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

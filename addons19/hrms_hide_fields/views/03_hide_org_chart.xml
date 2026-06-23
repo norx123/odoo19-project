@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Inherits: hr_org_chart.hr_employee_view_form_inherit_org_chart
+        Hides:    child_ids hr_org_chart widget (Organization Chart)
+    -->
+    <record id="hr_hide_org_chart" model="ir.ui.view">
+        <field name="name">hr.hide.org.chart</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr_org_chart.hr_employee_view_form_inherit_org_chart"/>
+        <field name="arch" type="xml">
+
+            <!-- Hide the entire org chart field widget -->
+            <xpath expr="//field[@name='child_ids'][@widget='hr_org_chart']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- Hide the "Full Chart" separator div (when subordinates exist) -->
+            <xpath expr="//div[@id='o_employee_org_chart']//div[contains(@invisible,'not subordinate_ids')]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <!-- Hide the empty org chart separator div -->
+            <xpath expr="//div[@id='o_employee_org_chart']//div[contains(@invisible,'subordinate_ids or')]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
