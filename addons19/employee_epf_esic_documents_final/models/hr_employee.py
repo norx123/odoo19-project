@@ -17,11 +17,14 @@ class HrEmployee(models.Model):
 
     aadhar_number = fields.Char("Aadhar Number")
     aadhar_file = fields.Binary("Upload Aadhar")
+    aadhar_file_name = fields.Char("Aadhar File Name")  # filename store karne ke liye
 
     pan_file = fields.Binary("Upload PAN")
+    pan_file_name = fields.Char("PAN File Name")  # filename store karne ke liye
 
     driving_license = fields.Char("Driving License")
     driving_file = fields.Binary("Upload License")
+    driving_file_name = fields.Char("License File Name")  # filename store karne ke liye
 
     address_proof_type = fields.Selection([
         ('aadhar', 'Aadhar'),
@@ -31,6 +34,7 @@ class HrEmployee(models.Model):
     ], string="Address Proof Type")
 
     address_proof_file = fields.Binary("Upload Address Proof")
+    address_proof_file_name = fields.Char("Address Proof File Name")  # filename store karne ke liye
 
     reference_contact_ids = fields.One2many(
         'hr.employee.reference',

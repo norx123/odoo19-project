@@ -48,16 +48,26 @@
                 <group string="Documents" col="2">
                     <group string="Identity Documents" col="2">
                         <field name="aadhar_number"/>
-                        <field name="aadhar_file"/>
+                        <!-- filename="aadhar_file_name" → uploaded file ka naam show karega -->
+                        <field name="aadhar_file" filename="aadhar_file_name"/>
+                        <field name="aadhar_file_name" invisible="1"/>
+
                         <field name="pan_number"/>
-                        <field name="pan_file"/>
+                        <!-- filename="pan_file_name" → uploaded file ka naam show karega -->
+                        <field name="pan_file" filename="pan_file_name"/>
+                        <field name="pan_file_name" invisible="1"/>
+
                         <field name="driving_license"/>
-                        <field name="driving_file"/>
+                        <!-- filename="driving_file_name" → uploaded file ka naam show karega -->
+                        <field name="driving_file" filename="driving_file_name"/>
+                        <field name="driving_file_name" invisible="1"/>
                     </group>
 
                     <group string="Address Proof" col="2">
                         <field name="address_proof_type"/>
-                        <field name="address_proof_file"/>
+                        <!-- filename="address_proof_file_name" → uploaded file ka naam show karega -->
+                        <field name="address_proof_file" filename="address_proof_file_name"/>
+                        <field name="address_proof_file_name" invisible="1"/>
                     </group>
                 </group>
 
