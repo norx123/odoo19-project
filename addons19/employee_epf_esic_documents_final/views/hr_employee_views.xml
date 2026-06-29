@@ -16,9 +16,9 @@
                     <field name="reference_contact_ids">
                         <list editable="bottom">
                             <field name="ref_name" string="Name"/>
-                            <field name="ref_relation" string="Relation"/>
                             <field name="ref_mobile" string="Mobile Number"/>
                             <field name="ref_email" string="Email ID"/>
+                            <field name="ref_relation" string="Note"/>
                         </list>
                     </field>
                 </group>
@@ -41,31 +41,31 @@
                     </group>
                     <group>
                         <field name="esic_number"/>
-                        <field name="pan_number"/>
+                        <field name="pan_number" invisible="1"/>
                     </group>
                 </group>
 
                 <group string="Documents" col="2">
                     <group string="Identity Documents" col="2">
                         <field name="aadhar_number"/>
-                        <!-- filename="aadhar_file_name" → uploaded file ka naam show karega -->
+                        <!-- filename="aadhar_file_name" → -->
                         <field name="aadhar_file" filename="aadhar_file_name"/>
                         <field name="aadhar_file_name" invisible="1"/>
 
                         <field name="pan_number"/>
-                        <!-- filename="pan_file_name" → uploaded file ka naam show karega -->
+                        <!-- filename="pan_file_name" →  -->
                         <field name="pan_file" filename="pan_file_name"/>
                         <field name="pan_file_name" invisible="1"/>
 
                         <field name="driving_license"/>
-                        <!-- filename="driving_file_name" → uploaded file ka naam show karega -->
+                        <!-- filename="driving_file_name" →  -->
                         <field name="driving_file" filename="driving_file_name"/>
                         <field name="driving_file_name" invisible="1"/>
                     </group>
 
                     <group string="Address Proof" col="2">
                         <field name="address_proof_type"/>
-                        <!-- filename="address_proof_file_name" → uploaded file ka naam show karega -->
+                        <!-- filename="address_proof_file_name" → -->
                         <field name="address_proof_file" filename="address_proof_file_name"/>
                         <field name="address_proof_file_name" invisible="1"/>
                     </group>

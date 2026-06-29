@@ -8,14 +8,14 @@
                     <!-- ══ COMPANY HEADER ══ -->
                     <table style="width:100%; border-collapse:collapse; margin-bottom:12px;">
                         <tr>
-                            <td style="width:90px; vertical-align:middle;">
+                            <td style="width:120px; vertical-align:middle;">
                                 <t t-if="o.company_id.logo">
                                     <img t-att-src="'data:image/png;base64,' + o.company_id.logo.decode('utf-8')"
-                                         style="max-height:60px; max-width:85px;"/>
+                                         style="max-height:80px; width:auto;"/>
                                 </t>
                             </td>
                             <td style="vertical-align:middle; text-align:center;">
-                                <div style="font-size:16px; font-weight:bold; color:#1a1a2e;">
+                                <div style="font-size:22px; font-weight:bold; color:#1a1a2e;">
                                     <t t-esc="o.company_id.name"/>
                                 </div>
                                 <div style="font-size:10px; color:#666; margin-top:2px;">
@@ -42,27 +42,34 @@
                                 <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; width:22%; border-right:1px solid #ddd;">Employee Name</td>
                                 <td style="padding:5px 8px; width:28%; border-right:1px solid #ddd;"><span t-field="o.employee_id"/></td>
                                 <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; width:22%; border-right:1px solid #ddd;">Employee ID</td>
-                                <td style="padding:5px 8px; width:28%;"><span t-field="o.employee_id.identification_id"/></td>
+                                <td style="padding:5px 8px; width:28%;"><span t-field="o.employee_id.employee_code"/></td>
                             </tr>
                             <tr style="border-bottom:1px solid #ddd;">
                                 <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">Designation</td>
-                                <td style="padding:5px 8px; border-right:1px solid #ddd;"><span t-field="o.employee_id.job_id"/></td>
-                                <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">Department</td>
-                                <td style="padding:5px 8px;"><span t-field="o.employee_id.department_id"/></td>
+                                <td style="padding:5px 8px; border-right:1px solid #ddd;"><span t-field="o.employee_id.job_title"/></td>
+                                <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">Bank Details</td>
+                                <td style="padding:5px 8px;"><span t-field="o.employee_id.bank_account_ids"/></td>
                             </tr>
                             <tr style="border-bottom:1px solid #ddd;">
                                 <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">Joining Date</td>
-                                <td style="padding:5px 8px; border-right:1px solid #ddd;">
-                                    <t t-esc="o.contract_id.date_start.strftime('%d/%m/%Y') if o.contract_id and o.contract_id.date_start else ''"/>
-                                </td>
+<!--                                <td style="padding:5px 8px; border-right:1px solid #ddd;">-->
+<!--                                    <t t-esc="o.contract_id.date_start.strftime('%d/%m/%Y') if o.contract_id and o.contract_id.date_start else ''"/>-->
+<!--                                </td>-->
+                                  <td style="padding:5px 8px; border-right:1px solid #ddd;"><span t-field="o.employee_id.joining_date"/></td>
                                 <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">Work Location</td>
                                 <td style="padding:5px 8px;"><span t-field="o.employee_id.work_location_id"/></td>
                             </tr>
                             <tr style="border-bottom:1px solid #ddd;">
-                                <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">UAN Number</td>
-                                <td style="padding:5px 8px; border-right:1px solid #ddd;"><span t-field="o.employee_id.uan_number"/></td>
                                 <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">PAN Number</td>
-                                <td style="padding:5px 8px;"><span t-field="o.employee_id.ssnid"/></td>
+                                <td style="padding:5px 8px; border-right:1px solid #ddd;"><span t-field="o.employee_id.pan_number"/></td>
+                                <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">UAN Number</td>
+                                <td style="padding:5px 8px;"><span t-field="o.employee_id.uan_number"/></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #ddd;">
+                                <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">PF Number</td>
+                                <td style="padding:5px 8px; border-right:1px solid #ddd;"><span t-field="o.employee_id.pf_number"/></td>
+                                <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">ESIC Number</td>
+                                <td style="padding:5px 8px;"><span t-field="o.employee_id.esic_number"/></td>
                             </tr>
                             <tr>
                                 <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">Pay Period</td>
