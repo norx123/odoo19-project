@@ -37,6 +37,15 @@ class HrPayslip(models.Model):
     _inherit = 'mail.thread'
     _description = 'Pay Slip'
 
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        company = self.env.company
+        if 'struct_id' in fields_list and not res.get('struct_id') \
+                and company.payslip_default_struct_id:
+            res['struct_id'] = company.payslip_default_struct_id.id
+        return res
+
     struct_id = fields.Many2one(comodel_name='hr.payroll.structure',
                                 string='Structure',
                                 help='Defines the rules that have to be applied'
@@ -642,11 +651,10 @@ class HrPayslip(models.Model):
             'contract_id': contract.id
         })
         struct = contract.struct_id
-        if not struct:
-            return res
-        res['value'].update({
-            'struct_id': struct.id,
-        })
+        if struct:
+            res['value'].update({
+                'struct_id': struct.id,
+            })
         # computation of the salary input
         contracts = self.env['hr.version'].browse(contract_ids)
         worked_days_line_ids = self.get_worked_day_lines(contracts, date_from,
@@ -679,9 +687,8 @@ class HrPayslip(models.Model):
             if not contract_ids:
                 return
             self.contract_id = self.env['hr.version'].browse(contract_ids[0])
-            if not self.contract_id.contract_template_id.struct_id:
-                return
-            self.struct_id = self.contract_id.contract_template_id.struct_id
+            if self.contract_id.struct_id:
+                self.struct_id = self.contract_id.struct_id
         if self.contract_id:
             contract_ids = self.contract_id.ids
         # computation of the salary input

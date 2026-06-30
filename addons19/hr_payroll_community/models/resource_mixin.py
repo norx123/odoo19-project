@@ -81,6 +81,7 @@ class ResourceMixin(models.AbstractModel):
             float_utils.round(ROUNDING_FACTOR * day_hours[day] / day_total[
                 day]) / ROUNDING_FACTOR
             for day in day_hours
+            if day_total[day]
         )
         return {
             'days': days,

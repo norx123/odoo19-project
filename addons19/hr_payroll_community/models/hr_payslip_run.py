@@ -36,6 +36,19 @@ class HrPayslipRun(models.Model):
     credit_note = fields.Boolean(
         string='Credit Note',
         help="If checked, all payslips generated are refund payslips.")
+    struct_id = fields.Many2one(
+        'hr.payroll.structure',
+        string='Salary Structure',
+        help="Defines the rules that apply to the payslips of this batch. "
+             "If left empty, the contract's default structure is used.")
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        company = self.env.company
+        if 'struct_id' in fields_list and company.payslip_default_struct_id:
+            res['struct_id'] = company.payslip_default_struct_id.id
+        return res
 
     # ── Workflow actions ────────────────────────────────────────────────────
 

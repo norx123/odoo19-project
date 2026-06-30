@@ -20,7 +20,7 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ResConfigSettings(models.TransientModel):
@@ -35,3 +35,32 @@ class ResConfigSettings(models.TransientModel):
                                                help="Is Belgium Payroll")
     module_l10n_in_hr_payroll = fields.Boolean(string='Indian Payroll',
                                                help="Is Indian Payroll")
+
+    payslip_default_struct_id = fields.Many2one(
+        'hr.payroll.structure',
+        string='Default Salary Structure',
+        help="Used automatically when generating payslips if none is "
+             "selected manually.")
+    payslip_default_journal_id = fields.Many2one(
+        'account.journal',
+        string='Default Salary Journal',
+        domain="[('type', '=', 'general')]",
+        help="Used automatically when generating payslips if none is "
+             "selected manually.")
+
+    @api.model
+    def get_values(self):
+        res = super().get_values()
+        company = self.env.company
+        res.update(
+            payslip_default_struct_id=company.payslip_default_struct_id.id,
+            payslip_default_journal_id=company.payslip_default_journal_id.id,
+        )
+        return res
+
+    def set_values(self):
+        super().set_values()
+        self.env.company.write({
+            'payslip_default_struct_id': self.payslip_default_struct_id.id,
+            'payslip_default_journal_id': self.payslip_default_journal_id.id,
+        })

@@ -36,7 +36,7 @@
     'category': 'Human Resources',
     'author': 'Krishn Dev',
     'maintainer': 'Norx',
-    'depends': ['hr_holidays'],
+    'depends': ['hr_holidays', 'account'],
     'data': [
         'data/ir_module_category_data.xml',
         'security/hr_payroll_community_security.xml',

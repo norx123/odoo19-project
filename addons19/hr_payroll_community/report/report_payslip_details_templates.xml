@@ -80,6 +80,18 @@
                                 <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">Slip Reference</td>
                                 <td style="padding:5px 8px;"><span t-field="o.number"/></td>
                             </tr>
+                            <t t-set="total_month_days" t-value="(o.date_to - o.date_from).days + 1 if o.date_from and o.date_to else 0"/>
+                            <t t-set="total_leave_days" t-value="sum(wd.number_of_days for wd in o.worked_days_line_ids if wd.code not in ('WORK100', 'OUT'))"/>
+                            <tr>
+                                <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">Working Days</td>
+                                <td style="padding:5px 8px; border-right:1px solid #ddd;">
+                                    <t t-esc="total_month_days"/> Days
+                                </td>
+                                <td style="padding:5px 8px; background:#f5f5f5; font-weight:bold; border-right:1px solid #ddd;">Leave</td>
+                                <td style="padding:5px 8px;">
+                                    <t t-esc="'{:.2f}'.format(total_leave_days)"/> Days
+                                </td>
+                            </tr>
                         </table>
                     </div>
 

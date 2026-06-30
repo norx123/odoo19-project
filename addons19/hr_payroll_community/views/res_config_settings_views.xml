@@ -60,6 +60,36 @@
                             </div>
                         </div>
                     </div>
+                    <h2>Payslip Defaults</h2>
+                    <div class="row mt16 o_settings_container"
+                         id="hr_payroll_defaults">
+                        <div class="col-lg-6 col-12 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Default Salary Structure</span>
+                                <div class="text-muted">
+                                    Used automatically when generating payslips,
+                                    individually or in batch, if none is selected.
+                                </div>
+                                <div class="mt8">
+                                    <field name="payslip_default_struct_id"
+                                           options="{'no_create': True}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Default Salary Journal</span>
+                                <div class="text-muted">
+                                    Used automatically when generating payslips,
+                                    individually or in batch, if none is selected.
+                                </div>
+                                <div class="mt8">
+                                    <field name="payslip_default_journal_id"
+                                           options="{'no_create': True}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </xpath>
         </field>

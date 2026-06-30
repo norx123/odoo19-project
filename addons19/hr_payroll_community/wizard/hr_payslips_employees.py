@@ -40,9 +40,11 @@ class HrPayslipEmployees(models.TransientModel):
         payslips = self.env['hr.payslip']
         [data] = self.read()
         active_id = self.env.context.get('active_id')
+        batch_struct_id = False
         if active_id:
-            [run_data] = self.env['hr.payslip.run'].browse(active_id).read(
-                ['date_start', 'date_end', 'credit_note'])
+            run = self.env['hr.payslip.run'].browse(active_id)
+            [run_data] = run.read(['date_start', 'date_end', 'credit_note'])
+            batch_struct_id = run.struct_id.id
         from_date = run_data.get('date_start')
         to_date = run_data.get('date_end')
         if not data['employee_ids']:
@@ -55,7 +57,8 @@ class HrPayslipEmployees(models.TransientModel):
             res = {
                 'employee_id': employee.id,
                 'name': slip_data['value'].get('name'),
-                'struct_id': slip_data['value'].get('struct_id'),
+                'struct_id': batch_struct_id or slip_data['value'].get(
+                    'struct_id'),
                 'contract_id': slip_data['value'].get('contract_id'),
                 'payslip_run_id': active_id,
                 'input_line_ids': [(0, 0, x) for x in

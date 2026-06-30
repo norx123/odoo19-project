@@ -149,6 +149,8 @@
                                    readonly="state != 'draft'"/>
                         </div>
                         <field name="credit_note" readonly="state != 'draft'"/>
+                        <field name="struct_id" readonly="state != 'draft'"
+                               options="{'no_create': True}"/>
                     </group>
                     <separator string="Payslips"/>
                     <field name="slip_ids" readonly="state != 'draft'">
