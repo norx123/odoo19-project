@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!--Custom paperformat with minimal margins for payslip PDFs-->
+    <record id="paperformat_payslip" model="report.paperformat">
+        <field name="name">Payslip</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
     <!--Report action for Contribution Register Report-->
     <record id="contribution_register_action" model="ir.actions.report">
         <field name="name">Contribution Register PDF</field>
@@ -18,6 +33,7 @@
         <field name="report_name">hr_payroll_community.report_payslipdetails</field>
         <field name="report_file">hr_payroll_community.report_payslipdetails</field>
         <field name="print_report_name">('Payslip - %s' % (object.employee_id.name))</field>
+        <field name="paperformat_id" ref="paperformat_payslip"/>
     </record>
 
     <!--Dedicated Print Payslip button action-->
@@ -28,7 +44,7 @@
         <field name="report_name">hr_payroll_community.report_payslipdetails</field>
         <field name="report_file">hr_payroll_community.report_payslipdetails</field>
         <field name="print_report_name">('Payslip - %s - %s' % (object.employee_id.name, object.date_from.strftime('%B %Y') if object.date_from else ''))</field>
-        <field name="paperformat_id" ref="base.paperformat_euro"/>
+        <field name="paperformat_id" ref="paperformat_payslip"/>
     </record>
     <!-- ══ BULK ACTION BUTTONS IN LIST VIEW ══ -->
 
