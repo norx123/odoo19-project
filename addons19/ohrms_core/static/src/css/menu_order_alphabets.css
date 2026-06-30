@@ -3,9 +3,6 @@
     position: relative;
     width: 99vw;
     min-height: auto;
-    max-height: calc(100vh - 100px);
-    overflow-y: auto;
-    overflow-x: hidden;
     background: #fff;
     display: flex;
     justify-content: start;
@@ -13,14 +10,12 @@
     padding: 20px 10rem;
     margin-top: 0px;
     box-sizing: border-box;
+    flex: 1 0 auto;
 }
 .o_main_navbar .dropdown-menu .show {
-    max-height: auto !important;
+    max-height: none !important;
     min-width: 100%;
-    overflow: auto;
     margin-top: 0;
-    position: static;
-    top: 0;
     display: flex;
     box-shadow: none;
     border: none;
@@ -28,18 +23,59 @@
     flex-direction: row;
     overflow: unset;
 }
+.o_main_navbar .dropdown-menu .dropdown-item.o_app.mt0,
+.o_main_navbar .dropdown-menu .dropdown-item.o_app.mt0:hover,
+.o_main_navbar .dropdown-menu .dropdown-item.o_app.mt0:focus,
+.o_main_navbar .dropdown-menu .dropdown-item.o_app.mt0:active,
+.o_main_navbar .dropdown-menu .dropdown-item.o_app.mt0.active {
+    background-color: transparent !important;
+    background-image: none !important;
+    color: inherit !important;
+}
 .dropdown-item.o_app.mt0 {
     flex-basis: 16.66%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-bottom: 20px;
-    padding: 10px 6px;
+    margin: 4px 0 16px 0;
+    padding: 8px 6px;
     gap: 6px;
+    border-radius: 10px;
+    transition: transform 0.15s ease;
 }
-.dropdown-menu fullscreen-menu show{
-    width:1000px !important;
+.dropdown-item.o_app.mt0:hover,
+.dropdown-item.o_app.mt0:focus,
+.dropdown-item.o_app.mt0:active {
+    transform: translateY(-2px);
+}
+.o_app_icon_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin: 6px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #ffffff 0%, #eaf4ff 45%, #d4ecff 100%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.8),
+        0 2px 6px rgba(0, 120, 212, 0.12);
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.dropdown-item.o_app.mt0:hover .o_app_icon_wrapper,
+.dropdown-item.o_app.mt0:focus .o_app_icon_wrapper {
+    background: linear-gradient(145deg, #ffffff 0%, #d6ecff 45%, #b7ddff 100%);
+    box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.9),
+        0 4px 12px rgba(0, 120, 212, 0.28);
+}
+.o_app_icon_img {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    object-fit: contain;
 }
 .o_setting_search {
                 position: relative;
@@ -80,14 +116,22 @@
 
 }
 .o_main_navbar .dropdown-menu.show {
-    max-height: 100vh !important;
+    position: fixed !important;
+    top: 46px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: calc(100vh - 46px);
+    max-height: none !important;
     min-width: 100vw;
     overflow-y: auto;
     overflow-x: hidden;
-    margin-top: 0;
-    position: relative;
-    margin-top: 46px;
-    margin-left: -18px;
+    margin: 0 !important;
+    z-index: 1050;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
 }
 .o-menu-search-result.dropdown-item.col-12.ml-auto.mr-auto {
 
@@ -139,8 +183,6 @@
     padding: 12px 1rem;
     margin-top: 0px;
     min-height: auto;
-    max-height: calc(100vh - 100px);
-    overflow-y: auto;
 }
     .dropdown-item.o_app.mt0 {
         flex-basis: 33.33%;
@@ -165,36 +207,29 @@
 
     }
 
-/* ===== NORX ERP FOOTER BRANDING ===== */
-.norx-branding-footer {
+/* ===== NORX ERP POWERED-BY BAR (full-width footer, like HMIS) ===== */
+.norx-powered-bar {
     width: 100%;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 14px 0 18px 0;
-    border-top: 1px solid #e0eeff;
-    margin-top: 10px;
-    background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
-    position: sticky;
-    bottom: 0;
-    z-index: 10;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 14px 24px;
+    border-top: 1px solid #eef2f7;
+    background-color: #fff;
 }
 
-.norx-footer-logo {
-    height: 32px !important;
+.norx-powered-text {
+    font-size: 12px;
+    color: #8a93a3;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.norx-powered-logo {
+    height: 20px !important;
     width: auto !important;
     object-fit: contain;
-    margin-bottom: 4px;
-    opacity: 0.9;
-}
-
-.norx-footer-tagline {
-    font-size: 10px;
-    color: #0078d4;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    opacity: 0.8;
 }
 /* ===== END NORX FOOTER BRANDING ===== */

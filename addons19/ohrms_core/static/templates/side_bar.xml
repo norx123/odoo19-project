@@ -55,11 +55,13 @@
                                    t-att-data-menu-xmlid="app.xmlID"
                                    t-att-data-action-id="app.actionID"
                                    t-on-click="_closeFullMenu">
-                                    <img t-if="app.webIconData"
-                                         t-att-title="app.name"
-                                         style="width: 52px !important; height: 52px !important; border-radius: 10px !important; margin: 8px 8px 6px 8px;"
-                                         t-attf-src="{{app.webIconData}}"
-                                    />
+                                    <span class="o_app_icon_wrapper">
+                                        <img t-if="app.webIconData"
+                                             t-att-title="app.name"
+                                             class="o_app_icon_img"
+                                             t-attf-src="{{app.webIconData}}"
+                                        />
+                                    </span>
                                     <b class="a_app_menu_title"><t t-esc="app.name"/></b>
                                 </a>
                                 </t>
@@ -67,12 +69,12 @@
                         </div>
                     </div>
 
-                    <!-- Norx ERP Branding Footer -->
-                    <div class="norx-branding-footer">
+                    <!-- Norx ERP Branding - full-width footer bar -->
+                    <div class="norx-powered-bar">
+                        <span class="norx-powered-text">POWERED BY</span>
                         <img src="/ohrms_core/static/src/img/norx_logo.png"
                              alt="Norx ERP"
-                             class="norx-footer-logo"/>
-                        <span class="norx-footer-tagline">Enterprise Resource Planning</span>
+                             class="norx-powered-logo"/>
                     </div>
 
                 </div>
